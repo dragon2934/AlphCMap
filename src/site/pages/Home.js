@@ -39,8 +39,8 @@ const Home = () => {
     //check login
     const user = useSelector((state) => state.auth.user);
     if(user === null || user === undefined){
-        window.location.href = '/login';
-        return;
+        // window.location.href = '/login';
+        // return;
     }
     return (
         <HomeLayout>
