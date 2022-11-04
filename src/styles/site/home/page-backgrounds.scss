@@ -1,0 +1,95 @@
+@mixin createBackground($url) {
+  &:before {
+    position: absolute;
+    top: $header-height;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    content: "";
+    z-index: -1;
+    background: url($url) no-repeat;
+    background-size: cover;
+    opacity: 0.2;
+
+    @media screen and (max-width: map-get($grid-breakpoints, "lg")) {
+      background-position: 0 0;
+    }
+  }
+}
+
+.about-us {
+  @include createBackground('/assets/img/half_world.jpg');
+
+  &:before {
+    @media screen and (max-width: map-get($grid-breakpoints, "lg")) {
+      background-size: contain;
+    }
+  }
+}
+
+.how-it-works {
+  @include createBackground('/assets/img/logo-sm.png');
+
+  &:before {
+    padding: 60px !important;
+    background-origin: content-box;
+    background-size: contain;
+    opacity: 0.05;
+  }
+}
+
+.contact-us {
+  @include createBackground('/assets/img/page-backgrounds/contact-us.jpg');
+
+  &:before {
+    background-color: black;
+    background-blend-mode: lighten;
+    opacity: 0.3;
+  }
+  input {
+    &:placeholder-shown {
+      background-color: rgba(201, 201, 201, 0.2) !important;
+    }
+    &:not(:placeholder-shown) {
+      background-color: rgba(201, 201, 201, 0.8) !important;
+    }
+  }
+  textarea {
+    &:placeholder-shown {
+      background-color: rgba(201, 201, 201, 0.2) !important;
+    }
+    &:not(:placeholder-shown) {
+      background-color: rgba(201, 201, 201, 0.8) !important;
+    }
+  }
+  .form-control {
+    &:not(.is-invalid) {
+      border: 1px solid $gray-600;
+    }
+  }
+  .contact {
+    color: $secondary !important;
+    h3 {
+      color: $primary;
+    }
+  }
+}
+
+.patents {
+  @include createBackground('/assets/img/page-backgrounds/patents.jpg');
+}
+
+.our-story {
+  @include createBackground('/assets/img/page-backgrounds/our-story.jpg');
+}
+
+.our-promise {
+  @include createBackground('/assets/img/page-backgrounds/our-promise.jpg');
+}
+
+.news-release {
+  @include createBackground('/assets/img/page-backgrounds/news-release.jpg');
+  &:before {
+    background-position: 100% 50%;
+  }
+}

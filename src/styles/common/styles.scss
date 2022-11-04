@@ -1,0 +1,23 @@
+@import "map";
+@import "~react-redux-toastr/src/styles/index";
+
+// React Phone Input
+@import '~react-phone-input-2/lib/style.css';
+
+// antd
+@import '~antd/dist/antd.css';
+
+@import "custom-elements";
+
+.loader {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-no-focus {
+  &:focus {
+    box-shadow: unset !important;
+  }
+}

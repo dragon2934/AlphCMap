@@ -1,0 +1,96 @@
+@import "~mapbox-gl/dist/mapbox-gl.css";
+
+.mapboxgl-control-container {
+  //display: none;
+}
+
+.map-actions {
+  padding: 5px;
+  position: fixed;
+  z-index: 4;
+}
+
+.map {
+  &.disabled {
+    filter: grayscale(100%);
+    transition: filter 0.5s;
+    .mapboxgl-canvas {
+      filter: grayscale(100%);
+      transition: filter 0.5s;
+    }
+  }
+
+  & .mapboxgl-canvas {
+    height: 100%;
+  }
+}
+
+.info-window {
+  overflow: hidden;
+  word-wrap: anywhere;
+  word-break: break-all;
+
+  @media screen and (max-width: map-get($grid-breakpoints, "lg")) {
+    //overflow: unset;
+  }
+}
+
+.map-disabled {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  filter: grayscale(100%);
+  z-index: 1;
+}
+
+.overlay-form-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: rgba(97, 127, 160, 0.8);
+  color: #ffffff;
+  height: 100%;
+  display: flex;
+
+  align-items: safe center;
+
+  overflow-y: auto;
+  flex-direction: column;
+
+  z-index: 1040;
+  .logo-container{
+    height:8em;
+  }
+  .step-wizard {
+    width: 100%;
+  }
+}
+
+.info-box {
+  position: fixed;
+  top: 0;
+}
+.home-back-button{
+  position: fixed;
+  bottom: 2em;
+  left: 2em;
+}
+
+.email-container{
+  background-color: #1f2152;
+  color: white;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+.mapboxgl-popup-content {
+  padding: 10px;
+
+  h4 {
+    margin: 0;
+  }
+}

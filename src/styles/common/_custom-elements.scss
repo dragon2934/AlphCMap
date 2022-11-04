@@ -1,0 +1,38 @@
+.custom-react-phone-input {
+  flex: 1 1 auto;
+  width: auto !important;
+  height: 100% !important;
+  padding: 0 !important;
+
+  & input {
+    width: 100% !important;
+    border: 0 !important;
+    margin: 0;
+    height: 100%;
+  }
+
+  & .flag-dropdown {
+    border: 0;
+  }
+}
+
+.antd-custom-select {
+  flex: 1 1 auto;
+  //width: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+
+  & > .ant-select-selector {
+    height: 100% !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    overflow-y: scroll;
+  }
+
+  & > .ant-select-selection-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

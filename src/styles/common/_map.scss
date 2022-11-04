@@ -1,0 +1,65 @@
+.map-top-actions {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  position: absolute;
+  height: 0;
+  width: calc(100% - 40px);
+  z-index: 1;
+
+  .search-actions {
+    input {
+      border-radius: 50px;
+      margin: 0.25rem;
+    }
+
+    form {
+      display: inline-flex;
+      align-items: center;
+
+      button[type=submit] {
+        border-radius: 50px;
+        height: 100%;
+
+        vertical-align: middle;
+      }
+    }
+  }
+}
+
+.map-button {
+  background: none;
+  border: none;
+  padding: 0;
+
+  &:focus {
+    border: none;
+    outline: none;
+  }
+}
+
+.map-legend {
+  margin-top: 10px;
+  margin-right: 10px;
+
+  & .close-button {
+    position: absolute;
+    top: 0;
+    right: 3px;
+  }
+
+  &_content {
+    border-radius: 15px 0 15px 15px;
+    box-shadow: rgba(0,0,0,0.4) 5px 5px 5px;
+    padding: 10px;
+    background-color: #fff;
+    max-width: 400px;
+    max-height: 490px;
+    overflow: auto;
+
+    & img {
+      margin-right: 10px;
+    }
+  }
+}

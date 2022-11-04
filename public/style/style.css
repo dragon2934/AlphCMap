@@ -1,0 +1,12 @@
+.btnGreyOut{
+    border: 0px;
+}
+.overlay-form-container label{
+    color: black !important;
+}
+.container p{
+    color: black !important;
+}
+#propertiesList .card-body{
+    padding: 0.5em !important;
+}

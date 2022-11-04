@@ -1,0 +1,48 @@
+.key-features {
+  width: 100%;
+  background-size: cover;
+  background: url(/assets/img/paralax_img_2.jpg) no-repeat 50% 50%;
+
+  .slogan-text {
+    font-size: 18px;
+    line-height: 28px;
+    color: #fff;
+    text-shadow: 1px 1px 10px #000;
+    flex-basis: auto !important;
+    text-align: center;
+    width: 100%;
+
+    .text-block {
+      padding-top: 2em;
+      text-align: left;
+
+      img {
+        width: 1.2em;
+        margin-right: 0.4em;
+      }
+
+      div {
+        margin-bottom: 0.7em;
+      }
+    }
+
+    .title {
+      position: relative;
+      font-size: 24px;
+      line-height: 50px;
+    }
+
+    .title:after {
+      background-color: white;
+      bottom: 0;
+      content: '';
+      display: block;
+      height: 2px;
+      left: 50%;
+      position: absolute;
+      transform: translate(-50%, 0);
+      width: 2em;
+    }
+  }
+
+}

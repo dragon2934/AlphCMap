@@ -1,0 +1,148 @@
+$header-height: 60px;
+$footer-height: 40px;
+$content-height: calc(100vh - 100px);
+
+$header-z-index: 2;
+$footer-z-index: 2;
+
+@import "home/pages-general";
+@import "home/page-backgrounds";
+
+@import "home/key-features";
+
+body {
+  overflow: hidden;
+  margin-top: $header-height;
+}
+
+.header {
+  width: 100%;
+  z-index: $header-z-index;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 0;
+  background-color: white !important;
+
+  & .navbar-toggler {
+    border: none;
+  }
+
+  & .nav-item {
+    padding-left: $spacer;
+  }
+
+  .navbar-brand.pixels {
+    padding: 0;
+
+    & > img {
+      height: 60px;
+    }
+  }
+}
+
+.footer {
+  //z-index: $footer-z-index;
+  //width: 100%;
+  //background-color: #1f2152;
+  padding: 0;
+
+  & .navbar {
+    width: 100%;
+  }
+
+  & .navbar-toggler {
+    border: none;
+  }
+
+  & .nav-item {
+    padding-left: $spacer;
+    height: $footer-height;
+  }
+
+  & .navbar-toggler {
+    height: $footer-height;
+    line-height: inherit;
+  }
+
+  & nav {
+    padding: 0;
+
+    & .nav-link {
+      color: #ffffff !important;
+
+      &.active {
+        color: $gray-600 !important;
+      }
+    }
+  }
+}
+
+.content {
+  height: $content-height;
+  overflow-y: auto;
+}
+
+.tab-pane.active {
+  animation-name: fadeIn;
+  animation-duration: 300ms;
+  animation-timing-function: linear;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
+
+.home-tab-content {
+  height: 100%;
+
+  & .tab-pane {
+    height: 100%;
+  }
+}
+
+.full-screen {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  & > .container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: safe center;
+
+
+    @media screen and (max-width: map-get($grid-breakpoints, "lg")) {
+      padding-bottom: 100px;
+    }
+  }
+
+  & > .key-features {
+    @media screen and (max-width: map-get($grid-breakpoints, "lg")) {
+      padding-bottom: 100px;
+    }
+  }
+
+  @media screen and (max-width: map-get($grid-breakpoints, "lg")) {
+    display: unset;
+  }
+}
+
+.splash-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: safe center;
+  align-items: safe center;
+}
+
+.splash-image {
+  width: 50%;
+}
+
+.splash-text {
+  margin-top: 2rem;
+  font-size: 5vw;
+  color: #1f2152;
+  text-align: center;
+}

@@ -1,0 +1,22 @@
+.section-title {
+  position: relative;
+  color: #6c757d;
+  line-height: 70px;
+  text-align: center;
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 1em;
+}
+
+.section-title:after {
+  background-color: #6188ad;
+  bottom: 0;
+  content: '';
+  display: block;
+  height: 2px;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%, 0);
+  width: 3em;
+}
+

@@ -1,0 +1,42 @@
+.video-container {
+  display: flex;
+  justify-content: center;
+}
+
+.video-modal-container {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  max-width: unset;
+
+  .modal-content {
+    background-color: transparent;
+    border: none;
+    height: 100%;
+    width: 100%;
+  }
+
+  .modal-header {
+    border-bottom: none;
+  }
+
+  .close {
+    font-size: 3em;
+    text-shadow: none;
+    color: #ddd;
+    outline: none !important;
+    margin: 0 -1rem -1rem 0;
+    padding: 0 1rem 0 0;
+  }
+
+
+  iframe {
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+  }
+}
+
+.show {
+  opacity: 0.8 !important;
+}
