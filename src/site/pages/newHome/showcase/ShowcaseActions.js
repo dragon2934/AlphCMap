@@ -1,9 +1,9 @@
-import React, {useCallback, useContext, useEffect, useState} from "react";
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import {Button, Col, Form, Input, Row} from 'reactstrap';
 import MapContext from '../../../../common/contexts/MapContext/MapContext';
-// import PropertyForm from '../../property/PropertyForm';
+import PropertyForm from '../../property/PropertyForm';
 import {setPropertyRegistrationForm} from '../../../../redux/actionCreators/registrationActionCreators';
 import {getNavigatorLocation} from '../../../../utils/mapUtils';
 import {
@@ -255,7 +255,7 @@ const ShowcaseActions = () => {
                     </div>
                 </div>
             </div>
-         
+            {active && <PropertyForm />}
             <div className="showcase-map-top-actions-mobile">
                 <Row>
                     <Col>

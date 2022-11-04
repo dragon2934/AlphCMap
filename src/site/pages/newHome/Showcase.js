@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from 'react-redux';
 // import {useDispatch, useSelector} from 'react-redux';
 import MapContext from '../../../common/contexts/MapContext/MapContext';
 import UserPin from './showcase/UserPin';
-import ShowcaseActions from './showcase/ShowcaseActions';
+import ShowcaseActions from './showcase/ShowcaseActions.js';
 import {
     fetchProperties,
     searchProperties,
@@ -41,53 +41,53 @@ const Showcase = () => {
 
     // const [isSeach, setIsSearch] = useState(0);
 
-    useEffect(() => {
-        dispatch(fetchCities({page:1, pageSize: 100000})).then( ({value:resp_cities}) =>{
-            console.log('cities..' + JSON.stringify(resp_cities));
-            setCities(resp_cities);
-        }).finally(() =>{}
-        );
-        return () => {};
-    }, [dispatch]);
+    // useEffect(() => {
+    //     dispatch(fetchCities({page:1, pageSize: 100000})).then( ({value:resp_cities}) =>{
+    //         console.log('cities..' + JSON.stringify(resp_cities));
+    //         setCities(resp_cities);
+    //     }).finally(() =>{}
+    //     );
+    //     return () => {};
+    // }, [dispatch]);
 
     const toggle=useCallback(() => {
         setDropDownOpen(!dropDownOpen)
     });
-    useEffect(() => {
-        setLoading(true);
+    // useEffect(() => {
+    //     setLoading(true);
 
-        const isSeach = localStorage.getItem('isSearch');
-        let cityShorName = localStorage.getItem('city_short_name');
-        if(cityShorName === null || cityShorName === undefined || cityShorName.length ===0){
-            cityShorName = 'SC';
-        }
+    //     const isSeach = localStorage.getItem('isSearch');
+    //     let cityShorName = localStorage.getItem('city_short_name');
+    //     if(cityShorName === null || cityShorName === undefined || cityShorName.length ===0){
+    //         cityShorName = 'SC';
+    //     }
 
-        if( isSeach !==null && isSeach !==undefined && parseInt(isSeach) === 1){
-            dispatch(searchProperties(localStorage.getItem('searchText'), localStorage.getItem('searchType'),cityShorName))
-            .then( (properties)=>{
-                localStorage.setItem('searchText','');
-                localStorage.setItem('searchType',1);
-                localStorage.setItem('isSearch',0);
-                console.log('...search result....properties..' + JSON.stringify(properties.value));
-                setProperties(properties.value);
-            })
-            .finally(() =>
-                setLoading(false),
-            ); 
-        }else{
+    //     if( isSeach !==null && isSeach !==undefined && parseInt(isSeach) === 1){
+    //         dispatch(searchProperties(localStorage.getItem('searchText'), localStorage.getItem('searchType'),cityShorName))
+    //         .then( (properties)=>{
+    //             localStorage.setItem('searchText','');
+    //             localStorage.setItem('searchType',1);
+    //             localStorage.setItem('isSearch',0);
+    //             console.log('...search result....properties..' + JSON.stringify(properties.value));
+    //             setProperties(properties.value);
+    //         })
+    //         .finally(() =>
+    //             setLoading(false),
+    //         ); 
+    //     }else{
 
-            dispatch(searchProperties(null,null,cityShorName))
-            .then( (properties)=>{
-                // console.log('...properties..' + JSON.stringify(properties.value));
-                setProperties(properties.value);
-            })
-            .finally(() =>
-                setLoading(false),
-            );
-        }
+    //         dispatch(searchProperties(null,null,cityShorName))
+    //         .then( (properties)=>{
+    //             // console.log('...properties..' + JSON.stringify(properties.value));
+    //             setProperties(properties.value);
+    //         })
+    //         .finally(() =>
+    //             setLoading(false),
+    //         );
+    //     }
 
-        return () => {};
-    }, [dispatch]);
+    //     return () => {};
+    // }, [dispatch]);
 
 
     useEffect(() => {
@@ -138,68 +138,6 @@ const Showcase = () => {
                 }
                 ref={(el) => (mapContainer.current = el)}
             />
-                        <div className="search_wrap">
-                        <div className="cities">
-                
-                { cities?   <ButtonDropdown >
-            <Dropdown isOpen={dropDownOpen} toggle={toggle} >
-                <DropdownToggle color="primary" caret className="dropdown-toggle">
-                   {selectedCity}
-                </DropdownToggle>
-                <DropdownMenu className="city-dropdown">
-                     {
-                        cities.map(city=>{
-    return <DropdownItem onClick={() =>{
-    setSelectedCity(city.full_name);
-    console.log('selected city..' + city.short_name);
-    localStorage.setItem('city_short_name',city.short_name);
-    localStorage.setItem('city_full_name',city.full_name);
-    //do search
-    window.location.reload();
-    }
-    } dropDownValue={city.short_name}>{city.full_name} ( { city.totol_properties } )</DropdownItem>
-                        })
-                     }   
-                    </DropdownMenu>
-                </Dropdown>
-            </ButtonDropdown>
-    :null}
-                    
-                </div>
-            <div className="ipt_wrap">
-                <Input className="search_ipt" id="keywordText" name="keywordText" defaultValue={searchText}
-                onChange={(e)=>{
-                    console.log('keyword...' + e.target.value);
-                    setKeywordText(e.target.value);
-                }}
-                placeholder="keywords" type="text" />
-                <Button onClick={() => {
-                    //do search
-                    localStorage.setItem('searchText',keywordText);
-                    localStorage.setItem('searchType',searchType);
-                    localStorage.setItem('isSearch',1);
-                    window.location.reload();
-                    // if(  searchType === 3){
-                    //     //check [min,max]
-                    //     if(keywordText.includes('[') && keywordText.includes(',') && keywordText.includes(']')){
-                    //         window.location.reload();
-                    //     }else{
-                    //         toastr.error('Error','For lot size search, please input like this [min,max]')
-                    //     }
-                    // }else{
-                    //     window.location.reload();
-                    // }
-                    
-                    
-                }} className="search_get">search</Button>
-            </div>
-            <div className="btn_wrap">
-                <Button onClick={() => setSearchType(1)} className={searchType==1?"search_btn search_type_bg":"search_btn"}>Address</Button>
-                <Button onClick={() => setSearchType(2)} className={searchType==2?"search_btn search_type_bg":"search_btn"}>Num</Button>
-                <Button onClick={() => setSearchType(3)} className={searchType==3?"search_btn search_type_bg":"search_btn"}>Lot Size</Button>
-            </div>
-            
-        </div>
         </>
     );
 };

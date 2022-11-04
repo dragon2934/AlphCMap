@@ -43,15 +43,34 @@ const Header = () => {
     const adminGroup = [process.env.REACT_APP_ROLE_ADMIN_NAME,process.env.REACT_APP_ROLE_PM_NAME];
     return (
         <Navbar className="header fixed-top" color="light" light expand="md">
-            <NavbarBrand className="pixels">
-
+            <NavbarBrand className="pixels" href="mailto:anything@AlphC.com">
+                <img src={'/assets/img/logo2.png'} alt={'logo2'} />
+            </NavbarBrand>
+            <NavbarBrand tag={ReactRouterLink} className="mr-auto" to="/">
+                <img src={'/assets/img/logo-alphc.png'} alt={'logo'} />
             </NavbarBrand>
             <NavbarToggler onClick={toggle} tag={'div'}>
                 <i className="fa fa-bars" />
             </NavbarToggler>
             <Collapse isOpen={isOpen} navbar>
+                     
                 <Nav className="ml-auto" navbar>
-
+                <NavItem>
+                        <NavLink
+                            tag={ReactRouterLink}
+                            onClick={collapse}
+                            to="/about-us">
+                            About AlphCMap
+                        </NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink
+                            tag={ReactRouterLink}
+                            onClick={collapse}
+                            to="/patents">
+                            Patents
+                        </NavLink>
+                    </NavItem>
                     {user ? (
                         <>
                             { adminGroup.includes(user.role.name) && (
