@@ -23,7 +23,7 @@ import {
 } from '@coreui/react';
 import {useFormik} from 'formik';
 import mapboxgl from 'mapbox-gl';
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from "react";
 import {useDispatch} from 'react-redux';
 import {useHistory} from 'react-router';
 import {Col, FormGroup, Input, Label} from 'reactstrap';

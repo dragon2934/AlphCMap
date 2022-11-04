@@ -5,7 +5,7 @@ import React, {
     useLayoutEffect,
     useRef,
     useState,
-} from 'react';
+} from "react";
 import MapContext from '../contexts/MapContext/MapContext';
 import MapLegend from './MapLegend';
 
@@ -32,7 +32,12 @@ const Map = ({className}) => {
                 zoom: 5,
                 attributionControl: false,
             });
-
+            var nav = new mapboxgl.NavigationControl({
+                showCompass: false,
+                showZoom: true
+              });
+        
+            map.addControl(nav, "top-left");
             map.on('load', () => {
                 setMap(map);
                 context.setMap(map);

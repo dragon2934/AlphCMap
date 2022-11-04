@@ -1,14 +1,9 @@
-import React from 'react';
+import React from "react";
 
 const Splash = () => {
     return (
-        <div className="full-screen splash-screen">
-            <img
-                className="splash-image"
-                src={'/assets/img/logo-alphc.png'}
-                alt={'logo'}
-            />
-            <h1 className="splash-text">INFINITE POSSIBILITIES</h1>
+        <div className="full-screen splash-screen isLoading">
+            Loading.... Waiting a monment
         </div>
     );
 };

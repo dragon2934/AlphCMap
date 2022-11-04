@@ -1,7 +1,7 @@
 import ReactTable from "react-table-v6";
 import "react-table-v6/react-table.css";
 import utilsTools from "../../../utils/utils";
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from "react";
 import {useDispatch} from 'react-redux';
 import {useHistory} from 'react-router';
 import {

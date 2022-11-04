@@ -1,4 +1,4 @@
-const utilsTools ={
+export const utilsTools ={
     getTokenByDomain:()=>{
         let url= window.location.host;
         url = url.replaceAll('.','_');
@@ -52,7 +52,7 @@ const utilsTools ={
     },
     checkUseLevel:(roleName) =>{
         if(roleName === process.env.REACT_APP_ROLE_ADMIN_NAME) return 1;
-        if(roleName === process.env.REACT_APP_ROLE_PM_NAME) return 2;
+        if(roleName === process.env.REACT_APP_ROLE_PM_NAME) return 1;
         return 3;
     },
     isAppEmbedWebview:() =>{
@@ -69,4 +69,4 @@ const utilsTools ={
         return isPrimary;
     }
 }
-module.exports = utilsTools;
+// module.exports = utilsTools;

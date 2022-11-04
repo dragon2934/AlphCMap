@@ -1,9 +1,9 @@
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from "react";
 import ReactDOM from 'react-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import {Button, Col, Form, Input, Row} from 'reactstrap';
 import MapContext from '../../../../common/contexts/MapContext/MapContext';
-import PropertyForm from '../../property/PropertyForm';
+// import PropertyForm from '../../property/PropertyForm';
 import {setPropertyRegistrationForm} from '../../../../redux/actionCreators/registrationActionCreators';
 import {getNavigatorLocation} from '../../../../utils/mapUtils';
 import {
@@ -11,7 +11,7 @@ import {
     geocodeAddress,
     reverseGeocodePoint,
 } from '../../../../utils/propertyUtils';
-import { isAppEmbedWebview } from '../../../../utils/utils';
+// import { isAppEmbedWebview } from '../../../../utils/utils';
 const createMarker = () => {
     return new window.google.maps.Marker({
         draggable: true,
@@ -72,11 +72,11 @@ const ShowcaseActions = () => {
             marker.setMap(null);
             return;
         }
-        if( isAppEmbedWebview() && address.steps != null && address.steps!==undefined && address.steps === 2){
-            //hide this at this step
-            marker.setMap(null);
-            return;
-        }
+        // if( isAppEmbedWebview() && address.steps != null && address.steps!==undefined && address.steps === 2){
+        //     //hide this at this step
+        //     marker.setMap(null);
+        //     return;
+        // }
         // console.log('steps: ****** ' + address.steps );
         const email = generateEmail(address);
         console.log('******* email=' + email);
@@ -255,7 +255,7 @@ const ShowcaseActions = () => {
                     </div>
                 </div>
             </div>
-            {active && <PropertyForm />}
+         
             <div className="showcase-map-top-actions-mobile">
                 <Row>
                     <Col>

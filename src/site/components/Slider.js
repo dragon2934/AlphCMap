@@ -1,4 +1,4 @@
-import React, {useLayoutEffect} from 'react';
+import React, {useLayoutEffect} from "react";
 import {useController, ParallaxBanner} from 'react-scroll-parallax';
 
 const Slider = ({id, className, image, children}) => {

@@ -1,16 +1,12 @@
-import React, {useCallback} from 'react';
+import React, {useCallback} from "react";
 import {useDispatch} from 'react-redux';
 import {toastr} from 'react-redux-toastr';
 import {Redirect, Switch, useHistory, useLocation} from 'react-router';
-import {Link, Route} from 'react-router-dom';
+import {Link, Route} from "react-router-dom";
 import {Col, Container, Nav, NavItem, NavLink, Row} from 'reactstrap';
 import MapProvider from '../../common/contexts/MapContext/MapProvider';
 import {deleteAccount} from '../../redux/actionCreators/appActionCreators';
 import HomeLayout from '../layouts/HomeLayout';
-import EditInmate from './profile/EditInmate';
-import EditProperty from './profile/EditProperty';
-import Inmates from './profile/Inmates';
-import ViewInmate from './profile/ViewInmate';
 import ViewProperty from './profile/ViewProperty';
 import UserProperties from './profile/Properties';
 import EditUserProperty from './profile/EditUserProperty';
@@ -99,46 +95,17 @@ const Profile = () => {
                         </Col>
                         <Col md={9} sm={12}>
                             <Switch>
-                                <Route
-                                    component={Inmates}
-                                    path={'/profile/other-residents'}
-                                    exact
-                                />
-                                <Route
-                                    component={Inmates}
-                                    path={'/profile/other-residents/:id'}
-                                    exact
-                                />
-                                <Route
-                                    component={EditInmate}
-                                    path={'/profile/other-resident/edit/:id'}
-                                    exact
-                                />
+                               
+                               
                                  <Route
                                     component={UserProperties}
                                     path={'/profile/additional-address'}
                                     exact
                                 />
                                 
-                                <Route
-                                    component={ViewInmate}
-                                    path={'/profile/other-resident/view/:id'}
-                                    exact
-                                />
-                                <Route
-                                    component={EditInmate}
-                                    path={'/profile/other-resident/new'}
-                                    exact
-                                />
-                                <Route
-                                    component={() => (
-                                        <MapProvider>
-                                            <EditProperty />
-                                        </MapProvider>
-                                    )}
-                                    path={'/profile/edit-property'}
-                                    exact
-                                />
+                               
+ 
+                               
                                 <Route
                                     component={() => (
                                         <MapProvider>
@@ -167,27 +134,7 @@ const Profile = () => {
                 )}
                 path={'/profile/user-property/edit/:id'}
                 exact
-            />    
-            <Route
-                component={Inmates}
-                path={`/profile/residents/:id`}
-                exact
-            />    
-            <Route
-                component={EditInmate}
-                path={`/profile/resident/new/`}
-                exact
-            />       
-            <Route
-                component={EditInmate}
-                path={`/profile/resident/edit/:id`}
-                exact
-            />      
-             <Route
-                component={ViewInmate}
-                path={'/profile/resident/view/:id'}
-                exact
-            />       
+            />        
              <Route
                 component={(props) => (
                     <MapProvider>

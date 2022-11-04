@@ -8,13 +8,14 @@ import {
     CPagination,
     CRow,
 } from '@coreui/react';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from 'react-redux';
-import {Link, useHistory, useLocation} from 'react-router-dom';
+import {Link, useHistory, useLocation} from "react-router-dom";
 import {
     fetchUserCount,
     fetchUsers,
 } from '../../../redux/actionCreators/adminActionCreators';
+import Header from '../../../site/pages/newHome/Header';
 
 const PAGE_SIZE = 10;
 
@@ -26,14 +27,6 @@ const Users = () => {
     const [loading, setLoading] = useState(true);
     const [count, setCount] = useState(0);
 
-    const pageChange = (newPage) => {
-        if (!newPage) {
-            history.push(`/admin/users?page=1`);
-        } else {
-            currentPage !== newPage &&
-                history.push(`/admin/users?page=${newPage}`);
-        }
-    };
 
     useEffect(() => {
         currentPage !== page && setPage(currentPage);
@@ -48,7 +41,7 @@ const Users = () => {
         role: u.role.name,
         firstName: u.firstName,
         lastName: u.lastName,
-        property: u.property ? u.property.email : '',
+        // property: u.property ? u.property.email : '',
         emailVerified: u.emailVerified.toString(),
         mobileVerified: u.mobileVerified.toString(),
         createdAt:u.createdAt.toString().split('T')[0]
@@ -71,6 +64,9 @@ const Users = () => {
 
     // console.log('itemsPerPageSelect = ' + PAGE_SIZE);
     return (
+        <main>
+        <Header />
+        <div className="content">
         <CRow>
             <CCol>
                 <CCard>
@@ -98,9 +94,6 @@ const Users = () => {
                                 'mobileNumber',
                                 'firstName',
                                 'lastName',
-                                'property',
-                                'emailVerified',
-                                'mobileVerified',
                                 'role',
                                 'createdAt'
                             ]}
@@ -131,6 +124,8 @@ const Users = () => {
                 </CCard>
             </CCol>
         </CRow>
+        </div>
+        </main>
     );
 };
 

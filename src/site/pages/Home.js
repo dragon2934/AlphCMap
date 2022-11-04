@@ -1,24 +1,23 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState} from "react";
+import { useSelector} from 'react-redux';
 import {useLocation} from 'react-router';
 import {TabContent, TabPane} from 'reactstrap';
 import MapProvider from '../../common/contexts/MapContext/MapProvider';
 import HomeLayout from '../layouts/HomeLayout';
-import AboutUs from './newHome/AboutUs';
-import ContactUs from './newHome/ContactUs';
-import HowItWorks from './newHome/HowItWorks';
-import NewsRelease from './newHome/NewsRelease';
-import OurPromise from './newHome/OurPromise';
-import OurStory from './newHome/OurStory';
-import OurVideo from './newHome/OurVideo';
-import Patents from './newHome/Patents';
-import PrivacyPolicy from './newHome/PrivacyPolicy';
+
 import Showcase from './newHome/Showcase';
 import Splash from './newHome/Splash';
-import TermsOfUse from './newHome/TermsOfUse';
-import AppLanding from './newHome/AppLanding';
+
+// const Users = React.lazy(() => import('../../admin/views/users/Users'));
+// const Properties = React.lazy(() => import('../../admin/views/properties/Properties'));
+
+
+
+
 
 const Home = () => {
     const {pathname: location} = useLocation();
+
 
     const [activeTab, setActiveTab] = useState('');
     const [timeoutHandle, setTimeoutHandle] = useState(null);
@@ -37,7 +36,12 @@ const Home = () => {
             setActiveTab(location);
         }
     }, [location]); // eslint-disable-line react-hooks/exhaustive-deps
-
+    //check login
+    const user = useSelector((state) => state.auth.user);
+    if(user === null || user === undefined){
+        window.location.href = '/login';
+        return;
+    }
     return (
         <HomeLayout>
             <TabContent activeTab={activeTab} className="home-tab-content">
@@ -51,39 +55,14 @@ const Home = () => {
                     <Splash />
                 </TabPane>
 
-                <TabPane tabId="/about-us" className="">
-                    <AboutUs />
+                {/* <TabPane tabId="/admin/users" className="">
+                    <Users />
                 </TabPane>
-                <TabPane tabId="/how-it-works" className="">
-                    <HowItWorks />
-                </TabPane>
-                <TabPane tabId="/patents" className="">
-                    <Patents />
-                </TabPane>
-                <TabPane tabId="/contact-us" className="">
-                    <ContactUs />
-                </TabPane>
-                <TabPane tabId="/app-introduction" className="">
-                    <AppLanding />
-                </TabPane>
-                <TabPane tabId="/our-story" className="">
-                    <OurStory />
-                </TabPane>
-                <TabPane tabId="/our-promise" className="">
-                    <OurPromise />
-                </TabPane>
-                <TabPane tabId="/news-release" className="">
-                    <NewsRelease />
-                </TabPane>
-                <TabPane tabId="/our-video" className="">
-                    <OurVideo />
-                </TabPane>
-                <TabPane tabId="/privacy-policy" className="">
-                    <PrivacyPolicy />
-                </TabPane>
-                <TabPane tabId="/terms-of-use" className="">
-                    <TermsOfUse />
-                </TabPane>
+                <TabPane tabId="/admin/properties" className="">
+                    <Properties />
+                </TabPane> */}
+
+
             </TabContent>
         </HomeLayout>
     );

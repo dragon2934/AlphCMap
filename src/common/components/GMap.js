@@ -1,5 +1,5 @@
 import mapboxgl from 'mapbox-gl';
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from "react";
 import MapContext from '../contexts/MapContext/MapContext';
 import MapLegend from './MapLegend';
 
