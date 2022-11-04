@@ -11,7 +11,7 @@ import {
     geocodeAddress,
     reverseGeocodePoint,
 } from '../../../../utils/propertyUtils';
-import { isAppEmbedWebview } from '../../../../utils/utils';
+// import { isAppEmbedWebview } from '../../../../utils/utils';
 const createMarker = () => {
     return new window.google.maps.Marker({
         draggable: true,
@@ -72,11 +72,11 @@ const ShowcaseActions = () => {
             marker.setMap(null);
             return;
         }
-        if( isAppEmbedWebview() && address.steps != null && address.steps!==undefined && address.steps === 2){
-            //hide this at this step
-            marker.setMap(null);
-            return;
-        }
+        // if( isAppEmbedWebview() && address.steps != null && address.steps!==undefined && address.steps === 2){
+        //     //hide this at this step
+        //     marker.setMap(null);
+        //     return;
+        // }
         // console.log('steps: ****** ' + address.steps );
         const email = generateEmail(address);
         console.log('******* email=' + email);

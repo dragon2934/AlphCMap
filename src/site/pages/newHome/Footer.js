@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {NavLink as ReactRouterLink} from 'react-router-dom';
+import React, {useState} from "react";
+import {NavLink as ReactRouterLink} from "react-router-dom";
 import {
     Collapse,
     Nav,

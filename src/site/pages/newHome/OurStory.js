@@ -1,8 +1,12 @@
 import React from 'react';
 import {Col, Container, Row} from 'reactstrap';
 
+import Footer from './Footer';
+import Header from './Header';
 const OurStory = () => {
     return (
+    <main>
+            <Header />
         <div className="full-screen our-story">
             <Container>
                 <Row className="section-title">
@@ -62,8 +66,10 @@ const OurStory = () => {
                     </a>
                 </p>
             </Container>
-        </div>
-    );
+        </div><Footer />
+        </main>
+    )
+    ;
 };
 
 export default OurStory;

@@ -2,10 +2,13 @@ import React from 'react';
 import {CardBody, Col, Container, Row} from 'reactstrap';
 import ContactForm from './contact/ContactForm';
 // import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+import Footer from './Footer';
+import Header from './Header';
 
 const ContactUs = () => {
     return (
-        // <GoogleReCaptchaProvider reCaptchaKey="6Ldf8uUdAAAAAFk2BsP18xvLR5CdEJ6b0O528oSH">
+        <main>
+            <Header />
         <div className="full-screen contact-us">
             <Container>
                 <Row className="section-title">
@@ -61,7 +64,8 @@ const ContactUs = () => {
                 </Row>
             </Container>
         </div>
-        // </GoogleReCaptchaProvider>
+        <Footer />
+        </main>
     );
 };
 export default ContactUs;

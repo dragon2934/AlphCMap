@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState} from "react";
 import TruncateMarkup from 'react-truncate-markup';
 
 const ReadMore = ({longText}) => {

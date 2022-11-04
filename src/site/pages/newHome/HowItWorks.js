@@ -2,9 +2,13 @@ import React from 'react';
 import {ParallaxProvider} from 'react-scroll-parallax';
 import {Col, Container, Row} from 'reactstrap';
 import KeyFeatures from './KeyFeatures';
+import Footer from './Footer';
+import Header from './Header';
 
 const HowItWorks = () => {
     return (
+        <main>
+            <Header />
         <div className="full-screen how-it-works">
             <Container>
                 <Row className="section-title">
@@ -106,6 +110,8 @@ const HowItWorks = () => {
                 <KeyFeatures />
             </ParallaxProvider>
         </div>
+        <Footer />
+        </main>
     );
 };
 

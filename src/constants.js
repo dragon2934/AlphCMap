@@ -3,7 +3,7 @@ const utilsTools = require('./utils/utils');
 export const SERVICE_URL = process.env.REACT_APP_SERVICE_URL
     ? process.env.REACT_APP_SERVICE_URL
     : 'http://localhost:1337';
-export const PARTNER_TOKEN = utilsTools.getTokenByDomain();
+export const PARTNER_TOKEN = process.env.REACT_APP_PARTNER_TOKEN;
 
 
 export const MapMarkerUrls = {

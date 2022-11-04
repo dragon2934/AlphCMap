@@ -1,4 +1,3 @@
-import CIcon from '@coreui/icons-react';
 import {
     CButton,
     CCard,
@@ -8,34 +7,23 @@ import {
     CLabel,
     CRow,
 } from '@coreui/react';
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from "react";
 import {useDispatch} from 'react-redux';
 import {toastr} from 'react-redux-toastr';
 import {useHistory} from 'react-router';
-import {Link} from 'react-router-dom';
-import Map from '../../../common/components/Map';
-import MapContext from '../../../common/contexts/MapContext/MapContext';
+import {Link} from "react-router-dom";
+
 import {
     deleteUser,
-    fetchProperty,
     fetchUser,
 } from '../../../redux/actionCreators/adminActionCreators';
-import {
-    clearPropertiesFromMap,
-    clearResidentsFromMap,
-    showPropertiesOnMap,
-    showResidentsOnMap,
-} from '../../../utils/mapUtils';
-import PropertiesTooltip from '../../components/PropertiesTooltip';
-import ResidentTooltip from '../../components/ResidentTooltip';
+import Header from '../../../site/pages/newHome/Header';
 
 const User = ({match}) => {
     const dispatch = useDispatch();
 
     const [record, setRecord] = useState(null);
-    const [property, setProperty] = useState(null);
 
-    const {map} = useContext(MapContext);
 
     useEffect(() => {
         if (match.params.id)
@@ -44,13 +32,6 @@ const User = ({match}) => {
             );
     }, [dispatch, match.params.id]);
 
-    useEffect(() => {
-        if (record && record.property) {
-            dispatch(
-                fetchProperty(record.property.id),
-            ).then(({value: property}) => setProperty(property));
-        }
-    }, [dispatch, record]);
 
     const history = useHistory();
 
@@ -74,52 +55,7 @@ const User = ({match}) => {
         }
     }, [dispatch, history, match.params.id, record]);
 
-    const renderResidentsTooltip = useCallback(
-        ({email, id}) => {
-            return <ResidentTooltip email={email} id={id} history={history} />;
-        },
-        [history],
-    );
 
-    const renderPropertiesTooltip = useCallback(
-        ({email, id}) => {
-            return (
-                <PropertiesTooltip email={email} id={id} history={history} />
-            );
-        },
-        [history],
-    );
-
-    // Place resident marker on map
-    useEffect(() => {
-        if (map && record) {
-            showResidentsOnMap(map, [record], renderResidentsTooltip);
-
-            if (record.location.longitude) {
-                map.setCenter([
-                    record.location.longitude,
-                    record.location.latitude,
-                ]);
-            }
-        }
-        return () => {
-            if (map) {
-                clearResidentsFromMap(map);
-            }
-        };
-    }, [map, record, renderResidentsTooltip]);
-
-    // Place property marker on map
-    useEffect(() => {
-        if (map && property) {
-            showPropertiesOnMap(map, [property], renderPropertiesTooltip);
-        }
-        return () => {
-            if (map) {
-                clearPropertiesFromMap(map);
-            }
-        };
-    }, [map, property, record, renderPropertiesTooltip]);
 
     if (!record) return null;
 
@@ -131,9 +67,9 @@ const User = ({match}) => {
         role: record.role.name,
         firstName: record.firstName,
         lastName: record.lastName,
-        property: record.property ? record.property.email : '',
-        emailVerified: record.emailVerified.toString(),
-        mobileVerified: record.mobileVerified.toString(),
+        // property: record.property ? record.property.email : '',
+        // emailVerified: record.emailVerified.toString(),
+        // mobileVerified: record.mobileVerified.toString(),
         createdAt:record.createdAt
     };
 
@@ -143,15 +79,18 @@ const User = ({match}) => {
               [
                   'id',
                   <span>
-                      <CIcon className="text-muted" name="cui-icon-ban" /> Not
+                        Not
                       found
                   </span>,
               ],
           ];
 
     return (
+        <main>
+        <Header />
+        <div className="content">
         <CRow>
-            <CCol md={6}>
+            <CCol md={12}>
                 <CCard>
                     <CCardHeader>
                         User id: {match.params.id}
@@ -190,13 +129,10 @@ const User = ({match}) => {
                     </CCardBody>
                 </CCard>
             </CCol>
-            <CCol md={6} className="pb-4 d-flex flex-column">
-                <CLabel>User location</CLabel>
-                <div className="d-flex flex-fill">
-                    <Map />
-                </div>
-            </CCol>
+           
         </CRow>
+        </div>
+        </main>
     );
 };
 

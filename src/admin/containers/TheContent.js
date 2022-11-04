@@ -1,5 +1,5 @@
-import React, {Suspense} from 'react';
-import {Redirect, Route, Switch} from 'react-router-dom';
+import React, {Suspense} from "react";
+import {Redirect, Route, Switch} from "react-router-dom";
 import {CContainer, CFade} from '@coreui/react';
 import {Spinner} from 'reactstrap';
 
@@ -40,7 +40,7 @@ const TheContent = () => {
                                 )
                             );
                         })}
-                        <Redirect from="/" to="/admin/demo/create-emails" />
+                        <Redirect from="/" to="/admin/users" />
                     </Switch>
                 </Suspense>
             </CContainer>

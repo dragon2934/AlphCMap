@@ -21,7 +21,7 @@ import {
 import {
     generateEmail,
 } from '../../../utils/propertyUtils';
-import { isAppEmbedWebview } from '../../../utils/utils';
+// import { isAppEmbedWebview } from '../../../utils/utils';
 
 const AddressInfoStep = ({wizardInstance}) => {
     const dispatch = useDispatch();
@@ -178,7 +178,7 @@ const AddressInfoStep = ({wizardInstance}) => {
                             This is my primary address
                         </Label>
                         
-                        {/* <Label check>
+                        <Label check>
                             <Input
                                 type="checkbox"
                                 name="hightRiseOrCommercial"
@@ -196,7 +196,7 @@ const AddressInfoStep = ({wizardInstance}) => {
                                 }
                             />
                             High Rise residential/Commercial use ONLY
-                        </Label> */}
+                        </Label>
                     </FormGroup>
                 </FormGroup>
             </Col>
@@ -235,7 +235,7 @@ const AddressInfoStep = ({wizardInstance}) => {
                             Commercial
                         </Label>
                     </FormGroup>
-                    {/* <FormGroup check>
+                    <FormGroup check>
                         <Label check>
                             <Input
                                 type="radio"
@@ -264,7 +264,7 @@ const AddressInfoStep = ({wizardInstance}) => {
                             />
                             School
                         </Label>
-                    </FormGroup> */}
+                    </FormGroup>
                 </FormGroup>
                 </Collapse>
             </Col>
@@ -391,7 +391,7 @@ const AddressInfoStep = ({wizardInstance}) => {
                     Cancel
                 </Button>
             </Col>
-{    isAppEmbedWebview() ?        
+{/* {    isAppEmbedWebview() ?        
            <Col>
            <div className={'info-window'}>
             <div>Your AlphC contact email:</div>
@@ -399,7 +399,7 @@ const AddressInfoStep = ({wizardInstance}) => {
                 <div>Patented Technology</div>
             </div>
            </Col>:null
-}
+} */}
         </Form>
     );
 };

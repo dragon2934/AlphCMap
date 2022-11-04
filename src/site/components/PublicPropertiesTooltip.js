@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {Button, Col, Row} from 'reactstrap';
 import { isAppEmbedWebview } from '../../utils/utils';
 const PublicPropertiesTooltip = ({id, email, history}) => {

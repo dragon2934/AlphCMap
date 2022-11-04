@@ -1,6 +1,6 @@
 import {CButton, CCol, CFormGroup, CInput, CLabel, CRow} from '@coreui/react';
 import mapboxgl from 'mapbox-gl';
-import React, {Component} from 'react';
+import React, {Component} from "react";
 import {Form, Input} from 'reactstrap';
 import Map from '../../../common/components/Map';
 import MapContext from '../../../common/contexts/MapContext/MapContext';

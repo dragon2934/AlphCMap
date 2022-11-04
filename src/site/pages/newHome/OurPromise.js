@@ -1,8 +1,12 @@
 import React from 'react';
 import {Col, Container, Row} from 'reactstrap';
+import Footer from './Footer';
+import Header from './Header';
 
 const OurPromise = () => {
     return (
+        <main>
+        <Header />
         <div className="full-screen our-promise">
             <Container>
                 <Row className="section-title">
@@ -42,6 +46,8 @@ const OurPromise = () => {
                 </p>
             </Container>
         </div>
+        <Footer />
+        </main>
     );
 };
 

@@ -1,8 +1,11 @@
 import React from 'react';
 import {Col, Container, Row} from 'reactstrap';
-
+import Footer from './Footer';
+import Header from './Header';
 const TermsOfUse = () => {
     return (
+        <main>
+            <Header />
         <div className="full-screen terms-of-use">
             <Container>
                 <Row className="section-title">
@@ -72,6 +75,8 @@ const TermsOfUse = () => {
                 </p>
             </Container>
         </div>
+        <Footer />
+        </main>
     );
 };
 

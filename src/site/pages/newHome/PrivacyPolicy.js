@@ -1,8 +1,11 @@
 import React from 'react';
 import {Col, Container, Row} from 'reactstrap';
-
+import Footer from './Footer';
+import Header from './Header';
 const PrivacyPolicy = () => {
     return (
+        <main>
+            <Header />
         <div className="full-screen privacy-policy">
             <Container>
                 <Row className="section-title">
@@ -77,7 +80,8 @@ const PrivacyPolicy = () => {
                     rights reserved.
                 </p>
             </Container>
-        </div>
+        </div><Footer />
+        </main>
     );
 };
 

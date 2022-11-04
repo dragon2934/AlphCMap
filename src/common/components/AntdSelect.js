@@ -1,5 +1,5 @@
 import {Select} from 'antd';
-import React from 'react';
+import React from "react";
 
 const AntdSelect = ({
     value,

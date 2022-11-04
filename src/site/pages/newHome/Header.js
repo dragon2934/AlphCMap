@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState} from "react";
 import {useSelector} from 'react-redux';
-import {NavLink as ReactRouterLink} from 'react-router-dom';
+import {NavLink as ReactRouterLink} from "react-router-dom";
 import {
     Collapse,
     Nav,
@@ -9,7 +9,10 @@ import {
     NavbarToggler,
     NavItem,
     NavLink,
+    Button
 } from 'reactstrap';
+
+
 
 const Header = () => {
     const user = useSelector((state) => state.auth.user);
@@ -17,6 +20,12 @@ const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
     const collapse = () => setIsOpen(false);
+    
+    
+
+    // const switchButtonActive=(type)=>{
+    //     setSearchType(type);
+    // }
 
     let userName = '';
 
@@ -27,8 +36,9 @@ const Header = () => {
             .trim();
     } catch (e) {}
 
+
     if(user!=null){
-        console.log('role =' + user.role.name);
+        // console.log('role =' + user.role.name);
     }
     const adminGroup = [process.env.REACT_APP_ROLE_ADMIN_NAME,process.env.REACT_APP_ROLE_PM_NAME];
     return (
@@ -43,21 +53,14 @@ const Header = () => {
                 <i className="fa fa-bars" />
             </NavbarToggler>
             <Collapse isOpen={isOpen} navbar>
+                     
                 <Nav className="ml-auto" navbar>
-                    <NavItem>
+                <NavItem>
                         <NavLink
                             tag={ReactRouterLink}
                             onClick={collapse}
                             to="/about-us">
-                            About us
-                        </NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink
-                            tag={ReactRouterLink}
-                            onClick={collapse}
-                            to="/how-it-works">
-                            How it works
+                            About AlphCMap
                         </NavLink>
                     </NavItem>
                     <NavItem>
@@ -68,29 +71,24 @@ const Header = () => {
                             Patents
                         </NavLink>
                     </NavItem>
-                    <NavItem>
-                        <NavLink
-                            tag={ReactRouterLink}
-                            onClick={collapse}
-                            to="/app-introduction">
-                            Mobile Apps
-                        </NavLink>
-                    </NavItem>
                     {user ? (
                         <>
                             { adminGroup.includes(user.role.name) && (
+                                <>
                                 <NavItem>
-                                    <NavLink href="/admin">Admin</NavLink>
+                                    <NavLink href="/">Home</NavLink>
                                 </NavItem>
+                                <NavItem>
+                                    <NavLink href="/admin/users">Users</NavLink>
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink href="/admin/cities">Cities</NavLink>
+                                </NavItem>
+                                 <NavItem>
+                                 <NavLink href="/admin/properties">properties</NavLink>
+                             </NavItem>
+                             </>
                             )}
-                            <NavItem>
-                                <NavLink
-                                    tag={ReactRouterLink}
-                                    onClick={collapse}
-                                    to="/profile">
-                                    My Profile
-                                </NavLink>
-                            </NavItem>
                             <NavItem>
                                 <NavLink
                                     tag={ReactRouterLink}

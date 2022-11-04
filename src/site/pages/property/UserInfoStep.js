@@ -22,7 +22,7 @@ import {generateEmail} from '../../../utils/propertyUtils';
 
 const validationSchema = Yup.object().shape({
     mobileNumber: Yup.string().required('Mobile number is required'),
-    firstName: Yup.string(),
+    companyName: Yup.string(),
     lastName: Yup.string(),
     email: Yup.string().email('Invalid email'),
     password: Yup.string()
@@ -57,7 +57,7 @@ const UserInfoStep = ({wizardInstance}) => {
     const formik = useFormik({
         initialValues: {
             mobileNumber: '',
-            firstName: '',
+            companyName: '',
             lastName: '',
             email: '',
             password: '',
@@ -89,7 +89,7 @@ const UserInfoStep = ({wizardInstance}) => {
                     ...registerForm.address,
                 },
                 mobileNumber: values.mobileNumber,
-                firstName: values.firstName,
+                companyName: values.companyName,
                 lastName: values.lastName,
                 email: values.email,
                 username: values.email,
@@ -159,22 +159,22 @@ const UserInfoStep = ({wizardInstance}) => {
             </Col>
             <Col>
                 <FormGroup>
-                    <Label for="firstName">First Name (Optional)</Label>
+                    <Label for="companyName">Company Name</Label>
                     <Input
                         type="text"
-                        name="firstName"
-                        id="firstName"
-                        value={values.firstName}
+                        name="companyName"
+                        id="companyName"
+                        value={values.companyName}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        invalid={touched.firstName && errors.firstName}
+                        invalid={touched.companyName && errors.companyName}
                     />
-                    <FormFeedback>{errors.firstName}</FormFeedback>
+                    <FormFeedback>{errors.companyName}</FormFeedback>
                 </FormGroup>
             </Col>
             <Col>
                 <FormGroup>
-                    <Label for="lastName">Last Name (Optional)</Label>
+                    <Label for="lastName">Name</Label>
                     <Input
                         type="text"
                         name="lastName"
@@ -283,7 +283,7 @@ const UserInfoStep = ({wizardInstance}) => {
                                 onBlur={handleBlur}
                                 invalid={touched.liability && errors.liability}
                             />
-                            Disclaimer: In an emergency contact your local first responder directly. AlphC E-Alert App is only an aid. First responders can license this technology to increase the safety of your community.
+                            Disclaimer: In an emergency contact your local first responder directly. AlphC E-Alert App is only an aid and is not intended to replace first responders. First responders can license this technology to increase the safety of your community.
                         </Label>
                         
                     </FormGroup>

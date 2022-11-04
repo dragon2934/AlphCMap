@@ -1,5 +1,5 @@
 import {CButton, CTextarea} from '@coreui/react';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch} from 'react-redux';
 import {
     closeMessageStack,

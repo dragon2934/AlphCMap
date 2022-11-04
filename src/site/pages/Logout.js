@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect} from "react";
 import {useDispatch} from 'react-redux';
 import {logoutUser} from '../../redux/actionCreators/authActionCreators';
 

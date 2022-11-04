@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {Button, Col, Row} from 'reactstrap';
 
 const PublicResidentTooltip = ({id, email,location,user, history}) => {

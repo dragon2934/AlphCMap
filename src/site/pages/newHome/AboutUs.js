@@ -1,8 +1,12 @@
 import React from 'react';
 import {Col, Container, Row} from 'reactstrap';
+import Footer from './Footer';
+import Header from './Header';
 
 const AboutUs = () => {
     return (
+        <main>
+            <Header />
         <div className="full-screen about-us">
             <Container>
                 <Row className="section-title">
@@ -25,6 +29,8 @@ const AboutUs = () => {
                 </p>
             </Container>
         </div>
+        <Footer />
+        </main>
     );
 };
 

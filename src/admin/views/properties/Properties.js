@@ -5,18 +5,18 @@ import {
     CCardHeader,
     CCol,
     CDataTable,
-    CPagination,
     CRow,
 } from '@coreui/react';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from 'react-redux';
-import {Link, useHistory, useLocation} from 'react-router-dom';
+import {Link, useHistory, useLocation} from "react-router-dom";
 import {
     fetchProperties,
     fetchPropertyCount,
 } from '../../../redux/actionCreators/adminActionCreators';
-import utilsTools from '../../../utils/utils';
-const PAGE_SIZE = 10;
+import Header from '../../../site/pages/newHome/Header';
+// import utilsTools from '../../../utils/utils';
+const PAGE_SIZE = 20;
 
 const Properties = () => {
     const history = useHistory();
@@ -26,15 +26,6 @@ const Properties = () => {
     const [loading, setLoading] = useState(true);
     const [count, setCount] = useState(0);
     const user = useSelector((state) => state.auth.user);
-
-    // const pageChange = (newPage) => {
-    //     if (!newPage) {
-    //         history.push(`/admin/properties?page=1`);
-    //     } else {
-    //         currentPage !== newPage &&
-    //             history.push(`/admin/properties?page=${newPage}`);
-    //     }
-    // };
 
     useEffect(() => {
         currentPage !== page && setPage(currentPage);
@@ -61,6 +52,9 @@ const Properties = () => {
     console.log('properties: ', properties);
 
     return (
+        <main>
+        <Header />
+        <div className="content">
         <CRow>
             <CCol>
                 <CCard>
@@ -68,14 +62,22 @@ const Properties = () => {
                         Properties
                         <small className="text-muted"> Properties</small>
                         <div className="card-header-actions">
-                       { utilsTools.checkUseLevel(user.role.name) ===1 ?     <CButton
+                        <CButton
+                                tag={Link}
+                                to={'/admin/file-upload'}
+                                className="btn-ghost-primary h-auto"
+                                size={'sm'}
+                                color="primary">
+                                File Upload
+                            </CButton> &nbsp;&nbsp;&nbsp;&nbsp;
+                           <CButton
                                 tag={Link}
                                 to={'/admin/properties/new'}
                                 className="btn-ghost-primary h-auto"
                                 size={'sm'}
                                 color="primary">
                                 New Property
-                            </CButton>:null}
+                            </CButton>
                         </div>
                     </CCardHeader>
                     <CCardBody>
@@ -83,27 +85,16 @@ const Properties = () => {
                             items={properties.map((p) => ({
                                 ...p,
                                 createdAt:p.createdAt.toString().split('T')[0],
-                                residents: p.users
-                                    .map((u) =>
-                                        u.email ? u.email : u.mobileNumber,
-                                    )
-                                    .join(', '),
+                                serial_no: parseInt(p.serial_no),
+                                location: '[' + p.location.latitude  + ',' + p.location.longitude+']'
                             }))}
                             loading={loading}
                             fields={[
-                                {key: 'email', _classes: 'font-weight-bold'},
-                                'residents',
-                                'rural',
-                                'primaryAddress',
-                                'addressType',
-                                'settlementType',
-                                'unitNo',
-                                'postalCode',
-                                'streetNumber',
-                                'route',
-                                'locality',
-                                'city',
-                                'country',
+                                {key: 'address', _classes: 'font-weight-bold'},
+                                'area',
+                                'serial_no',
+                                'acreage',
+                                'location',
                                 'createdAt'
                             ]}
                             hover
@@ -134,6 +125,8 @@ const Properties = () => {
                 </CCard>
             </CCol>
         </CRow>
+        </div>
+        </main>
     );
 };
 
