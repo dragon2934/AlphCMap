@@ -410,9 +410,11 @@ export const searchProperties = (keywords, searchType,cityShorName) => {
 };
 
 // Properties
-export const fetchProperties = ({page = 1, pageSize = 10,roleName = 'Admin',mobile='11112221234'}) => {
+export const fetchProperties = ({page = 1, pageSize = 10,roleName = 'Admin'}) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
+        const user = getState().auth.user;
+        const mobile = user.mobileNumber;
         const start = (page - 1) * pageSize;
         let url = `${SERVICE_URL}/properties?_start=${start}&_limit=${pageSize}&ownerMobileNumber=${mobile}`;
         if(roleName=='PropertyManager'){

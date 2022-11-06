@@ -2304,3 +2304,6 @@ a:hover {
 }
 
 /*# sourceMappingURL=maps/style.css.map */
+.tab-pane .d-flex{
+  height: 100% !important;
+}

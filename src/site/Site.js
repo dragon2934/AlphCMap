@@ -37,6 +37,7 @@ import PrivacyPolicy from './pages/newHome/PrivacyPolicy';
 import TermsOfUse from './pages/newHome/TermsOfUse';
 
 import MobileAccountVerification from './pages/mobile/MobileAccountVerification';
+// import MapProvider from  '../common/contexts/MapContext/MapProvider';
 const Site = () => {
   return (
     <Switch>
@@ -63,7 +64,10 @@ const Site = () => {
       {/* <Route render={()=>{
                 isAdmin() ? <Component component={Site} path="/" />: <Redirect to="/login" />
               }} /> */}
-      <Route component={Home} path={`/`} />
+
+        <Route component={Home} path={`/`} />
+
+      
     </Switch>
   );
 };
