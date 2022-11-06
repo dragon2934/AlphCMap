@@ -36,12 +36,18 @@ import Patents from './pages/newHome/Patents';
 import PrivacyPolicy from './pages/newHome/PrivacyPolicy';
 import TermsOfUse from './pages/newHome/TermsOfUse';
 
+import MobileAccountVerification from './pages/mobile/MobileAccountVerification';
 const Site = () => {
   return (
     <Switch>
       <Route component={Login} path={`/login`} exact />
       <Route component={Logout} path={`/logout`} exact />
 
+      <Route
+                component={MobileAccountVerification}
+                path={`/mobile-verify`}
+                exact
+      />  
       <Route exact path="/about-us" component={AboutUs} />                
       <Route exact path="/how-it-works" component={HowItWorks} />
       <Route exact path="/patents" component={Patents} />

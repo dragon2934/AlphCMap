@@ -16,7 +16,8 @@ import {
     FETCH_USER_PROPERTIES,
     SAVE_ADDITIONAL_ADDRESS,
     DELETE_ADDITIONAL_ADDRESS,
-    SAVE_USER_PROPERTIES_DATA
+    SAVE_USER_PROPERTIES_DATA,
+    SAVE_SECONDORY_PROPERTY
 } from '../actionTypes';
 
 
@@ -496,3 +497,32 @@ export const updateAccount = (data) => {
         });
     };
 };
+
+export const saveBatchProperties = (data) =>{
+    console.log('......saving batch 111...' + JSON.stringify(data));
+    
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: SAVE_SECONDORY_PROPERTY,
+            payload: fetch(`${SERVICE_URL}/residents/create-properties`, {
+                body: JSON.stringify(data),
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };    
+}
