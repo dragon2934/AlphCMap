@@ -415,3 +415,26 @@ const clearLayer = (map, layerId) => {
     if (map.getLayer(layerId)) map.removeLayer(layerId);
     if (map.getSource(layerId)) map.removeSource(layerId);
 };
+
+export const showPrimaryDistancesOnMap = (map, properties) => {
+    const residentsWithLocation = properties.filter(
+        (i) =>
+            i.location &&
+            i.location.latitude
+    );
+    const primaryAddress = properties.filter(
+        (i) =>
+            i.primaryAddress
+    );
+
+    showLineLayer(
+        map,
+        MapMarkerUrls.user.injured,
+        'resident-property-distances',
+        residentsWithLocation,
+        (i) => [
+            [primaryAddress[0].location.longitude, primaryAddress[0].location.latitude],
+            [i.location.longitude, i.location.latitude],
+        ],
+    );
+};

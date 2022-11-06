@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useCallback} from "react";
 import {useSelector} from 'react-redux';
 import {NavLink as ReactRouterLink} from "react-router-dom";
 import {
@@ -9,7 +9,8 @@ import {
     NavbarToggler,
     NavItem,
     NavLink,
-    Button
+    Button,
+    ButtonDropdown, DropdownItem, DropdownMenu, DropdownToggle, Dropdown
 } from 'reactstrap';
 
 
@@ -20,6 +21,7 @@ const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
     const collapse = () => setIsOpen(false);
+    const [dropDownOpen,setDropDownOpen] = useState(false);
     
     
 
@@ -28,6 +30,7 @@ const Header = () => {
     // }
 
     let userName = '';
+    let userEmail = '';
 
     try {
         userName = [user.firstName, user.lastName]
@@ -39,8 +42,27 @@ const Header = () => {
 
     if(user!=null){
         // console.log('role =' + user.role.name);
+        if(user.companyName){
+            userEmail = user.property.email + '@' + user.companyName + '.com';
+            localStorage.setItem("current_domain", user.companyName + '.com');
+        }else if(user.lastName){
+            userEmail = user.property.email + '@' + user.lastName + '.com';
+            localStorage.setItem("current_domain", user.lastName + '.com');
+        }
+        
     }
+    const toggleDropDownMenu=useCallback(() => {
+        setDropDownOpen(!dropDownOpen)
+    });
     const adminGroup = [process.env.REACT_APP_ROLE_ADMIN_NAME,process.env.REACT_APP_ROLE_PM_NAME];
+    const menuLinks =[
+        {menuText:'Change Address',menuID:1},
+        {menuText:'Change Email',menuID:2},
+        {menuText:'Change Mobie',menuID:3},
+        {menuText:'Delete Account',menuID:4},
+        {menuText:'logout',menuID:5},
+
+    ]
     return (
         <Navbar className="header fixed-top" color="light" light expand="md">
             <NavbarBrand className="pixels" href="mailto:anything@AlphC.com">
@@ -53,7 +75,7 @@ const Header = () => {
                 <i className="fa fa-bars" />
             </NavbarToggler>
             <Collapse isOpen={isOpen} navbar>
-                     
+                <div style={{marginLeft:"20px"}}> { userEmail } </div>
                 <Nav className="ml-auto" navbar>
                 <NavItem>
                         <NavLink
@@ -73,23 +95,31 @@ const Header = () => {
                     </NavItem>
                     {user ? (
                         <>
-                            { adminGroup.includes(user.role.name) && (
-                                <>
-                                <NavItem>
-                                    <NavLink href="/">Home</NavLink>
-                                </NavItem>
-                                <NavItem>
-                                    <NavLink href="/admin/users">Users</NavLink>
-                                </NavItem>
-                                <NavItem>
-                                    <NavLink href="/admin/cities">Cities</NavLink>
-                                </NavItem>
-                                 <NavItem>
-                                 <NavLink href="/admin/properties">properties</NavLink>
-                             </NavItem>
-                             </>
-                            )}
-                            <NavItem>
+
+                         <ButtonDropdown >
+            <Dropdown isOpen={dropDownOpen} toggle={toggleDropDownMenu} >
+                <DropdownToggle color="primary" caret className="dropdown-toggle">
+                   Menu
+                </DropdownToggle>
+                <DropdownMenu className="city-dropdown">
+                     {
+                        menuLinks.map(menu=>{
+    return <DropdownItem key={'key'+menu.menuID} onClick={() =>{
+    // setSelectedCity(city.full_name);
+    console.log('selected menu..'  + menu.menuID);
+    // localStorage.setItem('city_short_name',city.short_name);
+    // localStorage.setItem('city_full_name',city.full_name);
+    // //do search
+    // window.location.reload();
+    }
+    } >{menu.menuText}</DropdownItem>
+                        })
+                     }   
+                    </DropdownMenu>
+                </Dropdown>
+            </ButtonDropdown>
+
+                            {/* <NavItem>
                                 <NavLink
                                     tag={ReactRouterLink}
                                     onClick={collapse}
@@ -97,7 +127,7 @@ const Header = () => {
                                     Logout(
                                     {userName ? userName : user.mobileNumber})
                                 </NavLink>
-                            </NavItem>
+                            </NavItem> */}
                         </>
                     ) : (
                         <NavItem>
