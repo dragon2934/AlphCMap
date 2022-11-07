@@ -320,7 +320,7 @@ export const clearDistancesFromMap = (map) => {
     clearLayer(map, 'resident-property-distances');
 };
 
-const showLineLayer = (
+export const showLineLayer = (
     map,
     imageUrl,
     layerId,

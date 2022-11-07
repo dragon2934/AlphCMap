@@ -499,7 +499,7 @@ export const updateAccount = (data) => {
 };
 
 export const saveBatchProperties = (data) =>{
-    console.log('......saving batch 111...' + JSON.stringify(data));
+    // console.log('......saving batch 111...' + JSON.stringify(data));
     
     return (dispatch, getState) => {
         const token = getState().auth.jwt;

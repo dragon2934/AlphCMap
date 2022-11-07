@@ -1,6 +1,6 @@
 import React, {useState, useCallback} from "react";
 import {useSelector} from 'react-redux';
-import {NavLink as ReactRouterLink} from "react-router-dom";
+import {NavLink as ReactRouterLink, useHistory} from "react-router-dom";
 import {
     Collapse,
     Nav,
@@ -13,15 +13,17 @@ import {
     ButtonDropdown, DropdownItem, DropdownMenu, DropdownToggle, Dropdown
 } from 'reactstrap';
 
+import Toggle from '../../components/Toggle';
 
 
 const Header = () => {
     const user = useSelector((state) => state.auth.user);
-
+    const history = useHistory();
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
     const collapse = () => setIsOpen(false);
     const [dropDownOpen,setDropDownOpen] = useState(false);
+    const [editMode,setEditMode] = useState(true);
     
     
 
@@ -54,6 +56,9 @@ const Header = () => {
     const toggleDropDownMenu=useCallback(() => {
         setDropDownOpen(!dropDownOpen)
     });
+    const handleEditModeChange=useCallback(() => {
+        setEditMode(!editMode);
+    });
     const adminGroup = [process.env.REACT_APP_ROLE_ADMIN_NAME,process.env.REACT_APP_ROLE_PM_NAME];
     const menuLinks =[
         {menuText:'Change Address',menuID:1},
@@ -77,6 +82,17 @@ const Header = () => {
             <Collapse isOpen={isOpen} navbar>
                 <div style={{marginLeft:"20px"}}> { userEmail } </div>
                 <Nav className="ml-auto" navbar>
+                    <NavItem>
+                    <Toggle
+          checked={editMode}
+          text="Edit Mode"
+          size="default"
+          disabled={false}
+          onChange={handleEditModeChange}
+          offstyle="btn-danger"
+          onstyle="btn-success"
+        />
+                    </NavItem>
                 <NavItem>
                         <NavLink
                             tag={ReactRouterLink}
@@ -104,15 +120,28 @@ const Header = () => {
                 <DropdownMenu className="city-dropdown">
                      {
                         menuLinks.map(menu=>{
-    return <DropdownItem key={'key'+menu.menuID} onClick={() =>{
-    // setSelectedCity(city.full_name);
-    console.log('selected menu..'  + menu.menuID);
-    // localStorage.setItem('city_short_name',city.short_name);
-    // localStorage.setItem('city_full_name',city.full_name);
-    // //do search
-    // window.location.reload();
-    }
-    } >{menu.menuText}</DropdownItem>
+                            return <DropdownItem key={'key'+menu.menuID} onClick={() =>{
+                            // setSelectedCity(city.full_name);
+                            console.log('selected menu..'  + menu.menuID);
+                            switch(menu.menuID){
+                                case 1:
+                                    break;
+                                case 2:
+                                    break;
+                                case 3:
+                                    break;
+                                case 4:
+                                    break;
+                                case 5:
+                                    history.push('/logout')
+                                    break;                                                                                                                       
+                            }
+                            // localStorage.setItem('city_short_name',city.short_name);
+                            // localStorage.setItem('city_full_name',city.full_name);
+                            // //do search
+                            // window.location.reload();
+                            }
+                         } >{menu.menuText}</DropdownItem>
                         })
                      }   
                     </DropdownMenu>

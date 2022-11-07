@@ -414,6 +414,13 @@ export const fetchProperties = ({page = 1, pageSize = 10,roleName = 'Admin'}) =>
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
         const user = getState().auth.user;
+        if(user === null || user === undefined){
+            const responseData ={
+                statusCode:200,
+                value:[]
+            }
+            return responseData;
+        }
         const mobile = user.mobileNumber;
         const start = (page - 1) * pageSize;
         let url = `${SERVICE_URL}/properties?_start=${start}&_limit=${pageSize}&ownerMobileNumber=${mobile}`;
