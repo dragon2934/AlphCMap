@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from "react";
-import {useSelector} from 'react-redux';
+import {useSelector } from 'react-redux';
 import {NavLink as ReactRouterLink, useHistory} from "react-router-dom";
 import {
     Collapse,
@@ -14,7 +14,7 @@ import {
 } from 'reactstrap';
 
 import Toggle from '../../components/Toggle';
-
+import { setEditMode } from '../../../redux/actionCreators/registrationActionCreators';
 
 const Header = () => {
     const user = useSelector((state) => state.auth.user);
@@ -23,7 +23,8 @@ const Header = () => {
     const toggle = () => setIsOpen(!isOpen);
     const collapse = () => setIsOpen(false);
     const [dropDownOpen,setDropDownOpen] = useState(false);
-    const [editMode,setEditMode] = useState(true);
+    const utilsData = useSelector((state) => state.utilsData);
+    const [editSwitch,setEditSwitch] = useState(false);
     
     
 
@@ -57,7 +58,22 @@ const Header = () => {
         setDropDownOpen(!dropDownOpen)
     });
     const handleEditModeChange=useCallback(() => {
-        setEditMode(!editMode);
+        // setEditMode(!editMode);
+        utilsData.editMode = !editSwitch;
+        if( utilsData.editMode ){
+            console.log('...edit mode is enable !!!!..');
+        }else{
+            console.log('...edit mode is turn off !!!..');
+        }
+       
+        setEditSwitch( utilsData.editMode );
+        const data = {
+            utilsData: {
+               editMode: !editSwitch
+            }
+        };
+        setEditMode(data);
+
     });
     const adminGroup = [process.env.REACT_APP_ROLE_ADMIN_NAME,process.env.REACT_APP_ROLE_PM_NAME];
     const menuLinks =[
@@ -84,7 +100,7 @@ const Header = () => {
                 <Nav className="ml-auto" navbar>
                     <NavItem>
                     <Toggle
-          checked={editMode}
+          checked={editSwitch}
           text="Edit Mode"
           size="default"
           disabled={false}

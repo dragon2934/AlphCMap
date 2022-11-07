@@ -6,6 +6,7 @@ import {
     REGISTRATION_RESET_FORM,
     REGISTRATION_VERIFY_ACCOUNT,
     SET_PROPERTY_REGISTRATION_FORM,
+    SET_EDIT_MODE,
 } from '../actionTypes';
 
 export const getInstitute = (email) => {
@@ -112,6 +113,16 @@ export const setPropertyRegistrationForm = (data) => {
         type: SET_PROPERTY_REGISTRATION_FORM,
         payload: new Promise((resolve) => {
             console.log('setPropertyRegistrationForm.....' + JSON.stringify(data));
+            resolve(data);
+        }),
+    };
+};
+
+export const setEditMode = (data) => {
+    return {
+        type: SET_EDIT_MODE,
+        payload: new Promise((resolve) => {
+            console.log('set edit mode.....' + JSON.stringify(data));
             resolve(data);
         }),
     };

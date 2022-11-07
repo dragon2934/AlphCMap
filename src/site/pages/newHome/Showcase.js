@@ -106,8 +106,15 @@ class Showcase extends Component {
     onClickMap = (e) => {
         const {lng: longitude, lat: latitude} = e.lngLat;
         // console.log('..map..on click..' + longitude);
+        const { utilsData } = this.props;
+        if(utilsData.editMode){
+            console.log('..in edit mode..');
+            this.createMarker({latitude, longitude});
+        }else{
+            console.log('.. editMode turn off..');
+        }
 
-        this.createMarker({latitude, longitude});
+        
     };
 
     createMarker = async ({latitude, longitude}) => {
@@ -423,7 +430,8 @@ class Showcase extends Component {
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
-    registerForm: state.registerForm
+    registerForm: state.registerForm,
+    utilsData: state.utilsData
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -6,6 +6,7 @@ import app from './appReducer';
 import auth from './authReducer';
 import messaging from './messagingReducer';
 import registerForm from './registerFormReducer';
+import utilsData from './utilsDataReducer';
 
 const rootReducer = combineReducers({
     toastr,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
     registerForm,
     admin,
     messaging,
+    utilsData,
 });
 
 export default rootReducer;
