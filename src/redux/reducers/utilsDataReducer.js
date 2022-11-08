@@ -8,7 +8,7 @@ const initialState = {
 };
 
 function utilsDataReducer(state = initialState, action) {
-    console.log('..action..' + JSON.stringify(action))
+    // console.log('..action..' + JSON.stringify(action))
     switch (action.type) {
         // Users
         case `${SET_EDIT_MODE}_${ActionType.Pending}`:

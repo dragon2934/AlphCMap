@@ -28,7 +28,7 @@ import {Button, Col, Form, Input, Row} from 'reactstrap';
 import ReactDOM from 'react-dom';
 import {setPropertyRegistrationForm} from '../../../redux/actionCreators/registrationActionCreators';
 
-import { saveBatchProperties } from '../../../redux/actionCreators/appActionCreators';
+import { saveBatchProperties, deleteUserAdditionalAddressById } from '../../../redux/actionCreators/appActionCreators';
 
 import {
     MapMarkerUrls,
@@ -77,10 +77,48 @@ class Showcase extends Component {
     // };
 
     renderPropertiesTooltip = ({id, email}) => {
-        const {history} = this.props;
-
-        return <PropertiesTooltip email={email} id={id} history={history} />;
+        return <PropertiesTooltip email={email} id={id} cb={this.removeProperty} />;
     };
+    removeProperty = async (email) =>  {
+        console.log('..remove this property..' + email);
+        const prePart = email.split('@')[0];
+        const { properties } = this.state;
+         let tobeRemain = properties.filter( property => property.email !== prePart);
+         let tobeDelete = properties.filter( property => property.email === prePart);
+         console.log('..to be remove..' + JSON.stringify(tobeDelete));
+        //clear everything, then reload
+        const { deleteUserAdditionalAddressById } = this.props;
+
+        const resp = deleteUserAdditionalAddressById(tobeDelete[0].id);
+        const {map} = this.context;
+        if (map) {
+            clearPropertiesFromMap(map);
+            clearResidentsFromMap(map);
+            clearDistancesFromMap(map);
+        }
+
+        // const {value: properties} = await fetchProperties();
+       
+
+        try{
+            const popups = document.getElementsByClassName("mapboxgl-popup");
+
+            if (popups.length) {
+
+                popups[0].remove();
+
+            }
+            this.setState({
+                properties: tobeRemain
+            });
+            // console.log('..properties..' + JSON.stringify(properties));
+            showPropertiesOnMap(map, tobeRemain, this.renderPropertiesTooltip);
+            // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
+            showPrimaryDistancesOnMap(map, tobeRemain);
+        }catch(e){
+
+        }
+    }
 
     async initializeLayers() {
         const {map} = this.context;
@@ -153,12 +191,19 @@ class Showcase extends Component {
         const element = document.createElement('div');
 
         if(auth.user !== null && auth.user !== undefined){
+            //这里需要区分
             ReactDOM.render(
                 <div className={'info-window'}>
                     <h4>{email}@alphc.com</h4>
                     <Row className="justify-content-end ">
                         <Col className="list-unstyled text-right">
+                            
                             <li>
+                            <Button
+                                    size={'sm'}
+                                    onClick={() => this.removeAddress(email)}>
+                                    Remove
+                                </Button> &nbsp;&nbsp;&nbsp;&nbsp;
                                 <Button
                                     size={'sm'}
                                     onClick={() => this.addAddress()}>
@@ -219,6 +264,19 @@ class Showcase extends Component {
         });
     };
 
+    removeAddress = (email) =>{
+        const {pins } = this.state;
+        const tobeRemove = pins.filter((p) => p.email === email);
+        const marker = tobeRemove[0].marker;
+        marker.remove();
+        const data = pins.filter((p) => p.email !== email);
+        this.setState((state) => {
+            return {
+                ...state,
+                pins: data,
+            };
+        });
+    }
     addAddress = () => {
         const { selectedAddress, email, properties } = this.state;
         const {map} = this.context;
@@ -329,6 +387,11 @@ class Showcase extends Component {
                     <Row className="justify-content-end ">
                         <Col className="list-unstyled text-right">
                             <li>
+                               <Button
+                                    size={'sm'}
+                                    onClick={() => this.removeAddress(email)}>
+                                    Remove
+                                </Button> &nbsp;&nbsp;&nbsp;&nbsp;
                                 <Button
                                     size={'sm'}
                                     onClick={() => this.addAddress()}>
@@ -439,7 +502,8 @@ const mapDispatchToProps = (dispatch) => ({
         dispatch(fetchProperties({page: 1, pageSize: 100000})),
     fetchUsers: () => dispatch(fetchUsers({page: 1, pageSize: 100000})),
     setPropertyRegistrationForm: (data) => dispatch(setPropertyRegistrationForm(data)),
-    saveBatchProperties: (data)  => dispatch(saveBatchProperties(data))
+    saveBatchProperties: (data)  => dispatch(saveBatchProperties(data)),
+    deleteUserAdditionalAddressById: (propertyId) => dispatch(deleteUserAdditionalAddressById(propertyId))
 });
 
 export default connect(

@@ -123,18 +123,18 @@ export const showPropertiesOnMapEx = (map, data, renderTooltip) => {
     map.on('click', showPropertyTooltip.bind(undefined, map, renderTooltip));
 };
 export const showPropertiesOnMap = (map, data, renderTooltip) => {
-    const propertiesWithAlert = data.filter((i) => i.property_alert);
+    const propertiesWithAlert = data.filter((i) => i.primaryAddress );
 
-    const other = data.filter((i) => !i.property_alert);
+    const other = data.filter((i) => !i.primaryAddress);
 
-    const safe = propertiesWithAlert.filter(
-        (i) => i.property_alert.status === PropertyStatus.SAFE,
-    );
-    const pending = propertiesWithAlert.filter(
-        (i) => i.property_alert.status === PropertyStatus.PENDING,
-    );
+    // const safe = propertiesWithAlert.filter(
+    //     (i) => i.property_alert.status === PropertyStatus.SAFE,
+    // );
+    // const pending = propertiesWithAlert.filter(
+    //     (i) => i.property_alert.status === PropertyStatus.PENDING,
+    // );
     const hasInjured = propertiesWithAlert.filter(
-        (i) => i.property_alert.status === PropertyStatus.HAS_INJURED,
+        (i) => i.primaryAddress ,
     );
 
 
@@ -150,7 +150,7 @@ export const showPropertiesOnMap = (map, data, renderTooltip) => {
         map,
         MapMarkerUrls.property.safe,
         'safe-properties',
-        safe,
+        [],
         (i) => [i.location.longitude, i.location.latitude],
     );
 
@@ -158,7 +158,7 @@ export const showPropertiesOnMap = (map, data, renderTooltip) => {
         map,
         MapMarkerUrls.property.pending,
         'pending-properties',
-        pending,
+        [],
         (i) => [i.location.longitude, i.location.latitude],
     );
 

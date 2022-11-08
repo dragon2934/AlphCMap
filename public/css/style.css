@@ -2305,7 +2305,8 @@ a:hover {
 
 /*# sourceMappingURL=maps/style.css.map */
 .tab-pane .d-flex{
-  height: 100% !important;
+  height: 94% !important;
+
 }
 
 .switch-wrapper > input[type="checkbox"] {

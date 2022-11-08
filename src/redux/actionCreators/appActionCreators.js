@@ -139,6 +139,35 @@ export const deleteUserAdditionalAddress = (userPropertyId,propertyId) =>{
         });
     };
 }
+export const deleteUserAdditionalAddressById = (propertyId) =>{
+    console.log( '2=' + propertyId);
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: DELETE_ADDITIONAL_ADDRESS,
+            payload: fetch(`${SERVICE_URL}/user-properties/delete-user-property-by-id`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    propertyId:propertyId
+                }),
+                method: 'POST',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+}
 export const fetchUserProperties = () => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
