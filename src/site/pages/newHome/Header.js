@@ -80,6 +80,7 @@ const Header = () => {
         {menuText:'Change Address',menuID:1},
         {menuText:'Change Email',menuID:2},
         {menuText:'Change Mobie',menuID:3},
+        {menuText:'Change Password',menuID:6},
         {menuText:'Delete Account',menuID:4},
         {menuText:'logout',menuID:5},
 
@@ -130,7 +131,7 @@ const Header = () => {
 
                          <ButtonDropdown >
             <Dropdown isOpen={dropDownOpen} toggle={toggleDropDownMenu} >
-                <DropdownToggle color="primary" caret className="dropdown-toggle">
+                <DropdownToggle  className="head-dropdown-toggle">
                    Menu
                 </DropdownToggle>
                 <DropdownMenu className="city-dropdown">
@@ -141,16 +142,24 @@ const Header = () => {
                             console.log('selected menu..'  + menu.menuID);
                             switch(menu.menuID){
                                 case 1:
+                                    history.push('/edit-property');
                                     break;
                                 case 2:
+                                    history.push('/change-email');
                                     break;
                                 case 3:
+                                    history.push('/change-mobile');
                                     break;
                                 case 4:
+                                    //delete account
+
                                     break;
                                 case 5:
                                     history.push('/logout')
-                                    break;                                                                                                                       
+                                    break;    
+                                case 6:
+                                    history.push('/change-password');
+                                    break;                                                                                                                                                      
                             }
                             // localStorage.setItem('city_short_name',city.short_name);
                             // localStorage.setItem('city_full_name',city.full_name);

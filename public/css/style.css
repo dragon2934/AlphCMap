@@ -2377,3 +2377,8 @@ a:hover {
 .switch_label{
   user-select: none;
 }
+.head-dropdown-toggle{
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #ffffff !important;
+}

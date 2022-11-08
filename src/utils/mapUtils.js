@@ -42,9 +42,13 @@ const showPropertyTooltip = (map, renderTooltip, e) => {
 
     const element = document.createElement('div');
 
+    let domain = localStorage.getItem('current_domain');
+    if(domain === undefined || domain === null){
+        domain = 'alphc.com'
+    }
     ReactDOM.render(
         renderTooltip({
-            email: feature.properties.email + '@alphc.com', // CHANGE THIS TO REFLECT THE PROPERTIES YOU WANT TO SHOW
+            email: feature.properties.email + '@' + domain, // CHANGE THIS TO REFLECT THE PROPERTIES YOU WANT TO SHOW
             id: feature.properties.id,
         }),
         element,

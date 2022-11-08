@@ -36,8 +36,13 @@ import Patents from './pages/newHome/Patents';
 import PrivacyPolicy from './pages/newHome/PrivacyPolicy';
 import TermsOfUse from './pages/newHome/TermsOfUse';
 
+import EditProperty from './pages/profile/EditProperty';
 import MobileAccountVerification from './pages/mobile/MobileAccountVerification';
-// import MapProvider from  '../common/contexts/MapContext/MapProvider';
+import ChangeEMail from './pages/newHome/ChangeEMail';
+import ChangeMobile from './pages/newHome/ChangeMobile';
+import ChangePassword from "./pages/newHome/ChangePassword";
+
+import MapProvider from  '../common/contexts/MapContext/MapProvider';
 const Site = () => {
   return (
     <Switch>
@@ -49,6 +54,22 @@ const Site = () => {
                 path={`/mobile-verify`}
                 exact
       />  
+      <Route
+                component={(props) => (
+                    <MapProvider>
+                        <EditProperty {...props} />
+                    </MapProvider>
+                )}    
+                path={`/edit-property`}
+                exact
+      />  
+      
+      
+      <Route exact path="/change-email" component={ChangeEMail} />   
+      <Route exact path="/change-mobile" component={ChangeMobile} />   
+      <Route exact path="/change-password" component={ChangePassword} />  
+      
+
       <Route exact path="/about-us" component={AboutUs} />                
       <Route exact path="/how-it-works" component={HowItWorks} />
       <Route exact path="/patents" component={Patents} />

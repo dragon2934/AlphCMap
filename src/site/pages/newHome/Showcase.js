@@ -180,7 +180,7 @@ class Showcase extends Component {
         if(domain === undefined || domain === null){
             domain = 'alphc.com'
         }
-        const email = generateEmail(geocodeData);
+        const email = generateEmail(geocodeData) +  '@' + domain;
         this.setState({
             selectedAddress: geocodeData,
             email: email
@@ -194,7 +194,7 @@ class Showcase extends Component {
             //这里需要区分
             ReactDOM.render(
                 <div className={'info-window'}>
-                    <h4>{email}@alphc.com</h4>
+                    <h4>{email}</h4>
                     <Row className="justify-content-end ">
                         <Col className="list-unstyled text-right">
                             
@@ -218,7 +218,7 @@ class Showcase extends Component {
         }else{
             ReactDOM.render(
                 <div className={'info-window'}>
-                    <h4>{email}@alphc.com</h4>
+                    <h4>{email}</h4>
                     <Row className="justify-content-end ">
                         <Col className="list-unstyled text-right">
                             <li>
@@ -366,8 +366,11 @@ class Showcase extends Component {
         const {lng: longitude, lat: latitude} = event.target.getLngLat();
 
         const geocodeData = await reverseGeocodePoint({longitude, latitude});
-
-        const email = generateEmail(geocodeData);
+        let domain = localStorage.getItem('current_domain');
+        if(domain === undefined || domain === null){
+            domain = 'alphc.com'
+        }
+        const email = generateEmail(geocodeData) + '@' + domain;
         this.setState({
             selectedAddress: geocodeData,
             email: email
