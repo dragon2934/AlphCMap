@@ -5,6 +5,8 @@ import {
 
 const initialState = {
     editMode: false,
+    changeColor: false,
+    emailForChangeColor:''
 };
 
 function utilsDataReducer(state = initialState, action) {
@@ -16,6 +18,15 @@ function utilsDataReducer(state = initialState, action) {
                 ...state,
                 ...action.payload,
             };
+        case 'CHANGE_PROPERTY_COLOR_FULFILLED':
+            return {
+                ...state,
+                ...action.payload,
+            };
+        case 'CANCEL_CHANGE_PROPERTY_COLOR':
+           return {
+            ...state,
+           };
         default:
             return state;
     }

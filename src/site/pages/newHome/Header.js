@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from "react";
-import {useSelector } from 'react-redux';
+import {useSelector, useDispatch } from 'react-redux';
 import {NavLink as ReactRouterLink, useHistory} from "react-router-dom";
 import {
     Collapse,
@@ -15,6 +15,9 @@ import {
 
 import Toggle from '../../components/Toggle';
 import { setEditMode } from '../../../redux/actionCreators/registrationActionCreators';
+import { deleteAccount } from '../../../redux/actionCreators/appActionCreators';
+import { logoutUser } from '../../../redux/actionCreators/authActionCreators';
+import { toastr } from 'react-redux-toastr';
 
 const Header = () => {
     const user = useSelector((state) => state.auth.user);
@@ -26,7 +29,7 @@ const Header = () => {
     const utilsData = useSelector((state) => state.utilsData);
     const [editSwitch,setEditSwitch] = useState(false);
     
-    
+    const dispatch = useDispatch();
 
     // const switchButtonActive=(type)=>{
     //     setSearchType(type);
@@ -44,7 +47,7 @@ const Header = () => {
 
 
     if(user!=null){
-        // console.log('role =' + user.role.name);
+        //  console.log('user.property =' + JSON.stringify(user.property));
         if(user.companyName){
             userEmail = user.property.email + '@' + user.companyName + '.com';
             localStorage.setItem("current_domain", user.companyName + '.com');
@@ -75,6 +78,19 @@ const Header = () => {
         setEditMode(data);
 
     });
+    const onClickDeleteAccount = useCallback(() => {
+        dispatch( deleteAccount()).then(({value:retObj}) => {
+            console.log('....delete acount return...' + JSON.stringify(retObj));
+            if(retObj.status==='successed'){
+                dispatch(logoutUser()).then(()=>{
+                    history.push('/');
+                });
+            }else{
+                console.log('error message:' + retObj.message);
+                toastr.error('Error !',retObj.message);
+            }
+        });
+    }, [dispatch, history]);
     const adminGroup = [process.env.REACT_APP_ROLE_ADMIN_NAME,process.env.REACT_APP_ROLE_PM_NAME];
     const menuLinks =[
         {menuText:'Change Address',menuID:1},
@@ -97,10 +113,10 @@ const Header = () => {
                 <i className="fa fa-bars" />
             </NavbarToggler>
             <Collapse isOpen={isOpen} navbar>
-                <div style={{marginLeft:"20px"}}> { userEmail } </div>
+                <div style={{width:"64%",textAlign:"center",fontSize:"20px",fontWeight:"bold"}}> { userEmail } </div>
                 <Nav className="ml-auto" navbar>
                     <NavItem>
-                    <Toggle
+                    {user ?   <Toggle
           checked={editSwitch}
           text="Edit Mode"
           size="default"
@@ -108,7 +124,7 @@ const Header = () => {
           onChange={handleEditModeChange}
           offstyle="btn-danger"
           onstyle="btn-success"
-        />
+        />:null}
                     </NavItem>
                 <NavItem>
                         <NavLink
@@ -152,9 +168,15 @@ const Header = () => {
                                     break;
                                 case 4:
                                     //delete account
-
+                                    toastr.confirm(
+                                        'Are you sure you want to delete your account? This action is irreversible!',
+                                        {
+                                            onOk: onClickDeleteAccount,
+                                        },
+                                    );
                                     break;
                                 case 5:
+                                    localStorage.removeItem("current_domain");
                                     history.push('/logout')
                                     break;    
                                 case 6:

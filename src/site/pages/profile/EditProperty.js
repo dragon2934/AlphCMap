@@ -93,7 +93,7 @@ const EditProperty = () => {
                 ...values,
             };
 
-            dispatch(saveUserProperty(property)).then(() => {
+            dispatch(saveUserProperty(property)).then((resp) => {
                 setSubmitting(false);
 
                 if (window.ReactNativeWebView) {
@@ -101,11 +101,16 @@ const EditProperty = () => {
                         JSON.stringify({result: 'success'}),
                     );
                 } else {
-                    history.push('/profile');
+                    console.log('..save property..' + JSON.stringify(resp));
+                    currentUser.property =  resp.value;
+                    // history.push('/');
                     toastr.success(
                         'Successful!',
-                        'New property is successfully registered.',
+                        'New location is successfully.',
                     );
+                    setTimeout(() => {
+                        history.push('/');
+                    }, 1000);
                 }
             });
         },
@@ -266,19 +271,19 @@ const EditProperty = () => {
     return (
         <main>
             <Header />
-            <div className='full-screen'>
-        <Card className="mb-1">
+            <div className='content'>
+        <Card className="mb-5">
             <CardHeader>Edit Property</CardHeader>
-            <Form onSubmit={handleSubmit}>
+           
                 <CardBody className="pb-4 d-flex flex-column">
                 <Row xs={12}>
                 <Col xs="8">
                     <div
                         className="d-flex flex-fill mb-4"
-                        style={{height: '400px'}}>
+                        style={{height: '600px'}}>
                        { currentUser.primaryHolder?  <div className={'map-top-actions'}>
                             <div className={'search-actions'}>
-                                {/* <Form onSubmit={onSubmitSearchText}> */}
+                                <Form onSubmit={onSubmitSearchText}>
                                     <Input
                                         bsSize={'sm'}
                                         value={searchText}
@@ -299,14 +304,16 @@ const EditProperty = () => {
                                             <i className="fa fa-search" />
                                         )}
                                     </Button>
-                                {/* </Form> */}
+                                </Form>
                             </div>
                         </div> : null }
                         <GMap />
                     </div>
                 </Col>
+                
                 <Col xs="4">
                     <Row>
+                    <Form onSubmit={handleSubmit}>
                     <Col xs="12">
                         <FormGroup>
                             <Label htmlFor="firstName">Email</Label>
@@ -635,20 +642,25 @@ const EditProperty = () => {
                             </FormFeedback>
                         </FormGroup>
                     </Col>
-                    </Row>
-                    </Col>
-                    </Row>
-                </CardBody>
-                <CardFooter className="text-right">
-                  { currentUser.primaryHolder ?  <Button
+                    <Col>
+                    { currentUser.primaryHolder ?  <Button
                         disabled={!isValid || isSubmitting}
                         type="submit"
                         block
                         color="primary">
                         {isSubmitting ? <Spinner size="sm" /> : 'Submit'}
                     </Button>:null}
+                    </Col>
+                    </Form>
+                    </Row>
+                    </Col>
+                    
+                    </Row>
+                </CardBody>
+                <CardFooter className="text-right">
+                  
                 </CardFooter>
-            </Form>
+            
         </Card>
         </div>
         <Footer />

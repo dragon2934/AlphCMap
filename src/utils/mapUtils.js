@@ -42,14 +42,21 @@ const showPropertyTooltip = (map, renderTooltip, e) => {
 
     const element = document.createElement('div');
 
-    let domain = localStorage.getItem('current_domain');
+    let domain = localStorage.getItem('current_domain') ;
     if(domain === undefined || domain === null){
         domain = 'alphc.com'
     }
+    if(feature.properties.email.includes("@")){
+        domain = '';
+    }
+    if(domain.length > 0) {
+        domain = "@" + domain;
+    }
     ReactDOM.render(
         renderTooltip({
-            email: feature.properties.email + '@' + domain, // CHANGE THIS TO REFLECT THE PROPERTIES YOU WANT TO SHOW
+            email: feature.properties.email  + domain, // CHANGE THIS TO REFLECT THE PROPERTIES YOU WANT TO SHOW
             id: feature.properties.id,
+            property: feature.properties
         }),
         element,
     );
@@ -131,16 +138,24 @@ export const showPropertiesOnMap = (map, data, renderTooltip) => {
 
     const other = data.filter((i) => !i.primaryAddress);
 
-    // const safe = propertiesWithAlert.filter(
-    //     (i) => i.property_alert.status === PropertyStatus.SAFE,
-    // );
-    // const pending = propertiesWithAlert.filter(
-    //     (i) => i.property_alert.status === PropertyStatus.PENDING,
-    // );
-    const hasInjured = propertiesWithAlert.filter(
-        (i) => i.primaryAddress ,
+    const safe = other.filter(
+        (i) => i.color === PropertyStatus.SAFE,
     );
-
+    const pending = other.filter(
+        (i) => i.color === PropertyStatus.PENDING,
+    );
+    const hasInjured = other.filter(
+        (i) =>  i.color === PropertyStatus.HAS_INJURED ,
+    );
+    const primary = propertiesWithAlert.filter(
+        (i) => i.primaryAddress  ,
+    );
+    const secondary = other.filter(
+        (i) => i.color === PropertyStatus.SECONDARY,
+    );
+    primary.map(item=>{
+        hasInjured.push(item);
+    })
 
     showPointLayer(
         map,
@@ -152,9 +167,17 @@ export const showPropertiesOnMap = (map, data, renderTooltip) => {
 
     showPointLayer(
         map,
+        MapMarkerUrls.property.secondary,
+        'safe-properties',
+        secondary,
+        (i) => [i.location.longitude, i.location.latitude],
+    );
+
+    showPointLayer(
+        map,
         MapMarkerUrls.property.safe,
         'safe-properties',
-        [],
+        safe,
         (i) => [i.location.longitude, i.location.latitude],
     );
 
@@ -162,7 +185,7 @@ export const showPropertiesOnMap = (map, data, renderTooltip) => {
         map,
         MapMarkerUrls.property.pending,
         'pending-properties',
-        [],
+        pending,
         (i) => [i.location.longitude, i.location.latitude],
     );
 
@@ -174,6 +197,13 @@ export const showPropertiesOnMap = (map, data, renderTooltip) => {
         (i) => [i.location.longitude, i.location.latitude],
     );
 
+    // showPointLayer(
+    //     map,
+    //     MapMarkerUrls.property.hasInjured,
+    //     'has_injured-properties',
+    //     primary,
+    //     (i) => [i.location.longitude, i.location.latitude],
+    // );
     map.on('click', showPropertyTooltip.bind(undefined, map, renderTooltip));
 };
 

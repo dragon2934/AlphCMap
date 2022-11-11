@@ -112,7 +112,7 @@ export const setPropertyRegistrationForm = (data) => {
     return {
         type: SET_PROPERTY_REGISTRATION_FORM,
         payload: new Promise((resolve) => {
-            console.log('setPropertyRegistrationForm.....' + JSON.stringify(data));
+            // console.log('setPropertyRegistrationForm.....' + JSON.stringify(data));
             resolve(data);
         }),
     };
@@ -122,7 +122,7 @@ export const setEditMode = (data) => {
     return {
         type: SET_EDIT_MODE,
         payload: new Promise((resolve) => {
-            console.log('set edit mode.....' + JSON.stringify(data));
+            // console.log('set edit mode.....' + JSON.stringify(data));
             resolve(data);
         }),
     };

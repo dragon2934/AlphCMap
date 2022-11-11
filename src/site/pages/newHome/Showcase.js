@@ -33,6 +33,8 @@ import { saveBatchProperties, deleteUserAdditionalAddressById } from '../../../r
 import {
     MapMarkerUrls,
 } from '../../../constants';
+import ChangeColorForm from './ChangeColorForm';
+// import {useHistory} from 'react-router';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_GL_ACCESS_TOKEN;
 
@@ -46,7 +48,8 @@ class Showcase extends Component {
         active: false,
         selectedAddress: null,
         email:'',
-        properties:[]
+        properties:[],
+        changeColor: false
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -76,15 +79,59 @@ class Showcase extends Component {
     //     return <ResidentTooltip email={email} id={id} history={history} />;
     // };
 
-    renderPropertiesTooltip = ({id, email}) => {
-        return <PropertiesTooltip email={email} id={id} cb={this.removeProperty} />;
+    renderPropertiesTooltip = ({id, email,property}) => {
+        return <PropertiesTooltip email={email} id={id} property ={property} cb={this.removeProperty} changeColor={this.changeColor} />;
     };
-    removeProperty = async (email) =>  {
+    changeColor = async (email) =>{
+        const { utilsData } = this.props;
+        // const { properties } = this.state;
+        utilsData.changeColor = true;
+        utilsData.emailForChangeColor =  email;
+        console.log('....setting utilsData.changeColor.....' + email);
+        this.setState({
+            changeColor: true
+        });
+    }
+    changeColorCallack = async() => {
+        const {map} = this.context;
+        if (map) {
+            clearPropertiesFromMap(map);
+            clearResidentsFromMap(map);
+            clearDistancesFromMap(map);
+        }
+
+        const {fetchProperties, } = this.props;
+         const {value: properties} = await fetchProperties();
+       
+
+        try{
+            const popups = document.getElementsByClassName("mapboxgl-popup");
+
+            if (popups.length) {
+
+                popups[0].remove();
+
+            }
+             
+            // console.log('..properties..' + JSON.stringify(properties));
+            showPropertiesOnMap(map, properties, this.renderPropertiesTooltip);
+            // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
+            showPrimaryDistancesOnMap(map, properties);
+        }catch(e){
+
+        }
+    }
+    removeProperty = async (email,primaryAddress) =>  {
         console.log('..remove this property..' + email);
         const prePart = email.split('@')[0];
         const { properties } = this.state;
          let tobeRemain = properties.filter( property => property.email !== prePart);
          let tobeDelete = properties.filter( property => property.email === prePart);
+         if(primaryAddress){
+            const { history } = this.props;
+            history.push("/edit-property");
+            return;
+         }
          console.log('..to be remove..' + JSON.stringify(tobeDelete));
         //clear everything, then reload
         const { deleteUserAdditionalAddressById } = this.props;
@@ -144,15 +191,19 @@ class Showcase extends Component {
     onClickMap = (e) => {
         const {lng: longitude, lat: latitude} = e.lngLat;
         // console.log('..map..on click..' + longitude);
-        const { utilsData } = this.props;
+        const { utilsData, auth } = this.props;
+        const user = auth.user;
         if(utilsData.editMode){
             console.log('..in edit mode..');
             this.createMarker({latitude, longitude});
         }else{
-            console.log('.. editMode turn off..');
+            if(user === null || user == undefined){
+                //user logout Or not register
+                this.createMarker({latitude, longitude});
+            }else{
+                console.log('.. editMode turn off..');
+            }
         }
-
-        
     };
 
     createMarker = async ({latitude, longitude}) => {
@@ -238,30 +289,55 @@ class Showcase extends Component {
         marker.getPopup().setDOMContent(element);// setHTML(html);
         marker.togglePopup();
 
+        
         const {pins} = this.state;
         // console.log('..pins..' + JSON.stringify(pins));
 
-        pins.forEach((p) => {
-            // console.log('..pins..' + JSON.stringify(p));
-            if (p.marker.getPopup().isOpen()) {
-                p.marker.togglePopup();
-            }
-        });
 
-        this.setState((state) => {
-            return {
-                ...state,
-                pins: [
-                    ...pins,
-                    {
-                        marker,
-                        email,
-                        geocodeData,
-                        marker
-                    },
-                ],
-            };
-        });
+        if(auth.user !== null && auth.user !== undefined){
+            pins.forEach((p) => {
+                // console.log('..pins..' + JSON.stringify(p));
+                if (p.marker.getPopup().isOpen()) {
+                    p.marker.togglePopup();
+                }
+            });
+            this.setState((state) => {
+                return {
+                    ...state,
+                    pins: [
+                        ...pins,
+                        {
+                            marker,
+                            email,
+                            geocodeData,
+                            marker
+                        },
+                    ],
+                };
+            });
+        }else{
+            pins.forEach((p) => {
+                // console.log('..pins..' + JSON.stringify(p));
+                if (p.marker.getPopup().isOpen()) {
+                    p.marker.togglePopup();
+                }
+                const marker = p.marker;
+                marker.remove();
+            });
+            this.setState((state) => {
+                return {
+                    ...state,
+                    pins: [
+                        {
+                            marker,
+                            email,
+                            geocodeData,
+                            marker
+                        },
+                    ],
+                };
+            });
+        }
     };
 
     removeAddress = (email) =>{
@@ -335,7 +411,7 @@ class Showcase extends Component {
         const { setPropertyRegistrationForm,registerForm } = this.props;
         const { selectedAddress } = this.state;
         //  = address;
-        console.log('..selectedAddress..' + JSON.stringify(selectedAddress));
+        // console.log('..selectedAddress..' + JSON.stringify(selectedAddress));
         let that = this;
         registerForm.address = selectedAddress;
         setPropertyRegistrationForm({
@@ -471,7 +547,11 @@ class Showcase extends Component {
         });
     };
     render() {
-        const {pins, active, searchText} = this.state;
+        const {pins, active, searchText, changeColor} = this.state;
+        const { utilsData } = this.props;
+        if(utilsData.changeColor){
+            console.log('..now changing color...');
+        }
         return <>
         <div className={'map-top-actions'}>
                         <div className={'search-actions'}>
@@ -488,6 +568,7 @@ class Showcase extends Component {
                     </div>
                     <Map />
                     {active && <PropertyForm />}
+                    {utilsData.changeColor && <ChangeColorForm  callback = {this.changeColorCallack} />}
         </>
                 
         ;

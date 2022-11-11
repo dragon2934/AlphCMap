@@ -27,6 +27,7 @@ export const PropertyStatus = {
     PENDING: 'pending',
     SAFE: 'safe',
     HAS_INJURED: 'hasInjured',
+    SECONDARY: 'secondary'
 };
 
 export const AlertStatus = {

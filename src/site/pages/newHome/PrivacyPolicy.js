@@ -4,9 +4,9 @@ import Footer from './Footer';
 import Header from './Header';
 const PrivacyPolicy = () => {
     return (
-        // <main>
-        //     <Header />
-        <div className="full-screen privacy-policy">
+        <main>
+            <Header />
+        <div className="content privacy-policy">
             <Container>
                 <Row className="section-title">
                     <Col>Alphabet Communication Privacy Policy</Col>
@@ -81,8 +81,8 @@ const PrivacyPolicy = () => {
                 </p>
             </Container>
         </div>
-        // <Footer />
-        // </main>
+         <Footer />
+         </main>
     );
 };
 
