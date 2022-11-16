@@ -15,6 +15,7 @@ import {
     showPrimaryDistancesOnMap,
     showPropertiesOnMap,
     showLineLayer,
+    clearLayer
 } from '../../../utils/mapUtils';
 import { generateString } from '../../../utils/utils';
 import {
@@ -49,7 +50,8 @@ class Showcase extends Component {
         selectedAddress: null,
         email:'',
         properties:[],
-        changeColor: false
+        changeColor: false,
+        layerAdded:[]
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -340,18 +342,28 @@ class Showcase extends Component {
         }
     };
 
-    removeAddress = (email) =>{
+    removeAddress = (emailIn) =>{
         const {pins } = this.state;
-        const tobeRemove = pins.filter((p) => p.email === email);
+        const tobeRemove = pins.filter((p) => p.email === emailIn);
         const marker = tobeRemove[0].marker;
         marker.remove();
-        const data = pins.filter((p) => p.email !== email);
+        const data = pins.filter((p) => p.email !== emailIn);
         this.setState((state) => {
             return {
                 ...state,
                 pins: data,
             };
         });
+        //check wheter exist
+        const {  layerAdded } = this.state;
+        // console.log('..layerAdded..' + JSON.stringify(layerAdded) + " ..emailIn.." + emailIn);
+        let tobeDelete = layerAdded.filter( layer => layer.email === emailIn);
+        const {map} = this.context;
+        if(tobeDelete && tobeDelete.length > 0){
+            // console.log('..tobeDelete..' + JSON.stringify(tobeDelete));
+            clearLayer( map, tobeDelete[0].layerId);
+        }
+
     }
     addAddress = () => {
         const { selectedAddress, email, properties } = this.state;
@@ -366,7 +378,7 @@ class Showcase extends Component {
         saveBatchProperties(data).then( async(resp) => {
              console.log('..saveBatchProperties..' + JSON.stringify(resp));
              //remove the popup and show line
-             const {pins} = this.state;
+             const { pins, layerAdded } = this.state;
              // console.log('..pins..' + JSON.stringify(pins));
      
              pins.forEach((p) => {
@@ -377,10 +389,20 @@ class Showcase extends Component {
              });
              //get primery address
              const primaryAddress = properties.filter( property => property.primaryAddress === true);
+             
 
              const residentsWithLocation =[];
              residentsWithLocation.push(selectedAddress);
              const randomString = generateString(10);
+             
+             const newItem = { 
+                email:email,
+                layerId: randomString
+            };
+            layerAdded.push(newItem);
+            this.setState({
+                layerAdded: layerAdded
+            });
              showLineLayer(
                 map,
                 MapMarkerUrls.user.injured,
@@ -553,7 +575,7 @@ class Showcase extends Component {
             console.log('..now changing color...');
         }
         return <>
-        <div className={'map-top-actions'}>
+        <div className={'showcase-map-top-actions'}>
                         <div className={'search-actions'}>
                             <Form onSubmit={this.onSubmitSearch}>
                                 <Input

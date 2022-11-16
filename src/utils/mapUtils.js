@@ -443,7 +443,7 @@ const showPointLayer = (
     });
 };
 
-const clearLayer = (map, layerId) => {
+export const clearLayer = (map, layerId) => {
     if (map.hasImage(`${layerId}-marker`)) map.removeImage(`${layerId}-marker`);
 
     if (map.getLayer(layerId)) map.removeLayer(layerId);
