@@ -40,9 +40,9 @@ const ChangeColorForm = ({callback}) => {
                 />
             </Link>
 
-         <Row style={{width:"100%",paddingLeft:"70px"}}>
+         <Row style={{width:"80%",paddingLeft:"70px"}}>
 
-         <Col style={{width:"140px",textAlign:"left"}}>
+         <Col style={{textAlign:"left"}}>
                 <FormGroup tag="fieldset">
 
                     <FormGroup check>

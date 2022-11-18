@@ -1,12 +1,14 @@
 import React from 'react';
 import {Button, Col, Row} from 'reactstrap';
+// import {useSelector } from 'react-redux';
 // import { isAppEmbedWebview } from '../../utils/utils';
-const PropertiesTooltip = ({id, email,property, cb,changeColor}) => {
-    console.log('..property..' + JSON.stringify(property))
+const PropertiesTooltip = ({id, email,property, cb,changeColor, editMode}) => {
+    // console.log('..property..' + JSON.stringify(property))
+    // const utilsData = useSelector((state) => state.utilsData);
     return (
         <>
             <h4>{email}</h4>
-            <Row className="justify-content-end">
+          { editMode ?  <Row className="justify-content-end">
                 <Col className="list-unstyled text-right">
                     <li>
                        <Button
@@ -15,7 +17,7 @@ const PropertiesTooltip = ({id, email,property, cb,changeColor}) => {
                             onClick={() =>
                                 changeColor(email)
                             }>
-                            Change Icon
+                            Color
                         </Button> &nbsp;&nbsp;&nbsp;&nbsp;
                        { property.primaryAddress ?  <Button
                             color={'primary'}
@@ -35,7 +37,7 @@ const PropertiesTooltip = ({id, email,property, cb,changeColor}) => {
                        } 
                     </li>
                 </Col>
-            </Row>
+            </Row> : null }
         </>
     );
 };

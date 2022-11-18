@@ -10,13 +10,14 @@ const initialState = {
 };
 
 function utilsDataReducer(state = initialState, action) {
-    // console.log('..action..' + JSON.stringify(action))
+    //  console.log('..action..' + JSON.stringify(action))
     switch (action.type) {
         // Users
-        case `${SET_EDIT_MODE}_${ActionType.Pending}`:
+        case SET_EDIT_MODE:
+            console.log('..action..' + JSON.stringify(action));
             return {
                 ...state,
-                ...action.payload,
+                // ...action.payload,
             };
         case 'CHANGE_PROPERTY_COLOR_FULFILLED':
             return {

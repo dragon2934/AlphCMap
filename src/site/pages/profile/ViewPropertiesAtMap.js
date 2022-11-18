@@ -1,5 +1,5 @@
 import mapboxgl from 'mapbox-gl';
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 // import {connect} from 'react-redux';
 // import {withRouter} from 'react-router';
@@ -10,30 +10,12 @@ import {
     fetchUserProperties,
 } from '../../../redux/actionCreators/appActionCreators';
 import {
-    clearDistancesFromMap,
-    clearPropertiesFromMap,
-    clearResidentsFromMap,
-    showDistancesOnMap,
     showPropertiesOnMapEx,
-    showResidentsOnMap,
 } from '../../../utils/mapUtils';
 import PropertiesTooltip from '../../../admin/components/PropertiesTooltip';
-import ResidentTooltip from '../../../admin/components/ResidentTooltip';
 import {
-    CButton,
-    CCard,
-    CCardBody,
-    CCardFooter,
-    CCardHeader,
     CCol,
-    CLabel,
-    CNav,
-    CNavItem,
-    CNavLink,
     CRow,
-    CTabContent,
-    CTabPane,
-    CTabs,
 } from '@coreui/react';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_GL_ACCESS_TOKEN;
@@ -60,7 +42,7 @@ const ViewPropertiesAtMap =() => {
             dispatch(fetchUserProperties()).then((properties)=>{
                 // console.log(' properties =' + JSON.stringify(properties));
                 // properties.push(currentUser.property);
-                showPropertiesOnMapEx(map, properties.value, renderPropertiesTooltip);
+                showPropertiesOnMapEx(map, properties.value, renderPropertiesTooltip,true);
                 setMapInitialized(true);
             });
             
@@ -75,11 +57,7 @@ const ViewPropertiesAtMap =() => {
     },[dispatch, map]);
 
 
-    // const renderResidentsTooltip = ({id, email}) => {
-        
 
-    //     return <ResidentTooltip email={email} id={id} history={history} />;
-    // };
 
     const renderPropertiesTooltip = ({id, email}) => {
         

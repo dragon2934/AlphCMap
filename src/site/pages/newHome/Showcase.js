@@ -15,7 +15,8 @@ import {
     showPrimaryDistancesOnMap,
     showPropertiesOnMap,
     showLineLayer,
-    clearLayer
+    clearLayer,
+    removeAllImages
 } from '../../../utils/mapUtils';
 import { generateString } from '../../../utils/utils';
 import {
@@ -46,7 +47,7 @@ class Showcase extends Component {
         pins: [],
         mapInitialized: false,
         searchText: '',
-        active: false,
+        // active: false,
         selectedAddress: null,
         email:'',
         properties:[],
@@ -82,7 +83,8 @@ class Showcase extends Component {
     // };
 
     renderPropertiesTooltip = ({id, email,property}) => {
-        return <PropertiesTooltip email={email} id={id} property ={property} cb={this.removeProperty} changeColor={this.changeColor} />;
+        const { utilsData } = this.props;
+        return <PropertiesTooltip email={email} id={id} property ={property} cb={this.removeProperty} changeColor={this.changeColor} editMode={utilsData.editMode} />;
     };
     changeColor = async (email) =>{
         const { utilsData } = this.props;
@@ -107,6 +109,7 @@ class Showcase extends Component {
        
 
         try{
+            console.log('...remove popup box...');
             const popups = document.getElementsByClassName("mapboxgl-popup");
 
             if (popups.length) {
@@ -114,9 +117,9 @@ class Showcase extends Component {
                 popups[0].remove();
 
             }
-             
+            console.log('...redraw....');
             // console.log('..properties..' + JSON.stringify(properties));
-            showPropertiesOnMap(map, properties, this.renderPropertiesTooltip);
+            showPropertiesOnMap(map, properties, this.renderPropertiesTooltip,false);
             // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
             showPrimaryDistancesOnMap(map, properties);
         }catch(e){
@@ -127,8 +130,8 @@ class Showcase extends Component {
         console.log('..remove this property..' + email);
         const prePart = email.split('@')[0];
         const { properties } = this.state;
-         let tobeRemain = properties.filter( property => property.email !== prePart);
-         let tobeDelete = properties.filter( property => property.email === prePart);
+         let tobeRemain = properties.filter( property => property.email.split('@')[0] !== prePart);
+         let tobeDelete = properties.filter( property => property.email.split('@')[0] === prePart);
          if(primaryAddress){
             const { history } = this.props;
             history.push("/edit-property");
@@ -138,34 +141,40 @@ class Showcase extends Component {
         //clear everything, then reload
         const { deleteUserAdditionalAddressById } = this.props;
 
-        const resp = deleteUserAdditionalAddressById(tobeDelete[0].id);
-        const {map} = this.context;
-        if (map) {
-            clearPropertiesFromMap(map);
-            clearResidentsFromMap(map);
-            clearDistancesFromMap(map);
+        if(tobeDelete &&  tobeDelete.length >0){
+            const resp = deleteUserAdditionalAddressById(tobeDelete[0].id);
         }
+        const {map} = this.context;
+
 
         // const {value: properties} = await fetchProperties();
        
 
         try{
+            console.log('...remove popup...');
             const popups = document.getElementsByClassName("mapboxgl-popup");
 
             if (popups.length) {
-
                 popups[0].remove();
-
+            }
+            console.log('...remove map...');
+            if (map) {
+                clearPropertiesFromMap(map);
+                clearResidentsFromMap(map);
+                clearDistancesFromMap(map);
+                // removeAllImages(map);
             }
             this.setState({
                 properties: tobeRemain
             });
+            console.log('...redraw the map after remove property...');
             // console.log('..properties..' + JSON.stringify(properties));
-            showPropertiesOnMap(map, tobeRemain, this.renderPropertiesTooltip);
+            showPropertiesOnMap(map, tobeRemain, this.renderPropertiesTooltip,false);
             // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
             showPrimaryDistancesOnMap(map, tobeRemain);
         }catch(e){
 
+            console.log('...remove property error...' + JSON.stringify(e));
         }
     }
 
@@ -181,13 +190,13 @@ class Showcase extends Component {
                 properties: properties
             });
             // console.log('..properties..' + JSON.stringify(properties));
-            showPropertiesOnMap(map, properties, this.renderPropertiesTooltip);
+            showPropertiesOnMap(map, properties, this.renderPropertiesTooltip,true);
             // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
             showPrimaryDistancesOnMap(map, properties);
         }catch(e){
 
         }
-        map.on('click', this.onClickMap);
+        // map.on('click', this.onClickMap);
     }
 
     onClickMap = (e) => {
@@ -254,14 +263,16 @@ class Showcase extends Component {
                             <li>
                             <Button
                                     size={'sm'}
+                                    onClick={() => this.addAddress()}>
+                                    Add
+                                </Button> &nbsp;&nbsp;&nbsp;&nbsp;
+                                
+                            <Button
+                                    size={'sm'}
                                     onClick={() => this.removeAddress(email)}>
                                     Remove
                                 </Button> &nbsp;&nbsp;&nbsp;&nbsp;
-                                <Button
-                                    size={'sm'}
-                                    onClick={() => this.addAddress()}>
-                                    Add
-                                </Button>
+                                
                             </li>
                         </Col>
                     </Row>
@@ -441,7 +452,7 @@ class Showcase extends Component {
             active: true,
         });
         this.setState({
-            active: true,
+            // active: true,
             address: selectedAddress
         });
         // dispatch(
@@ -547,6 +558,8 @@ class Showcase extends Component {
         const {searchText} = this.state;
 
         if (!searchText.trim()) return;
+        // const { utilsData } = this.props;
+        // if(!utilsData.editMode) return;
 
         geocodeAddress({address: searchText}).then((data) => {
             const {map} = this.context;
@@ -569,17 +582,21 @@ class Showcase extends Component {
         });
     };
     render() {
-        const {pins, active, searchText, changeColor} = this.state;
-        const { utilsData } = this.props;
-        if(utilsData.changeColor){
-            console.log('..now changing color...');
-        }
+        const {pins,  searchText } = this.state;
+        const { utilsData,active,editMode } = this.props;
+        // if(utilsData.changeColor){
+        //     console.log('..now changing color...');
+        // }
+        // if(editMode || utilsData.editMode ) {
+        //     console.log('....now in edit mode...');
+        // }
         return <>
         <div className={'showcase-map-top-actions'}>
                         <div className={'search-actions'}>
                             <Form onSubmit={this.onSubmitSearch}>
                                 <Input
                                     bsSize={'lg'}
+                                    disabled={ !utilsData.editMode}
                                     className=""
                                     value={searchText}
                                     onChange={this.onChangeSearchText}
@@ -587,7 +604,7 @@ class Showcase extends Component {
                                 />
                             </Form>
                         </div>
-                    </div>
+                    </div> 
                     <Map />
                     {active && <PropertyForm />}
                     {utilsData.changeColor && <ChangeColorForm  callback = {this.changeColorCallack} />}
@@ -600,7 +617,9 @@ class Showcase extends Component {
 const mapStateToProps = (state) => ({
     auth: state.auth,
     registerForm: state.registerForm,
-    utilsData: state.utilsData
+    active: state.registerForm.active,
+    utilsData: state.utilsData,
+    editMode: state.utilsData.editMode
 });
 
 const mapDispatchToProps = (dispatch) => ({

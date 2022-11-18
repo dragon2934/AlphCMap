@@ -320,6 +320,7 @@ const EditProperty = () => {
                             <Input
                                 id="email"
                                 name="email"
+                                style={{minWidth:"500px"}}
                                 disabled={true}
                                 onChange={handleChange}
                                 onBlur={handleBlur}

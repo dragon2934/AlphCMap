@@ -56,6 +56,8 @@ const Header = () => {
             localStorage.setItem("current_domain", user.lastName + '.com');
         }
         
+    }else{
+        userEmail = 'Add your address to creae your account';
     }
     const toggleDropDownMenu=useCallback(() => {
         setDropDownOpen(!dropDownOpen)
@@ -75,7 +77,7 @@ const Header = () => {
                editMode: !editSwitch
             }
         };
-        setEditMode(data);
+        dispatch(setEditMode(data));
 
     });
     const onClickDeleteAccount = useCallback(() => {
@@ -95,7 +97,7 @@ const Header = () => {
     const menuLinks =[
         {menuText:'Change Address',menuID:1},
         {menuText:'Change Email',menuID:2},
-        {menuText:'Change Mobie',menuID:3},
+        {menuText:'Change Mobile',menuID:3},
         {menuText:'Change Password',menuID:6},
         {menuText:'Delete Account',menuID:4},
         {menuText:'logout',menuID:5},

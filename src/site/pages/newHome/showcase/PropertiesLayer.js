@@ -1,10 +1,5 @@
-import React, {useContext, useEffect, useState} from "react";
-import ReactDOM from 'react-dom';
-import {useSelector} from 'react-redux';
+import React, {useEffect, useState} from "react";
 import {useHistory} from 'react-router';
-import {Button, Col, Row} from 'reactstrap';
-import MapContext from '../../../../common/contexts/MapContext/MapContext';
-import createHTMLMapMarker from "../../../components/html-marker";
 import {    
     clearDistancesFromMap,
     clearPropertiesFromMap,
@@ -41,7 +36,7 @@ const PropertiesLayer = ({properties,map}) => {
     };
     useEffect(() => {
         if (!map) return;
-        showPropertiesOnMap(map, properties, renderPropertiesTooltip);
+        showPropertiesOnMap(map, properties, renderPropertiesTooltip,true);
         // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
         showPrimaryDistancesOnMap(map, properties);
         

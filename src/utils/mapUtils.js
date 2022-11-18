@@ -71,8 +71,14 @@ const showPropertyTooltip = (map, renderTooltip, e) => {
         .setLngLat(feature.geometry.coordinates)
         .addTo(map);
 };
-
-export const showPropertiesOnMapEx = (map, data, renderTooltip) => {
+export const removeAllImages = (map) =>{
+    map.removeStyleImage( MapMarkerUrls.property.default);
+    map.removeStyleImage( MapMarkerUrls.property.hasInjured);
+    map.removeStyleImage( MapMarkerUrls.property.pending);
+    map.removeStyleImage( MapMarkerUrls.property.safe);
+    map.removeStyleImage( MapMarkerUrls.property.secondary);
+}
+export const showPropertiesOnMapEx = (map, data, renderTooltip,bAddImage) => {
     const propertiesWithAlert = data.filter((i) => i.property_alert);
 
     const other = data.filter((i) => !i.property_alert);
@@ -92,6 +98,7 @@ export const showPropertiesOnMapEx = (map, data, renderTooltip) => {
 
     console.log('..primary ..' + primaryAddress.length + ' secondary ..' + secondaryAddress.length);
     showPointLayer(
+        bAddImage,
         map,
         MapMarkerUrls.property.default,
         'primary-properties',
@@ -100,6 +107,7 @@ export const showPropertiesOnMapEx = (map, data, renderTooltip) => {
     );
 
     showPointLayer(
+        bAddImage,
         map,
         MapMarkerUrls.property.secondary,
         'secondary-properties',
@@ -108,6 +116,7 @@ export const showPropertiesOnMapEx = (map, data, renderTooltip) => {
     );
 
     showPointLayer(
+        bAddImage,
         map,
         MapMarkerUrls.property.safe,
         'safe-properties',
@@ -116,6 +125,7 @@ export const showPropertiesOnMapEx = (map, data, renderTooltip) => {
     );
 
     showPointLayer(
+        bAddImage,
         map,
         MapMarkerUrls.property.pending,
         'pending-properties',
@@ -124,6 +134,7 @@ export const showPropertiesOnMapEx = (map, data, renderTooltip) => {
     );
 
     showPointLayer(
+        bAddImage,
         map,
         MapMarkerUrls.property.hasInjured,
         'has_injured-properties',
@@ -133,7 +144,7 @@ export const showPropertiesOnMapEx = (map, data, renderTooltip) => {
 
     map.on('click', showPropertyTooltip.bind(undefined, map, renderTooltip));
 };
-export const showPropertiesOnMap = (map, data, renderTooltip) => {
+export const showPropertiesOnMap = (map, data, renderTooltip,bAddImage) => {
     const propertiesWithAlert = data.filter((i) => i.primaryAddress );
 
     const other = data.filter((i) => !i.primaryAddress);
@@ -158,6 +169,7 @@ export const showPropertiesOnMap = (map, data, renderTooltip) => {
     })
 
     showPointLayer(
+        bAddImage,
         map,
         MapMarkerUrls.property.default,
         'other-properties',
@@ -166,14 +178,16 @@ export const showPropertiesOnMap = (map, data, renderTooltip) => {
     );
 
     showPointLayer(
+        bAddImage,
         map,
         MapMarkerUrls.property.secondary,
-        'safe-properties',
+        'secondary-properties',
         secondary,
         (i) => [i.location.longitude, i.location.latitude],
     );
 
     showPointLayer(
+        bAddImage,
         map,
         MapMarkerUrls.property.safe,
         'safe-properties',
@@ -182,6 +196,7 @@ export const showPropertiesOnMap = (map, data, renderTooltip) => {
     );
 
     showPointLayer(
+        bAddImage,
         map,
         MapMarkerUrls.property.pending,
         'pending-properties',
@@ -190,6 +205,7 @@ export const showPropertiesOnMap = (map, data, renderTooltip) => {
     );
 
     showPointLayer(
+        bAddImage,
         map,
         MapMarkerUrls.property.hasInjured,
         'has_injured-properties',
@@ -197,13 +213,6 @@ export const showPropertiesOnMap = (map, data, renderTooltip) => {
         (i) => [i.location.longitude, i.location.latitude],
     );
 
-    // showPointLayer(
-    //     map,
-    //     MapMarkerUrls.property.hasInjured,
-    //     'has_injured-properties',
-    //     primary,
-    //     (i) => [i.location.longitude, i.location.latitude],
-    // );
     map.on('click', showPropertyTooltip.bind(undefined, map, renderTooltip));
 };
 
@@ -278,6 +287,7 @@ export const showResidentsOnMap = (map, data, renderTooltip) => {
     );
 
     showPointLayer(
+        bAddImage,
         map,
         MapMarkerUrls.user.default,
         'other-residents',
@@ -286,6 +296,7 @@ export const showResidentsOnMap = (map, data, renderTooltip) => {
     );
 
     showPointLayer(
+        bAddImage,
         map,
         MapMarkerUrls.user.away,
         'away-residents',
@@ -302,6 +313,7 @@ export const showResidentsOnMap = (map, data, renderTooltip) => {
     );
 
     showPointLayer(
+        bAddImage,
         map,
         MapMarkerUrls.user.pending,
         'pending-residents',
@@ -310,6 +322,7 @@ export const showResidentsOnMap = (map, data, renderTooltip) => {
     );
 
     showPointLayer(
+        bAddImage,
         map,
         MapMarkerUrls.user.injured,
         'injured-residents',
@@ -396,6 +409,7 @@ export const showLineLayer = (
 };
 
 const showPointLayer = (
+    bAddImage,
     map,
     imageUrl,
     layerId,
@@ -403,44 +417,77 @@ const showPointLayer = (
     coordinateSelector,
     callback,
 ) => {
-    map.loadImage(imageUrl, function (error, image) {
-        if (error) throw error;
+    // if(bAddImage)
+    {
+        map.loadImage(imageUrl, function (error, image) {
+            if (error) throw error;
 
-        map.addImage(`${layerId}-marker`, image);
+            try{
+                    
+                map.addImage(`${layerId}-marker`, image);
+                    
+                map.addSource(layerId, {
+                    type: 'geojson',
+                    data: {
+                        type: 'FeatureCollection',
+                        features: data.map((p) => ({
+                            type: 'Feature',
+                            properties: p,
+                            geometry: {
+                                type: 'Point',
+                                coordinates: coordinateSelector(p).filter((i) => i),
+                            },
+                        })),
+                    },
+                });
 
-        try{
-            map.addSource(layerId, {
-                type: 'geojson',
-                data: {
-                    type: 'FeatureCollection',
-                    features: data.map((p) => ({
-                        type: 'Feature',
-                        properties: p,
-                        geometry: {
-                            type: 'Point',
-                            coordinates: coordinateSelector(p).filter((i) => i),
-                        },
-                    })),
-                },
-            });
+                map.addLayer({
+                    id: layerId,
+                    source: layerId,
+                    type: 'symbol',
+                    layout: {
+                        'icon-image': `${layerId}-marker`,
+                        'icon-allow-overlap': true,
+                        'icon-anchor': 'bottom',
+                        'icon-size': 0.6,
+                    },
+                });
+            }catch(error){
+                console.log('add layer error:' + JSON.stringify(error));
+            };
 
-            map.addLayer({
-                id: layerId,
-                source: layerId,
-                type: 'symbol',
-                layout: {
-                    'icon-image': `${layerId}-marker`,
-                    'icon-allow-overlap': true,
-                    'icon-anchor': 'bottom',
-                    'icon-size': 0.6,
-                },
-            });
-        }catch(error){
-            console.log('add layer error:' + JSON.stringify(error));
-        };
+            if (callback) callback();
+        });
+    }
+    // else{
+    //     map.addSource(layerId, {
+    //         type: 'geojson',
+    //         data: {
+    //             type: 'FeatureCollection',
+    //             features: data.map((p) => ({
+    //                 type: 'Feature',
+    //                 properties: p,
+    //                 geometry: {
+    //                     type: 'Point',
+    //                     coordinates: coordinateSelector(p).filter((i) => i),
+    //                 },
+    //             })),
+    //         },
+    //     });
 
-        if (callback) callback();
-    });
+    //     map.addLayer({
+    //         id: layerId,
+    //         source: layerId,
+    //         type: 'symbol',
+    //         layout: {
+    //             'icon-image': `${layerId}-marker`,
+    //             'icon-allow-overlap': true,
+    //             'icon-anchor': 'bottom',
+    //             'icon-size': 0.6,
+    //         },
+    //     });
+    //     if (callback) callback();
+    // }
 };
 
 export const clearLayer = (map, layerId) => {

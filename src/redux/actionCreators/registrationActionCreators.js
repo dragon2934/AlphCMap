@@ -121,10 +121,10 @@ export const setPropertyRegistrationForm = (data) => {
 export const setEditMode = (data) => {
     return {
         type: SET_EDIT_MODE,
-        payload: new Promise((resolve) => {
-            // console.log('set edit mode.....' + JSON.stringify(data));
-            resolve(data);
-        }),
+        // payload: new Promise((resolve) => {
+        //     // console.log('set edit mode.....' + JSON.stringify(data));
+        //     resolve(data);
+        // }),
     };
 };
 
