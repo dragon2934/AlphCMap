@@ -151,10 +151,11 @@ class Showcase extends Component {
        
 
         try{
-            console.log('...remove popup...');
+            
             const popups = document.getElementsByClassName("mapboxgl-popup");
 
             if (popups.length) {
+                console.log('...remove popup...@@@@@ $$$$');
                 popups[0].remove();
             }
             console.log('...remove map...');
@@ -217,6 +218,27 @@ class Showcase extends Component {
         }
     };
 
+    getMarkerButton = (email) =>{
+        const prePart = email.split('@')[0];
+        const { properties } = this.state;
+        console.log('..property..' + JSON.stringify(properties));
+        let tobeCheck = properties.filter( property => property.email.split('@')[0] === prePart);
+        if(tobeCheck && tobeCheck.length >0){
+            return <Button
+            size={'sm'}
+            onClick={() => this.changeColor(email)}>
+            Color
+        </Button>
+            
+        }else{
+            return  <Button
+            size={'sm'}
+            onClick={() => this.addAddress()}>
+            Add
+        </Button>
+        }
+    }
+
     createMarker = async ({latitude, longitude}) => {
         // const {domain} = this.state;
         const {map} = this.context;
@@ -261,11 +283,7 @@ class Showcase extends Component {
                         <Col className="list-unstyled text-right">
                             
                             <li>
-                            <Button
-                                    size={'sm'}
-                                    onClick={() => this.addAddress()}>
-                                    Add
-                                </Button> &nbsp;&nbsp;&nbsp;&nbsp;
+                            { this.getMarkerButton(email) } &nbsp;&nbsp;&nbsp;&nbsp;
                                 
                             <Button
                                     size={'sm'}
@@ -386,6 +404,7 @@ class Showcase extends Component {
             }
         }
         const { saveBatchProperties } = this.props;
+        properties.push(data.item);
         saveBatchProperties(data).then( async(resp) => {
              console.log('..saveBatchProperties..' + JSON.stringify(resp));
              //remove the popup and show line
@@ -412,7 +431,8 @@ class Showcase extends Component {
             };
             layerAdded.push(newItem);
             this.setState({
-                layerAdded: layerAdded
+                layerAdded: layerAdded,
+                properties: properties
             });
              showLineLayer(
                 map,
@@ -424,19 +444,7 @@ class Showcase extends Component {
                     [i.location.longitude, i.location.latitude],
                 ],
             );
-             //draw a line between primay and this address
-            //  const {fetchProperties, } = this.props;
-
-            //  const {value: properties} = await fetchProperties();
-            
-     
-            //  try{
-            //      showPropertiesOnMap(map, properties, this.renderPropertiesTooltip);
-            //      // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
-            //      showPrimaryDistancesOnMap(map, properties);
-            //  }catch(e){
-     
-            //  }
+           
         });
 
     }
