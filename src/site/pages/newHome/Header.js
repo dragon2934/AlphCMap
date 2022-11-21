@@ -57,7 +57,7 @@ const Header = () => {
         }
         
     }else{
-        userEmail = 'Add your address to creae your account';
+        userEmail = 'Add your address to create your account';
     }
     const toggleDropDownMenu=useCallback(() => {
         setDropDownOpen(!dropDownOpen)

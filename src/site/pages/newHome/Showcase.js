@@ -591,20 +591,16 @@ class Showcase extends Component {
     };
     render() {
         const {pins,  searchText } = this.state;
-        const { utilsData,active,editMode } = this.props;
-        // if(utilsData.changeColor){
-        //     console.log('..now changing color...');
-        // }
-        // if(editMode || utilsData.editMode ) {
-        //     console.log('....now in edit mode...');
-        // }
+        const { utilsData,active,editMode, auth } = this.props;
+
+        const user = auth.user;
         return <>
         <div className={'showcase-map-top-actions'}>
                         <div className={'search-actions'}>
                             <Form onSubmit={this.onSubmitSearch}>
                                 <Input
                                     bsSize={'lg'}
-                                    disabled={ !utilsData.editMode}
+                                    disabled={ !utilsData.editMode && user !== null && user !== undefined }
                                     className=""
                                     value={searchText}
                                     onChange={this.onChangeSearchText}
