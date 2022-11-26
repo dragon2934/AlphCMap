@@ -89,9 +89,11 @@ const MobileAccountVerification = () => {
                         } catch (e) {
 
                         }
-                        dispatch(resetRegistrationForm()).then(resp=>{
-                            history.push("/");
-                        });
+                        dispatch(resetRegistrationForm());
+                        setTimeout( () => {
+                            history.push("/")
+                        },500);
+                        
                         
                     }}>
                     Start Using App

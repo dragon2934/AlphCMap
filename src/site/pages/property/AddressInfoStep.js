@@ -235,7 +235,7 @@ const AddressInfoStep = ({wizardInstance}) => {
                             Commercial
                         </Label>
                     </FormGroup>
-                    <FormGroup check>
+                    {/* <FormGroup check>
                         <Label check>
                             <Input
                                 type="radio"
@@ -249,7 +249,7 @@ const AddressInfoStep = ({wizardInstance}) => {
                             />
                             Incorporate
                         </Label>
-                    </FormGroup>
+                    </FormGroup> */}
                     <FormGroup check>
                         <Label check>
                             <Input

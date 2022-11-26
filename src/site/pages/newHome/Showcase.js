@@ -96,7 +96,7 @@ class Showcase extends Component {
             changeColor: true
         });
     }
-    changeColorCallack = async() => {
+    redrawMap = async() => {
         const {map} = this.context;
         if (map) {
             clearPropertiesFromMap(map);
@@ -105,8 +105,8 @@ class Showcase extends Component {
         }
 
         const {fetchProperties, } = this.props;
-         const {value: properties} = await fetchProperties();
-       
+        const {value: properties} = await fetchProperties();
+    
 
         try{
             console.log('...remove popup box...');
@@ -123,6 +123,14 @@ class Showcase extends Component {
             // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
             showPrimaryDistancesOnMap(map, properties);
         }catch(e){
+
+        }
+    }
+    changeColorCallack = async( callbackResult) => {
+        if(callbackResult){
+           this.redrawMap();
+        }else{
+            // change color failed
 
         }
     }
@@ -243,9 +251,16 @@ class Showcase extends Component {
         // const {domain} = this.state;
         const {map} = this.context;
 
-        const marker = new mapboxgl.Marker({
-            draggable: true,
-        }).setPopup(
+        const el = document.createElement('div');
+        const width = 48;
+        const height = 48;
+        el.className = 'marker';
+        el.style.backgroundImage = `url(https://alphcmap.com/map-markers/blue_home_pin.png)`;
+        el.style.width = `${width}px`;
+        el.style.height = `${height}px`;
+        el.style.backgroundSize = '100%';
+
+        const marker = new mapboxgl.Marker(el).setPopup(
             new mapboxgl.Popup({
                 closeOnClick: true,
                 closeButton: true,
@@ -283,7 +298,17 @@ class Showcase extends Component {
                         <Col className="list-unstyled text-right">
                             
                             <li>
-                            { this.getMarkerButton(email) } &nbsp;&nbsp;&nbsp;&nbsp;
+                            <Button
+            size={'sm'}
+            onClick={() => this.changeColor(email)}>
+            Color
+        </Button>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+         <Button
+            size={'sm'}
+            onClick={() => this.addAddress()}>
+            Add
+        </Button> &nbsp;&nbsp;&nbsp;&nbsp;
                                 
                             <Button
                                     size={'sm'}
@@ -341,7 +366,6 @@ class Showcase extends Component {
                             marker,
                             email,
                             geocodeData,
-                            marker
                         },
                     ],
                 };
@@ -363,7 +387,6 @@ class Showcase extends Component {
                             marker,
                             email,
                             geocodeData,
-                            marker
                         },
                     ],
                 };
@@ -411,12 +434,49 @@ class Showcase extends Component {
              const { pins, layerAdded } = this.state;
              // console.log('..pins..' + JSON.stringify(pins));
      
-             pins.forEach((p) => {
-                 // console.log('..pins..' + JSON.stringify(p));
-                 if (p.marker.getPopup().isOpen()) {
-                     p.marker.togglePopup();
-                 }
-             });
+            //  pins.forEach((p) => {
+            //      // console.log('..pins..' + JSON.stringify(p));
+            //      if (p.marker.getPopup().isOpen()) {
+            //          p.marker.togglePopup();
+            //      }
+            //  });
+             const currentPin = pins.filter(item => item.email === email);
+             console.log('... current pin ..'  +  currentPin.length );
+             if(currentPin){
+                //rebind
+                const element = document.createElement('div');
+
+                ReactDOM.render(
+                        <div className={'info-window'}>
+                            <h4>{email}</h4>
+                            <Row className="justify-content-end ">
+                                <Col className="list-unstyled text-right">
+                                    
+                                    <li>
+                                    <Button
+                    size={'sm'}
+                    onClick={() => this.changeColor(email)}>
+                    Color
+                </Button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                                        
+                                    <Button
+                                            size={'sm'}
+                                            onClick={() => this.removeAddress(email)}>
+                                            Remove
+                                        </Button> &nbsp;&nbsp;&nbsp;&nbsp;
+                                        
+                                    </li>
+                                </Col>
+                            </Row>
+                        </div>,
+                        element,
+                );
+                currentPin[0].marker.getPopup().setDOMContent(element);
+                currentPin[0].marker.togglePopup();
+             }
+
+            //  this.redrawMap();
              //get primery address
              const primaryAddress = properties.filter( property => property.primaryAddress === true);
              

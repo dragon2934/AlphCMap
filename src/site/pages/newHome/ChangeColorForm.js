@@ -120,12 +120,13 @@ const ChangeColorForm = ({callback}) => {
                         utilsData.changeColor = false;
                         dispatch(changePropertyColor(data)).then(resp=>{
                             console.log('...change color..' + JSON.stringify(resp));
-                            callback();
+                            callback(true);
                             // history.push("/");
                         })
-                        // .catch(error=>{
-                        //     console.log('...change color error..' + JSON.stringify(error));
-                        // })
+                        .catch(error=>{
+                            callback(false);
+                            console.log('...change color error..' + JSON.stringify(error));
+                        })
                     }}>
                     Confirm
                 </Button>

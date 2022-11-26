@@ -378,6 +378,10 @@ const MobileAccountVerifyByPhoneNumber  = ({
 
                             }
                             dispatch(toggleVerificationModal());
+                            setTimeout( () => {
+                                history.push("/")
+                            },500);
+                            
                         }}>
                         Start Using App
                     </Button>
