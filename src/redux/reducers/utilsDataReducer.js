@@ -1,12 +1,15 @@
 import {ActionType} from 'redux-promise-middleware';
 import {
     SET_EDIT_MODE,
+    ADMIN_PROPERTY_BINDING
 } from '../actionTypes';
 
 const initialState = {
     editMode: false,
     changeColor: false,
-    emailForChangeColor:''
+    emailForChangeColor:'',
+    bindingProperty: false,
+    selectedProperty: null,
 };
 
 function utilsDataReducer(state = initialState, action) {
@@ -18,6 +21,11 @@ function utilsDataReducer(state = initialState, action) {
             return {
                 ...state,
                 // ...action.payload,
+            };
+        case `${ADMIN_PROPERTY_BINDING}_${ActionType.Fulfilled}`:
+            return {
+                ...state,
+                ...action.payload,
             };
         case 'CHANGE_PROPERTY_COLOR_FULFILLED':
             return {

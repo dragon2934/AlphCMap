@@ -5,13 +5,9 @@ import {
     Button,
     Row,
     Col,
-    Collapse,
-    Form,
-    FormFeedback,
     FormGroup,
     Input,
     Label,
-    Spinner,
 } from 'reactstrap';
 import {Link} from 'react-router-dom';
 import { changePropertyColor, cancelChangePropertyColor } from '../../../redux/actionCreators/appActionCreators';
@@ -113,18 +109,19 @@ const ChangeColorForm = ({callback}) => {
                     color={'success'}
                     block
                     onClick={() => {
+                        const email = utilsData.emailForChangeColor
                         const data = {
-                            email: utilsData.emailForChangeColor,
+                            email: email,
                             color: color
                         };
                         utilsData.changeColor = false;
                         dispatch(changePropertyColor(data)).then(resp=>{
                             console.log('...change color..' + JSON.stringify(resp));
-                            callback(true);
+                            callback(true, color, email);
                             // history.push("/");
                         })
                         .catch(error=>{
-                            callback(false);
+                            callback(false, color, email);
                             console.log('...change color error..' + JSON.stringify(error));
                         })
                     }}>
