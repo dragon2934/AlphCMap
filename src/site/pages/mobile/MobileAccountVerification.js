@@ -91,7 +91,7 @@ const MobileAccountVerification = () => {
                         }
                         dispatch(resetRegistrationForm());
                         setTimeout( () => {
-                            history.push("/")
+                            window.reload(true);
                         },500);
                         
                         

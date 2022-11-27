@@ -379,7 +379,7 @@ const MobileAccountVerifyByPhoneNumber  = ({
                             }
                             dispatch(toggleVerificationModal());
                             setTimeout( () => {
-                                history.push("/")
+                                window.reload(true);
                             },500);
                             
                         }}>

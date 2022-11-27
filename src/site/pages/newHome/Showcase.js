@@ -125,13 +125,27 @@ class Showcase extends Component {
     
 
         try{
-            console.log('...remove popup box...');
+            //remove all the markers
+            const { pins } = this.state;
+            pins.map(pin =>{
+                const markerTobeRemove = pin.marker;
+                markerTobeRemove.remove();
+            })
+            
             const popups = document.getElementsByClassName("mapboxgl-popup");
-
+            console.log('...remove popup box...popups.length ..' + popups.length);
             if (popups.length) {
-
-                popups[0].remove();
-
+                let popupTotal = popups.length;
+                for(let i=0; i < popupTotal;i++){
+                    console.log('...remove popup box i= ..' + i);
+                    try{
+                        if(popups[i]){
+                            popups[i].remove();
+                        }
+                    }catch(e1){
+                        console.log('..remove popup error..');
+                    }
+                };
             }
             console.log('...redraw....');
             // console.log('..properties..' + JSON.stringify(properties));
@@ -259,7 +273,7 @@ class Showcase extends Component {
         const { deleteUserAdditionalAddressById } = this.props;
 
         if(tobeDelete &&  tobeDelete.length >0){
-            const resp = deleteUserAdditionalAddressById(tobeDelete[0].id);
+            const resp = await deleteUserAdditionalAddressById(tobeDelete[0].id);
         }
         const {map} = this.context;
 
@@ -271,16 +285,28 @@ class Showcase extends Component {
             
             const popups = document.getElementsByClassName("mapboxgl-popup");
 
+            console.log('...remove popup box...popups.length ..' + popups.length);
             if (popups.length) {
-                console.log('...remove popup...@@@@@ $$$$');
-                popups[0].remove();
+                let popupTotal = popups.length;
+                for(let i= popupTotal -1; i >=0 ;i--){
+                    console.log('...remove popup box i= ..' + i);
+                    try{
+                        if(popups[i]){
+                            popups[i].remove();
+                        }
+                    }catch(e1){
+                        console.log('..remove popup error..');
+                    }
+                };
             }
-            const {pins} = this.state;
+            // const {pins} = this.state;
 
-            const currentPin =  pins.filter(item => item.email ===  email);
-            if(currentPin && currentPin.length >0){
-
-            }
+            // const currentPin =  pins.filter(item => item.email ===  email);
+            // if(currentPin && currentPin.length >0){
+            //     if (currentPin[0].marker.getPopup().isOpen()) {
+            //         currentPin[0].marker.togglePopup();
+            //       }
+            // }
             
             
             console.log('...remove map...');
@@ -516,12 +542,14 @@ class Showcase extends Component {
 
     }
     addAddress = () => {
-        const { selectedAddress, email, properties } = this.state;
+        const { selectedAddress, email, properties, pins, layerAdded } = this.state;
         const {map} = this.context;
+        const currentPin = pins.filter(item => item.email === email);
         const data = {
             item:{ 
                 email:email,
-                ...selectedAddress
+                ...selectedAddress,
+                color: currentPin[0].color
             }
         }
         const { saveBatchProperties } = this.props;
@@ -529,7 +557,7 @@ class Showcase extends Component {
         saveBatchProperties(data).then( async(resp) => {
              console.log('..saveBatchProperties..' + JSON.stringify(resp));
              //remove the popup and show line
-             const { pins, layerAdded } = this.state;
+             
              // console.log('..pins..' + JSON.stringify(pins));
      
             //  pins.forEach((p) => {
@@ -538,8 +566,8 @@ class Showcase extends Component {
             //          p.marker.togglePopup();
             //      }
             //  });
-             const currentPin = pins.filter(item => item.email === email);
-             console.log('... current pin ..'  +  currentPin.length );
+             
+            //  console.log('... current pin ..'  +  currentPin.length );
              if(currentPin){
                 //rebind
                 const element = document.createElement('div');
