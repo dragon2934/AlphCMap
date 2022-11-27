@@ -22,9 +22,11 @@ import {generateEmail} from '../../../utils/propertyUtils';
 
 const validationSchema = Yup.object().shape({
     mobileNumber: Yup.string().required('Mobile number is required'),
+    email: Yup.string().required('Email is required')
+           .email('Invalid email'),
     companyName: Yup.string(),
     lastName: Yup.string(),
-    email: Yup.string().email('Invalid email'),
+    // email: Yup.string().email('Invalid email'),
     password: Yup.string()
         .min(6, 'Password is  too Short!')
         .max(16, 'Password is too Long!')
@@ -189,7 +191,7 @@ const UserInfoStep = ({wizardInstance}) => {
             </Col>
             <Col>
                 <FormGroup>
-                    <Label for="email">Email (Optional)</Label>
+                    <Label for="email">Email</Label>
                     <Input
                         type="email"
                         name="email"

@@ -6,7 +6,7 @@ const PrivacyPolicy = () => {
     return (
         <main>
             <Header />
-        <div className="full-screen privacy-policy">
+        <div className="content privacy-policy">
             <Container>
                 <Row className="section-title">
                     <Col>Alphabet Communication Privacy Policy</Col>
@@ -80,8 +80,9 @@ const PrivacyPolicy = () => {
                     rights reserved.
                 </p>
             </Container>
-        </div><Footer />
-        </main>
+        </div>
+         <Footer />
+         </main>
     );
 };
 

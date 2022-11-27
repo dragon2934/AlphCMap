@@ -20,20 +20,20 @@ import {
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_GL_ACCESS_TOKEN;
 
-const MobileViewPropertiesAtMap =() => {
+const ViewPropertiesAtMap =() => {
     //  static contextType = MapContext;
     const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.auth.user);
     const [mapInitialized,setMapInitialized] = useState( false);
     const {map} = useContext(MapContext);
     const history = useHistory();
-    useEffect(() => {
-        try {
-            document.querySelector('body').style.marginTop = 0;
-            document.querySelector('#root').style.height = '100%';
-            document.querySelector('.content').style.height = '100%';
-        } catch (e) {}
-    });
+    // useEffect(() => {
+    //     try {
+    //         document.querySelector('body').style.marginTop = 0;
+    //         document.querySelector('#root').style.height = '100%';
+    //         document.querySelector('.content').style.height = '100%';
+    //     } catch (e) {}
+    // });
 
     useEffect(() => {
        
@@ -57,11 +57,7 @@ const MobileViewPropertiesAtMap =() => {
     },[dispatch, map]);
 
 
-    // const renderResidentsTooltip = ({id, email}) => {
-        
 
-    //     return <ResidentTooltip email={email} id={id} history={history} />;
-    // };
 
     const renderPropertiesTooltip = ({id, email}) => {
         
@@ -84,4 +80,4 @@ const MobileViewPropertiesAtMap =() => {
 }
 
 
-export default MobileViewPropertiesAtMap;
+export default ViewPropertiesAtMap;

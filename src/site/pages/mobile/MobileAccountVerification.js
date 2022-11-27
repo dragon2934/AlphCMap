@@ -89,7 +89,12 @@ const MobileAccountVerification = () => {
                         } catch (e) {
 
                         }
-                        dispatch(toggleVerificationModal());
+                        dispatch(resetRegistrationForm());
+                        setTimeout( () => {
+                            window.reload(true);
+                        },500);
+                        
+                        
                     }}>
                     Start Using App
                 </Button>

@@ -27,7 +27,8 @@ import {
     ADMIN_FETCH_CITY,
     ADMIN_FETCH_CITY_COUNT,
     ADMIN_DELETE_CITY,
-    ADMIN_ADD_CITY
+    ADMIN_ADD_CITY,
+    ADMIN_PROPERTY_BINDING
 } from '../actionTypes';
 
 // UI
@@ -410,9 +411,18 @@ export const searchProperties = (keywords, searchType,cityShorName) => {
 };
 
 // Properties
-export const fetchProperties = ({page = 1, pageSize = 10,roleName = 'Admin',mobile='11112221234'}) => {
+export const fetchProperties = ({page = 1, pageSize = 10,roleName = 'Admin'}) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
+        const user = getState().auth.user;
+        if(user === null || user === undefined){
+            const responseData ={
+                statusCode:200,
+                value:[]
+            }
+            return responseData;
+        }
+        const mobile = user.mobileNumber;
         const start = (page - 1) * pageSize;
         let url = `${SERVICE_URL}/properties?_start=${start}&_limit=${pageSize}&ownerMobileNumber=${mobile}`;
         if(roleName=='PropertyManager'){
@@ -871,6 +881,33 @@ export const updateLatLng = () => {
         return dispatch({
             type: ADMIN_UPDATE_LAT_LNG,
             payload: fetch(`${SERVICE_URL}/properties/update-lat-lng`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+                body:JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData.roles;
+                    }
+                }),
+        });
+    };
+};
+
+export const propertyBinding = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_PROPERTY_BINDING,
+            payload: fetch(`${SERVICE_URL}/properties/binding`, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',

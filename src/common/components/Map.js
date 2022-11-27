@@ -29,7 +29,7 @@ const Map = ({className}) => {
                 container: mapContainer.current,
                 style: 'mapbox://styles/mapbox/streets-v11',
                 center: [-79.4164156, 43.63982499999999],
-                zoom: 5,
+                zoom: 7,
                 attributionControl: false,
             });
             var nav = new mapboxgl.NavigationControl({
@@ -37,7 +37,7 @@ const Map = ({className}) => {
                 showZoom: true
               });
         
-            map.addControl(nav, "top-left");
+            map.addControl(nav, "bottom-right");
             map.on('load', () => {
                 setMap(map);
                 context.setMap(map);
