@@ -86,7 +86,7 @@ const ChangeColorForm = ({callback}) => {
                             <img src={MapMarkerUrls.property.safe} style={{height:"30px"}} />
                         </Label>
                     </FormGroup>  
-                    <FormGroup check>
+                    {/* <FormGroup check>
                         <Label check>
                             <Input
                                 type="radio"
@@ -96,7 +96,7 @@ const ChangeColorForm = ({callback}) => {
                             />
                             <img src={MapMarkerUrls.property.secondary} style={{height:"30px"}} />
                         </Label>
-                    </FormGroup>   
+                    </FormGroup>    */}
                 </FormGroup>  
             </Col>     
         </Row>
@@ -117,7 +117,10 @@ const ChangeColorForm = ({callback}) => {
                         utilsData.changeColor = false;
                         dispatch(changePropertyColor(data)).then(resp=>{
                             console.log('...change color..' + JSON.stringify(resp));
-                            callback(true, color, email);
+                            setTimeout(function(){
+                                callback(true, color, email);
+                            },500)
+                            
                             // history.push("/");
                         })
                         .catch(error=>{

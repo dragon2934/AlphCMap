@@ -8,7 +8,17 @@ const PropertiesTooltip = ({id, email,property, cb,changeColor, editMode,cbBindi
     return (
         <>
             <h4>{email}</h4>
-          { editMode ?  <Row className="justify-content-end">
+            { property.bindingName ? 
+        <Row className="justify-content-end">
+{ property.bindingName ? <Col>Name: { property.bindingName }  </Col> : null }
+{ property.bindingEmail ? <Col>Email: { property.bindingEmail }  </Col> : null }
+{ property.bindingPhone ? <Col>Phone: { property.bindingPhone }  </Col> : null }
+{ property.bindingOthers ? <Col>Others: { property.bindingOthers }  </Col> : null }
+        </Row> : null    
+        }
+          { editMode ? 
+          <>
+          <Row className="justify-content-end">
                 <Col className="list-unstyled text-right">
                     <li>
                     <Button
@@ -44,7 +54,10 @@ const PropertiesTooltip = ({id, email,property, cb,changeColor, editMode,cbBindi
                        } 
                     </li>
                 </Col>
-            </Row> : null }
+            </Row>
+           
+            </>
+             : null }
         </>
     );
 };

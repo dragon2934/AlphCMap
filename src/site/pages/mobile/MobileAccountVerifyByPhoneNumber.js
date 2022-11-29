@@ -379,11 +379,11 @@ const MobileAccountVerifyByPhoneNumber  = ({
                             }
                             dispatch(toggleVerificationModal());
                             setTimeout( () => {
-                                window.reload(true);
+                                history.push("/");
                             },500);
                             
                         }}>
-                        Start Using App
+                        Start Using Website
                     </Button>
                     </div>
                 </>

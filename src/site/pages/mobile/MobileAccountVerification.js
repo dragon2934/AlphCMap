@@ -91,12 +91,12 @@ const MobileAccountVerification = () => {
                         }
                         dispatch(resetRegistrationForm());
                         setTimeout( () => {
-                            window.reload(true);
+                            history.push("/");
                         },500);
                         
                         
                     }}>
-                    Start Using App
+                    Start Using Website
                 </Button>
                 </div>
             </>

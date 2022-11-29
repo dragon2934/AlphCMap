@@ -24,6 +24,7 @@ export const MapMarkerUrls = {
 };
 
 export const PropertyStatus = {
+    DEFAULT: 'default',
     PENDING: 'pending',
     SAFE: 'safe',
     HAS_INJURED: 'hasInjured',

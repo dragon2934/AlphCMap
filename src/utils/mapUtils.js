@@ -149,18 +149,29 @@ export const showPropertiesOnMap = (map, data, renderTooltip,bAddImage) => {
 
     const other = data.filter((i) => !i.primaryAddress);
 
+    // default: '/map-markers/blue_home_pin.png',
+    const defaultItems = other.filter(
+        (i) => i.color === PropertyStatus.DEFAULT,
+    );
+    
+    // safe: '/map-markers/green_home_pin.png',
     const safe = other.filter(
         (i) => i.color === PropertyStatus.SAFE,
     );
+
+    // pending: '/map-markers/grey_home_pin.png',
     const pending = other.filter(
         (i) => i.color === PropertyStatus.PENDING,
     );
+    
+    // hasInjured: '/map-markers/red_home_pin.png',
     const hasInjured = other.filter(
         (i) =>  i.color === PropertyStatus.HAS_INJURED ,
     );
     const primary = propertiesWithAlert.filter(
         (i) => i.primaryAddress  ,
     );
+    // secondary: '/map-markers/second_home_pin.png',
     const secondary = other.filter(
         (i) => i.color === PropertyStatus.SECONDARY,
     );
@@ -173,7 +184,7 @@ export const showPropertiesOnMap = (map, data, renderTooltip,bAddImage) => {
         map,
         MapMarkerUrls.property.default,
         'other-properties',
-        other,
+        defaultItems,
         (i) => [i.location.longitude, i.location.latitude],
     );
 

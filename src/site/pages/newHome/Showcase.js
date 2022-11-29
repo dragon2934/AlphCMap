@@ -147,7 +147,7 @@ class Showcase extends Component {
                     }
                 };
             }
-            console.log('...redraw....');
+            console.log('...redraw....properties..' + JSON.stringify(properties));
             // console.log('..properties..' + JSON.stringify(properties));
             showPropertiesOnMap(map, properties, this.renderPropertiesTooltip,false);
             // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
