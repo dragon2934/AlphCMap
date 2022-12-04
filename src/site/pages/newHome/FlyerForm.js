@@ -23,7 +23,7 @@ import {useHistory} from 'react-router';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
 const bindingSchema = Yup.object().shape({
-
+    promotionTitle: Yup.string().required('This field is required'),
     promotionContent: Yup.string().required('This field is required'),
 
 });
@@ -42,7 +42,8 @@ const FlyerForm = ({callback}) => {
     }
     const formik = useFormik({
         initialValues: {
-            promotionContent:''
+            promotionTitle: '',
+            promotionContent: ''
         },
         isInitialValid: false,
         validationSchema: bindingSchema,
@@ -58,6 +59,7 @@ const FlyerForm = ({callback}) => {
             });
             const postData = {
                 emails: bindingEmails.join(','),
+                promotionTitle: values.promotionTitle,
                 promotionContent: values.promotionContent
             }
             dispatch(sendPromotionContents(postData));
@@ -99,6 +101,22 @@ const FlyerForm = ({callback}) => {
                                 </CListGroup>                   
                 </FormGroup>  
             </Col>     
+        </Row>
+        <Row>
+            <Col>
+            <FormGroup>
+                        <Label for="lblPropertyName">Promotion Title:</Label>
+                        <Input
+                            type="text"
+                            name="promotionTitle"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.promotionTitle}
+                            invalid={touched.promotionTitle && errors.promotionTitle}
+                        />
+                        <FormFeedback>{errors.promotionTitle}</FormFeedback>
+                    </FormGroup>
+            </Col>
         </Row>
         <Row>
             <Col>
