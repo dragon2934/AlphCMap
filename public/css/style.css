@@ -2383,3 +2383,12 @@ a:hover {
   border-color: #ffffff !important;
   font-size: 14px !important;
 }
+.draw-button {
+  position: absolute;
+  top: 120px;
+  right: 10px;
+  z-index: 9999;
+}
+.bindingInfo{
+  font-size: 16px;
+}

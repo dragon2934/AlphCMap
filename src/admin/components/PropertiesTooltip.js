@@ -8,14 +8,15 @@ const PropertiesTooltip = ({id, email,property, cb,changeColor, editMode,cbBindi
     return (
         <>
             <h4>{email}</h4>
-            { property.bindingName ? 
+            
         <Row className="justify-content-end">
-{ property.bindingName ? <Col>Name: { property.bindingName }  </Col> : null }
-{ property.bindingEmail ? <Col>Email: { property.bindingEmail }  </Col> : null }
-{ property.bindingPhone ? <Col>Phone: { property.bindingPhone }  </Col> : null }
-{ property.bindingOthers ? <Col>Others: { property.bindingOthers }  </Col> : null }
-        </Row> : null    
-        }
+{ property.bindingName ? <Col className='bindingInfo'>Name: { property.bindingName }  </Col> : null }
+{ property.bindingEmail ? <Col className='bindingInfo'>Email: { property.bindingEmail }  </Col> : null } 
+</Row>
+<Row className="justify-content-end">
+{ property.bindingPhone ? <Col className='bindingInfo'>Phone: { property.bindingPhone }  </Col> : null }
+{ property.bindingOthers ? <Col className='bindingInfo'>Others: { property.bindingOthers }  </Col> : null }
+        </Row>  
           { editMode ? 
           <>
           <Row className="justify-content-end">

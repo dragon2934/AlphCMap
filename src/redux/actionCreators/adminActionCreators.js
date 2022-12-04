@@ -28,7 +28,8 @@ import {
     ADMIN_FETCH_CITY_COUNT,
     ADMIN_DELETE_CITY,
     ADMIN_ADD_CITY,
-    ADMIN_PROPERTY_BINDING
+    ADMIN_PROPERTY_BINDING,
+    ADMIN_SEND_PROMOTE_EMAIL
 } from '../actionTypes';
 
 // UI
@@ -908,6 +909,33 @@ export const propertyBinding = (data) => {
         return dispatch({
             type: ADMIN_PROPERTY_BINDING,
             payload: fetch(`${SERVICE_URL}/properties/binding`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+                body:JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData.roles;
+                    }
+                }),
+        });
+    };
+};
+
+export const sendPromotionContents = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_SEND_PROMOTE_EMAIL,
+            payload: fetch(`${SERVICE_URL}/residents/send-promote-email`, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',

@@ -58,11 +58,17 @@ const MapLegend = () => {
     } else {
         return ReactDOM.createPortal(
             <div className="map-legend mapboxgl-ctrl">
+                
+
                 {!active && (
+                    <>
+                    
                     <i
                         className="close-button fa-3x fa fa-question"
                         onClick={() => setActive(!active)}
                     />
+ 
+                    </>
                 )}
                 {active && (
                     <div className="map-legend_content">
@@ -110,6 +116,10 @@ const MapLegend = () => {
                         </table>
                     </div>
                 )}
+            
+                {/* <i style={{marginTop:"40px"}} class="close-button fa-3x fa-solid fa-draw-polygon"></i> */}
+      
+                  
             </div>,
             el,
         );

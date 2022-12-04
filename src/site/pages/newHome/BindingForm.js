@@ -78,7 +78,7 @@ const BindingForm = ({callback}) => {
                 />
             </Link>
             <Form onSubmit={handleSubmit}>
-         <Row style={{width:"80%",paddingLeft:"70px"}}>
+         <Row >
          
          <Col style={{textAlign:"left"}}>
                 <FormGroup tag="fieldset">

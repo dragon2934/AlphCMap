@@ -37,7 +37,12 @@ import {
 } from '../../../constants';
 import ChangeColorForm from './ChangeColorForm';
 import BindingForm from './BindingForm';
-// import {useHistory} from 'react-router';
+
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
+import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
+import FlyerForm from './FlyerForm';
+
+
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_GL_ACCESS_TOKEN;
 
@@ -53,7 +58,13 @@ class Showcase extends Component {
         email:'',
         properties:[],
         changeColor: false,
-        layerAdded:[]
+        layerAdded:[],
+        draw: null,
+        drawedBefore: false,
+        drawing: false,
+        selectedProperties: [],
+        feature: null,
+        selectedPropertyEmail:[]
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -74,6 +85,8 @@ class Showcase extends Component {
             clearPropertiesFromMap(map);
             clearResidentsFromMap(map);
             clearDistancesFromMap(map);
+            map.removeLayer('area');
+            map.removeSource('area');
         }
     }
 
@@ -333,13 +346,52 @@ class Showcase extends Component {
     async initializeLayers() {
         const {map} = this.context;
         const {fetchProperties, } = this.props;
-
+        const draw = new MapboxDraw({
+            controls: {
+                point: false,
+                line_string: false,
+                polygon: false,
+                trash: false,
+                combine_features: false,
+                uncombine_features: false,
+            },
+        });
         const {value: properties} = await fetchProperties();
        
 
         try{
             this.setState({
-                properties: properties
+                properties:  
+                    properties.map((p) => ({
+                        type: 'Feature',
+                        properties: p,
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [
+                                p.location.longitude,
+                                p.location.latitude,
+                            ],
+                        },
+                    })),
+                
+                draw: draw
+            });
+            map.addSource('area', {
+                type: 'geojson',
+                data: {
+                    type: 'FeatureCollection',
+                    features: [],
+                },
+            });
+            map.addLayer({
+                id: 'area',
+                type: 'fill',
+                source: 'area',
+                layout: {},
+                paint: {
+                    'fill-color': '#088',
+                    'fill-opacity': 0.8,
+                },
             });
             // console.log('..properties..' + JSON.stringify(properties));
             showPropertiesOnMap(map, properties, this.renderPropertiesTooltip,true);
@@ -783,8 +835,57 @@ class Showcase extends Component {
             searchText: e.currentTarget.value,
         });
     };
+    toggleDrawing = (e) => {
+        const { drawing,draw,selectedProperties,feature, properties } = this.state;
+        console.log('...toggleDrawing...');
+        const {map} = this.context;
+        if(!drawing){
+            map.addControl(draw, 'top-left');
+            draw.changeMode(draw.modes.DRAW_POLYGON);
+            
+            map.getSource('area').setData({
+                type: 'FeatureCollection',
+                features: [],
+            });
+            this.setState({
+                drawing: !drawing,
+                selectedProperties:[],
+                feature: null,
+                selectedPropertyEmail: []
+            });
+        }else{
+            const featureCollection = draw.getAll();
+            map.getSource('area').setData(featureCollection);
+            
+            const data = properties.filter((p) =>
+                booleanPointInPolygon(p, featureCollection.features[0]),
+            );
+            let selected =[];
+            selectedProperties.map(property =>{
+                let columnJson ={
+                    "Email":property.properties.email
+                }
+                selected.push(columnJson)
+            });
+            console.log(' end drawing 1=' + JSON.stringify(data)+ ' 2=' + JSON.stringify(selected));
+            const { utilsData } = this.props;
+            // const { properties } = this.state;
+            utilsData.drawFinished = true;
+            
+            utilsData.selectedProperty = data;
+            
+            this.setState({
+                drawing: !drawing,
+                selectedProperties: data,
+                selectedPropertyEmail: selected,
+                feature: featureCollection.features[0]
+            });
+            map.removeControl(draw);
+        }
+        
+    }
     render() {
-        const {pins,  searchText } = this.state;
+        const {pins,  searchText, drawing } = this.state;
         const { utilsData,active,editMode, auth } = this.props;
 
         const user = auth.user;
@@ -803,10 +904,22 @@ class Showcase extends Component {
                             </Form>
                         </div>
                     </div> 
+                   
+                     { drawing ?
+                     (
+<i onClick={(e) => this.toggleDrawing(e)} className="draw-button fa-2x fa-solid fa-arrow-pointer"></i>
+                     ):(
+<i onClick={(e) => this.toggleDrawing(e)} className="draw-button fa-2x fa-solid fa-draw-polygon"></i>
+                     )
+                    }
+                    
+                    
+              
                     <Map />
                     {active && <PropertyForm />}
                     {utilsData.changeColor && <ChangeColorForm  callback = {this.changeColorCallack} />}
                     {utilsData.bindingProperty && <BindingForm />}
+                    {utilsData.drawFinished && <FlyerForm />}
         </>
                 
         ;
