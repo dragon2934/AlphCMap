@@ -64,7 +64,8 @@ class Showcase extends Component {
         drawing: false,
         selectedProperties: [],
         feature: null,
-        selectedPropertyEmail:[]
+        selectedPropertyEmail:[],
+        satelliteMode: false
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -835,6 +836,18 @@ class Showcase extends Component {
             searchText: e.currentTarget.value,
         });
     };
+    toggleSatelliteMode = (e) => {
+        const { satelliteMode } = this.state;
+        const {map} = this.context;
+        if(!satelliteMode){
+            map.setStyle('mapbox://styles/mapbox/satellite-streets-v12');
+        }else{
+            map.setStyle('mapbox://styles/mapbox/streets-v12');
+        }
+        this.setState({
+            satelliteMode: !satelliteMode,
+        });
+    }
     toggleDrawing = (e) => {
         const { drawing,draw,selectedProperties,feature, properties } = this.state;
         console.log('...toggleDrawing...');
@@ -885,7 +898,7 @@ class Showcase extends Component {
         
     }
     render() {
-        const {pins,  searchText, drawing } = this.state;
+        const {pins,  searchText, drawing, satelliteMode } = this.state;
         const { utilsData,active,editMode, auth } = this.props;
 
         const user = auth.user;
@@ -912,9 +925,19 @@ class Showcase extends Component {
 <i onClick={(e) => this.toggleDrawing(e)} className="draw-button fa-2x fa-solid fa-draw-polygon"></i>
                      )
                     }
+  {
+    satelliteMode ? 
+    (
+        <i onClick={(e) => this.toggleSatelliteMode(e)} class="satellite-button fa-2x fa-solid fa-globe"></i>
+    ):
+    (
+<i onClick={(e) => this.toggleSatelliteMode(e)} class="satellite-button fa-2x fa-solid fa-satellite"></i>
+    )
+  }                  
                     
                     
-              
+                    
+
                     <Map />
                     {active && <PropertyForm />}
                     {utilsData.changeColor && <ChangeColorForm  callback = {this.changeColorCallack} />}

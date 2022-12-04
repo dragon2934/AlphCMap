@@ -2392,3 +2392,9 @@ a:hover {
 .bindingInfo{
   font-size: 16px;
 }
+.satellite-button{
+  position: absolute;
+  top: 160px;
+  right: 10px;
+  z-index: 9999;
+}
