@@ -18,8 +18,8 @@ const SuccessStep = () => {
                     color={'success'}
                     onClick={() => {
                         
-                        //  if (window.ReactNativeWebView)
-                        if(1===1)
+                        if (window.ReactNativeWebView)
+                        //if(1===1)
                         {
                             //To Fix app no active window
                             setTimeout(

@@ -47,72 +47,72 @@ const AddressInfoStep = ({wizardInstance}) => {
             let email = generateEmail(address);
             console.log('email=' + email);
             // if this is hightRiseOrCommercial, check property register
-            // if(values.hightRiseOrCommercial){
-            //     dispatch(isPropertyRegistered(email)).then(result=>{
-            //         // console.log('check property registration=' + JSON.stringify( result));
-            //         if(result.value.registered){
-            //             //reject with error
-            //             setErrorMessage('This address is already registered! Please contact property management');
-            //             setSubmitting(false);
-            //         }else{
-            //             //continue register
-            //             if (values.settlementType === 'lowRise') {
-            //                 values.unitNo = '';
-            //             }
+            if(values.hightRiseOrCommercial){
+                dispatch(isPropertyRegistered(email)).then(result=>{
+                    // console.log('check property registration=' + JSON.stringify( result));
+                    if(result.value.registered){
+                        //reject with error
+                        setErrorMessage('This address is already registered! Please contact property management');
+                        setSubmitting(false);
+                    }else{
+                        //continue register
+                        if (values.settlementType === 'lowRise') {
+                            values.unitNo = '';
+                        }
         
-            //             const {unitNo, ...otherValues} = values;
+                        const {unitNo, ...otherValues} = values;
         
-            //             dispatch(
-            //                 setPropertyRegistrationForm({
-            //                     ...otherValues,
-            //                     address: {
-            //                         ...address,
-            //                         unitNo,
-            //                     },
-            //                 }),
-            //             );
+                        dispatch(
+                            setPropertyRegistrationForm({
+                                ...otherValues,
+                                address: {
+                                    ...address,
+                                    unitNo,
+                                },
+                            }),
+                        );
         
-            //             wizardInstance.nextStep();
-            //         }
-            //     }).catch(error=>{
-            //         console.log('check property error' + error);
-            //         setErrorMessage(JSON.stringify(error));
-            //         setSubmitting(false);
-            //     });
-            // }else if(values.settlementType=='highRise'){
-            //     //check unit number register ?
-            //     email = values.unitNo+'-' + email;
-            //     dispatch(isPropertyRegistered(email)).then(result=>{
-            //         // console.log('check property registration=' + JSON.stringify( result));
-            //         if(result.value.registered){
-            //             //reject with error
-            //             setErrorMessage('This address is already registered! Please contact anything@alphc.com');
-            //             setSubmitting(false);
-            //         }else{
-            //             //continue register
-            //             if (values.settlementType === 'lowRise') {
-            //                 values.unitNo = '';
-            //             }
-            //             const {unitNo, ...otherValues} = values;
-            //             dispatch(
-            //                 setPropertyRegistrationForm({
-            //                     ...otherValues,
-            //                     address: {
-            //                         ...address,
-            //                         unitNo,
-            //                     },
-            //                 }),
-            //             );
+                        wizardInstance.nextStep();
+                    }
+                }).catch(error=>{
+                    console.log('check property error' + error);
+                    setErrorMessage(JSON.stringify(error));
+                    setSubmitting(false);
+                });
+            }else if(values.settlementType=='highRise'){
+                //check unit number register ?
+                email = values.unitNo+'-' + email;
+                dispatch(isPropertyRegistered(email)).then(result=>{
+                    // console.log('check property registration=' + JSON.stringify( result));
+                    if(result.value.registered){
+                        //reject with error
+                        setErrorMessage('This address is already registered! Please contact anything@alphc.com');
+                        setSubmitting(false);
+                    }else{
+                        //continue register
+                        if (values.settlementType === 'lowRise') {
+                            values.unitNo = '';
+                        }
+                        const {unitNo, ...otherValues} = values;
+                        dispatch(
+                            setPropertyRegistrationForm({
+                                ...otherValues,
+                                address: {
+                                    ...address,
+                                    unitNo,
+                                },
+                            }),
+                        );
         
-            //             wizardInstance.nextStep();
-            //         }
-            //     }).catch(error=>{
-            //         console.log('check property error' + error);
-            //         setErrorMessage(JSON.stringify(error));
-            //         setSubmitting(false);
-            //     });
+                        wizardInstance.nextStep();
+                    }
+                }).catch(error=>{
+                    console.log('check property error' + error);
+                    setErrorMessage(JSON.stringify(error));
+                    setSubmitting(false);
+                });
 
-            // }else{
+            }else{
                 if (values.settlementType === 'lowRise') {
                     values.unitNo = '';
                 }
@@ -130,7 +130,7 @@ const AddressInfoStep = ({wizardInstance}) => {
                 );
 
                 wizardInstance.nextStep();
-            // }
+             }
         },
     });
     // Modal open state
@@ -284,7 +284,7 @@ const AddressInfoStep = ({wizardInstance}) => {
                     </FormGroup>
                 </Collapse>
             </Col>
-            {/* <Col>
+            <Col>
                 <FormGroup tag="fieldset">
                     <Label for="postalCode">Settlement Type</Label>
                     <Collapse isOpen={values.hightRiseOrCommercial === false}>
@@ -322,8 +322,8 @@ const AddressInfoStep = ({wizardInstance}) => {
                         </Label>
                     </FormGroup>
                 </FormGroup>
-            </Col> */}
-            {/* <Col>
+            </Col>
+            <Col>
                 <Collapse isOpen={values.settlementType === 'highRise'}>
                     {values.hightRiseOrCommercial?
                     <Col>
@@ -370,7 +370,7 @@ const AddressInfoStep = ({wizardInstance}) => {
                     </Col>
                     }
                 </Collapse>
-            </Col> */}
+            </Col>
             <Col>
             <Collapse isOpen={errorMessage.length > 0 }>
             <Label color={'danger'} for="errorMessage">{errorMessage}</Label>

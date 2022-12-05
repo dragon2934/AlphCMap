@@ -15,11 +15,11 @@ export const propertySchema = Yup.object().shape({
         is: (hightRiseOrCommercial) => hightRiseOrCommercial===false,
         then: Yup.string().required('This field is required'),
     }),
-    // settlementType: Yup.string().required('This field is required'),
-    // unitNo: Yup.string().when(['settlementType','hightRiseOrCommercial'], {
-    //     is: (settlementType,hightRiseOrCommercial) => settlementType === 'highRise' && !hightRiseOrCommercial,
-    //     then: Yup.string().required('This field is required'),
-    // }),
+    settlementType: Yup.string().required('This field is required'),
+    unitNo: Yup.string().when(['settlementType','hightRiseOrCommercial'], {
+        is: (settlementType,hightRiseOrCommercial) => settlementType === 'highRise' && !hightRiseOrCommercial,
+        then: Yup.string().required('This field is required'),
+    }),
     propertyName: Yup.string().when(['addressType','hightRiseOrCommercial'], {
         is: (addressType,hightRiseOrCommercial) => (addressType === 'Incorporate' || addressType==='School') && !hightRiseOrCommercial,
         then: Yup.string().required('This field is required'),
