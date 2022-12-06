@@ -598,16 +598,31 @@ class Showcase extends Component {
         const { selectedAddress, email, properties, pins, layerAdded } = this.state;
         const {map} = this.context;
         const currentPin = pins.filter(item => item.email === email);
-        const data = {
+        const postData = {
             item:{ 
                 email:email,
                 ...selectedAddress,
                 color: currentPin[0].color
             }
         }
+        const data ={
+            type: 'Feature',
+            properties: { 
+                email:email,
+                ...selectedAddress,
+                color: currentPin[0].color
+            },
+            geometry: {
+                type: 'Point',
+                coordinates: [
+                    selectedAddress.location.longitude,
+                    selectedAddress.location.latitude,
+                ],
+            },
+        }
         const { saveBatchProperties } = this.props;
-        properties.push(data.item);
-        saveBatchProperties(data).then( async(resp) => {
+        properties.push(data);
+        saveBatchProperties(postData).then( async(resp) => {
              console.log('..saveBatchProperties..' + JSON.stringify(resp));
              //remove the popup and show line
              
@@ -665,7 +680,7 @@ class Showcase extends Component {
 
             //  this.redrawMap();
              //get primery address
-             const primaryAddress = properties.filter( property => property.primaryAddress === true);
+             const primaryAddress = properties.filter( property => property.properties.primaryAddress === true);
              
 
              const residentsWithLocation =[];
@@ -687,7 +702,7 @@ class Showcase extends Component {
                 randomString,
                 residentsWithLocation,
                 (i) => [
-                    [primaryAddress[0].location.longitude, primaryAddress[0].location.latitude],
+                    [primaryAddress[0].properties.location.longitude, primaryAddress[0].properties.location.latitude],
                     [i.location.longitude, i.location.latitude],
                 ],
             );
@@ -928,10 +943,10 @@ class Showcase extends Component {
   {
     satelliteMode ? 
     (
-        <i onClick={(e) => this.toggleSatelliteMode(e)} class="satellite-button fa-2x fa-solid fa-globe"></i>
+        <i onClick={(e) => this.toggleSatelliteMode(e)} className="satellite-button fa-2x fa-solid fa-globe"></i>
     ):
     (
-<i onClick={(e) => this.toggleSatelliteMode(e)} class="satellite-button fa-2x fa-solid fa-satellite"></i>
+<i onClick={(e) => this.toggleSatelliteMode(e)} className="satellite-button fa-2x fa-solid fa-satellite"></i>
     )
   }                  
                     

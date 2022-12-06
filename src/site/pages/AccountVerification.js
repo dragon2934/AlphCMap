@@ -59,6 +59,9 @@ const AccountVerification = () => {
                                 } catch (e) {}
 
                                 dispatch(toggleVerificationModal());
+                                setTimeout(function(){
+                                    location.reload(true);
+                                },500)
                             }}>
                             Start Using Website
                         </Button>

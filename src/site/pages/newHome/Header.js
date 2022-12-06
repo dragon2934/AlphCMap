@@ -85,7 +85,8 @@ const Header = () => {
             console.log('....delete acount return...' + JSON.stringify(retObj));
             if(retObj.status==='successed'){
                 dispatch(logoutUser()).then(()=>{
-                    history.push('/');
+                    // history.push('/');
+                    location.reload(true);
                 });
             }else{
                 console.log('error message:' + retObj.message);
