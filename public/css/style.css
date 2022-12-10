@@ -2398,3 +2398,7 @@ a:hover {
   right: 10px;
   z-index: 9999;
 }
+
+.red-color{
+  color: #ff0000;
+}

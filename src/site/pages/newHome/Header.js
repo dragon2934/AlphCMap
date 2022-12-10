@@ -86,7 +86,11 @@ const Header = () => {
             if(retObj.status==='successed'){
                 dispatch(logoutUser()).then(()=>{
                     // history.push('/');
-                    location.reload(true);
+                    localStorage.removeItem("current_domain");
+                    setTimeout(() => {
+                        location.reload(true);
+                    }, 500);
+                    
                 });
             }else{
                 console.log('error message:' + retObj.message);

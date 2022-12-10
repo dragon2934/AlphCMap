@@ -22,6 +22,7 @@ import { sendPromotionContents } from '../../../redux/actionCreators/adminAction
 import {useHistory} from 'react-router';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
+import TextArea from "antd/lib/input/TextArea";
 const bindingSchema = Yup.object().shape({
     promotionTitle: Yup.string().required('This field is required'),
     promotionContent: Yup.string().required('This field is required'),
@@ -122,7 +123,9 @@ const FlyerForm = ({callback}) => {
             <Col>
             <FormGroup>
                         <Label for="lblPropertyName">Promotion Content:</Label>
-                        <Input
+                        <TextArea
+                            maxLength={500}
+                            rows= {5}
                             type="text"
                             name="promotionContent"
                             onChange={handleChange}

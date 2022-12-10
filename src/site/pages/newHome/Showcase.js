@@ -862,6 +862,7 @@ class Showcase extends Component {
         this.setState({
             satelliteMode: !satelliteMode,
         });
+        this.redrawMap();
     }
     toggleDrawing = (e) => {
         const { drawing,draw,selectedProperties,feature, properties } = this.state;
@@ -917,6 +918,13 @@ class Showcase extends Component {
         const { utilsData,active,editMode, auth } = this.props;
 
         const user = auth.user;
+        let showIcon = true;
+        if(user === null || user === undefined) showIcon  = false;
+        if(utilsData.editMode) showIcon  = false;
+        if(utilsData.changeColor) showIcon = false;
+        if(utilsData.bindingProperty) showIcon = false;
+        if(utilsData.drawFinished) showIcon = false;
+
         return <>
         <div className={'showcase-map-top-actions'}>
                         <div className={'search-actions'}>
@@ -933,24 +941,31 @@ class Showcase extends Component {
                         </div>
                     </div> 
                    
-                     { drawing ?
+  { !showIcon ? null :           
+                      drawing ?
                      (
-<i onClick={(e) => this.toggleDrawing(e)} className="draw-button fa-2x fa-solid fa-arrow-pointer"></i>
+
+<i title='End Drawing' onClick={(e) => this.toggleDrawing(e)} className="draw-button fa-2x fa-solid fa-arrow-pointer"></i> 
+
                      ):(
-<i onClick={(e) => this.toggleDrawing(e)} className="draw-button fa-2x fa-solid fa-draw-polygon"></i>
+                        
+                       
+<i title='Pan, Draw, Connect, Addresses boundary and identify area to Send Email' onClick={(e) => this.toggleDrawing(e)} className="draw-button fa-2x fa-solid fa-draw-polygon"></i>
+
+
                      )
                     }
   {
-    satelliteMode ? 
+    !showIcon  ? null:  satelliteMode ? 
     (
-        <i onClick={(e) => this.toggleSatelliteMode(e)} className="satellite-button fa-2x fa-solid fa-globe"></i>
+        <i onClick={(e) => this.toggleSatelliteMode(e)} className="satellite-button red-color fa-2x fa-solid fa-globe"></i>
     ):
     (
 <i onClick={(e) => this.toggleSatelliteMode(e)} className="satellite-button fa-2x fa-solid fa-satellite"></i>
     )
-  }                  
-                    
-                    
+                   
+                
+}                 
                     
 
                     <Map />
