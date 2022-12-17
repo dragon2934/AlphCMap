@@ -2402,3 +2402,19 @@ a:hover {
 .red-color{
   color: #ff0000;
 }
+.mapLegend-button{
+  position: absolute;
+  top: 80px;
+  right: 10px;
+  z-index: 9999;
+}
+.mapLegend-button-close{
+  position: absolute;
+  top: 0px;
+  right: 10px;
+}
+#the-count {
+  float: right;
+  padding: 0.1rem 0 0 0;
+  font-size: 0.875rem;
+}

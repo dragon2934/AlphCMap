@@ -65,7 +65,8 @@ class Showcase extends Component {
         selectedProperties: [],
         feature: null,
         selectedPropertyEmail:[],
-        satelliteMode: false
+        satelliteMode: false,
+        showMapLegend: false
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -913,8 +914,35 @@ class Showcase extends Component {
         }
         
     }
+    toggleShowMapLegend = (e) => {
+        const { showMapLegend } = this.state;
+        this.setState({
+            showMapLegend: !showMapLegend,
+        });
+    }
+    PropertyMarkerDescriptions = [
+        {
+            marker: MapMarkerUrls.property.default,
+            description: 'Add your Address Makers base on need and requirements',
+        },
+        {
+            marker: MapMarkerUrls.property.hasInjured,
+            description:
+                'Add your Address Makers base on need and requirements',
+        },
+        {
+            marker: MapMarkerUrls.property.pending,
+            description:
+                'Add your Address Makers base on need and requirements',
+        },
+        {
+            marker: MapMarkerUrls.property.safe,
+            description:
+                'Add your Address Makers base on need and requirements',
+        },
+    ];
     render() {
-        const {pins,  searchText, drawing, satelliteMode } = this.state;
+        const {pins,  searchText, drawing, satelliteMode, showMapLegend } = this.state;
         const { utilsData,active,editMode, auth } = this.props;
 
         const user = auth.user;
@@ -924,6 +952,7 @@ class Showcase extends Component {
         if(utilsData.changeColor) showIcon = false;
         if(utilsData.bindingProperty) showIcon = false;
         if(utilsData.drawFinished) showIcon = false;
+        if(showMapLegend) showIcon = false;
 
         return <>
         <div className={'showcase-map-top-actions'}>
@@ -966,7 +995,55 @@ class Showcase extends Component {
                    
                 
 }                 
+
+
+   {!showMapLegend && (
+                    <>
                     
+                    <i
+                        className="mapLegend-button  close-button fa-3x fa fa-question"
+                        onClick={(e) => this.toggleShowMapLegend(e)}
+                    />
+ 
+                    </>
+                )}
+                {showMapLegend && (
+                    <div className="map-legend_content">
+                        <i
+                            className="mapLegend-button-close  fa fa-3x fa-close"
+                            onClick={(e) => this.toggleShowMapLegend(e)}
+                        />
+
+                        <b>Address Markers</b>
+
+                        <table>
+                            {  this.PropertyMarkerDescriptions.map(
+                                ({marker, description}) => (
+                                    <tr>
+                                        <td>
+                                            <img
+                                                alt={description}
+                                                src={marker}
+                                                height={40}
+                                            />
+                                        </td>
+                                        <td>{description}</td>
+                                    </tr>
+                                ),
+                            )}
+                        </table>
+                        <b>Tools Bar</b>
+                        <table>
+                            <tr><td><i  className="fa-2x fa-solid fa-draw-polygon"></i></td><td>Pan, Draw, Connect, Addresses boundary and identify area to Send Email</td></tr>
+                            <tr><td><i  className="fa-2x fa-solid fa-arrow-pointer"></i></td><td>Send Email to identified Opt-in Addresses</td></tr>
+                            <tr><td><i  className="fa-2x fa-solid fa-satellite"></i></td><td>Satellite Mode</td></tr>
+                            <tr><td><i  className="fa-2x fa-solid fa-globe"></i></td><td>Map Mode</td></tr>
+                        </table>
+
+                        
+
+                    </div>
+                )}                 
 
                     <Map />
                     {active && <PropertyForm />}

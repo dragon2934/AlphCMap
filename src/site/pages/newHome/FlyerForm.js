@@ -78,6 +78,11 @@ const FlyerForm = ({callback}) => {
         values,
     } = formik;
  
+    const [current, setCurrent] = useState(0);
+    const limitWords = (e) =>{
+        const currentLength = e.target.value.length;
+        setCurrent(currentLength)
+    }
     return (
         <Col md={3} sm={12} xs={12} className="overlay-form-container">
             <Link to={'/'}>
@@ -106,7 +111,7 @@ const FlyerForm = ({callback}) => {
         <Row>
             <Col>
             <FormGroup>
-                        <Label for="lblPropertyName">Promotion Title:</Label>
+                        <Label for="lblPropertyName">Title:</Label>
                         <Input
                             type="text"
                             name="promotionTitle"
@@ -121,18 +126,23 @@ const FlyerForm = ({callback}) => {
         </Row>
         <Row>
             <Col>
-            <FormGroup>
-                        <Label for="lblPropertyName">Promotion Content:</Label>
+            <FormGroup class="wrapper">
+                        <Label for="lblPropertyName">Content:</Label>
                         <TextArea
-                            maxLength={500}
+                            maxLength={5000}
                             rows= {5}
                             type="text"
                             name="promotionContent"
                             onChange={handleChange}
                             onBlur={handleBlur}
+                            onKeyUp={ (e) => limitWords(e)}
                             value={values.promotionContent}
                             invalid={touched.promotionContent && errors.promotionContent}
                         />
+                         <div id="the-count">
+    <span id="current">{current}</span>
+    <span id="maximum">/ 5000</span>
+  </div>
                         <FormFeedback>{errors.promotionContent}</FormFeedback>
                     </FormGroup>
             </Col>
