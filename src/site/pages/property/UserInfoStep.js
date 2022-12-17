@@ -267,8 +267,8 @@ const UserInfoStep = ({wizardInstance}) => {
                                 invalid={touched.consent && errors.consent}
                             />
                             I've read{' '}
-                            <a href="/privacy-policy">Privacy Policy</a> and{' '}
-                            <a href="/terms-of-use">Terms of Use</a>.
+                            <a target={'_blank'} href="/privacy-policy">Privacy Policy</a> and{' '}
+                            <a target={ '_blank'} href="/terms-of-use">Terms of Use</a>.
                         </Label>
                         <Label check>
                             <Input

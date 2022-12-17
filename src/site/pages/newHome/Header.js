@@ -64,6 +64,10 @@ const Header = () => {
     });
     const handleEditModeChange=useCallback(() => {
         // setEditMode(!editMode);
+        if(utilsData.drawing){
+            toastr.error('Error','Drawing addresses boundary, can not switch');
+            return;
+        }
         utilsData.editMode = !editSwitch;
         if( utilsData.editMode ){
             console.log('...edit mode is enable !!!!..');

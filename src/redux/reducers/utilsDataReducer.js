@@ -12,6 +12,7 @@ const initialState = {
     bindingProperty: false,
     selectedProperty: null,
     drawFinished: false,
+    drawing: false,
 };
 
 function utilsDataReducer(state = initialState, action) {

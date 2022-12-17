@@ -108,8 +108,21 @@ class Showcase extends Component {
         property ={property} cb={this.removeProperty} 
         changeColor={this.changeColor} editMode={utilsData.editMode} 
         cbBinding = {this.bindingProperty}
+        cbSendEmail = {this.cbSendEmail}
         />;
     };
+    cbSendEmail = (e,property) => {
+        const { utilsData } = this.props;
+        utilsData.drawFinished = true;
+        const data = [];
+        data.push({
+            properties:property});
+        utilsData.selectedProperty = data;
+        
+        this.setState({
+            selectedProperties: data,
+        });
+    }
     changeColor = async (email) =>{
         const { utilsData } = this.props;
         // const { properties } = this.state;
@@ -137,8 +150,20 @@ class Showcase extends Component {
             clearPropertiesFromMap(map);
             clearResidentsFromMap(map);
             clearDistancesFromMap(map);
+            map.removeLayer('area');
+            map.removeSource('area');
         }
 
+        const draw = new MapboxDraw({
+            controls: {
+                point: false,
+                line_string: false,
+                polygon: false,
+                trash: false,
+                combine_features: false,
+                uncombine_features: false,
+            },
+        });
         const {fetchProperties, } = this.props;
         const {value: properties} = await fetchProperties();
     
@@ -151,6 +176,40 @@ class Showcase extends Component {
                 markerTobeRemove.remove();
             })
             
+            this.setState({
+                properties:  
+                    properties.map((p) => ({
+                        type: 'Feature',
+                        properties: p,
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [
+                                p.location.longitude,
+                                p.location.latitude,
+                            ],
+                        },
+                    })),
+                
+                draw: draw
+            });
+            map.addSource('area', {
+                type: 'geojson',
+                data: {
+                    type: 'FeatureCollection',
+                    features: [],
+                },
+            });
+            map.addLayer({
+                id: 'area',
+                type: 'fill',
+                source: 'area',
+                layout: {},
+                paint: {
+                    'fill-color': '#088',
+                    'fill-opacity': 0.8,
+                },
+            });
+
             const popups = document.getElementsByClassName("mapboxgl-popup");
             console.log('...remove popup box...popups.length ..' + popups.length);
             if (popups.length) {
@@ -873,23 +932,33 @@ class Showcase extends Component {
         const { drawing,draw,selectedProperties,feature, properties } = this.state;
         console.log('...toggleDrawing...');
         const {map} = this.context;
+        const { utilsData } = this.props;
+        utilsData.drawing = !drawing;
         if(!drawing){
-            map.addControl(draw, 'top-left');
-            draw.changeMode(draw.modes.DRAW_POLYGON);
-            
-            map.getSource('area').setData({
-                type: 'FeatureCollection',
-                features: [],
-            });
-            this.setState({
-                drawing: !drawing,
-                selectedProperties:[],
-                feature: null,
-                selectedPropertyEmail: []
-            });
+            try{
+                map.addControl(draw, 'top-left');
+                draw.changeMode(draw.modes.DRAW_POLYGON);
+                
+                map.getSource('area').setData({
+                    type: 'FeatureCollection',
+                    features: [],
+                });
+                this.setState({
+                    drawing: !drawing,
+                    selectedProperties:[],
+                    feature: null,
+                    selectedPropertyEmail: []
+                });
+            }catch(e){
+                
+            }
         }else{
             const featureCollection = draw.getAll();
-            map.getSource('area').setData(featureCollection);
+            try{
+                map.getSource('area').setData(featureCollection);
+            }catch(e){
+
+            }
             
             const data = properties.filter((p) =>
                 booleanPointInPolygon(p, featureCollection.features[0]),
@@ -902,7 +971,7 @@ class Showcase extends Component {
                 selected.push(columnJson)
             });
             console.log(' end drawing 1=' + JSON.stringify(data)+ ' 2=' + JSON.stringify(selected));
-            const { utilsData } = this.props;
+           
             // const { properties } = this.state;
             utilsData.drawFinished = true;
             
@@ -974,7 +1043,7 @@ class Showcase extends Component {
                         </div>
                     </div> 
                    
-  { !showIcon ? null :           
+  { !showIcon ? null :    satelliteMode ? null :       
                       drawing ?
                      (
 
