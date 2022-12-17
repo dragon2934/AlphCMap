@@ -83,12 +83,16 @@ class Showcase extends Component {
 
     componentWillUnmount() {
         const {map} = this.context;
-        if (map) {
-            clearPropertiesFromMap(map);
-            clearResidentsFromMap(map);
-            clearDistancesFromMap(map);
-            map.removeLayer('area');
-            map.removeSource('area');
+        try{
+            if (map) {
+                clearPropertiesFromMap(map);
+                clearResidentsFromMap(map);
+                clearDistancesFromMap(map);
+                map.removeLayer('area');
+                map.removeSource('area');
+            }
+        }catch(e){
+            console.log('..componment unmount error');
         }
     }
 
