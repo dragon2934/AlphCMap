@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
-import { useSelector} from 'react-redux';
-import {useLocation} from 'react-router';
-import {TabContent, TabPane} from 'reactstrap';
+import React, { useEffect, useState } from "react";
+import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router';
+import { TabContent, TabPane } from 'reactstrap';
 import MapProvider from '../../common/contexts/MapContext/MapProvider';
 import HomeLayout from '../layouts/HomeLayout';
 
@@ -16,7 +16,7 @@ import Splash from './newHome/Splash';
 
 
 const Home = () => {
-    const {pathname: location} = useLocation();
+    const { pathname: location } = useLocation();
 
 
     const [activeTab, setActiveTab] = useState('');
@@ -37,8 +37,8 @@ const Home = () => {
         }
     }, [location]); // eslint-disable-line react-hooks/exhaustive-deps
     //check login
-    const user = useSelector((state) => state.auth.user);
-    if(user === null || user === undefined){
+    const user = useSelector((state) => state.auth.me);
+    if (user === null || user === undefined) {
         // window.location.href = '/login';
         // return;
     }

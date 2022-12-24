@@ -1,9 +1,9 @@
-import {useFormik} from 'formik';
-import {Link} from 'react-router-dom';
-import React, {useCallback, useContext, useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {toastr} from 'react-redux-toastr';
-import {useHistory} from 'react-router';
+import { useFormik } from 'formik';
+import { Link } from 'react-router-dom';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toastr } from 'react-redux-toastr';
+import { useHistory } from 'react-router';
 import {
     Button,
     Card,
@@ -21,7 +21,7 @@ import {
 } from 'reactstrap';
 import GMap from '../../../common/components/GMap';
 import MapContext from '../../../common/contexts/MapContext/MapContext';
-import {additionalPropertySchema} from '../../../common/validation/propertySchema';
+import { additionalPropertySchema } from '../../../common/validation/propertySchema';
 import {
     getUserPropertyById,
     saveAdditionalAddress
@@ -34,23 +34,21 @@ import {
 import { isAppEmbedWebview } from '../../../utils/utils';
 const EditUserProperty = ({
     match: {
-        params: {id},
+        params: { id },
     },
 }) => {
     const [searchText, setSearchText] = useState('');
     const [searching, setSearching] = useState(false);
 
-    const [isPrimaryHolder,setIsPrimaryHolder] = useState(false);
+    const [isPrimaryHolder, setIsPrimaryHolder] = useState(false);
 
-    
 
-    //check current user whether primay holder in this property
-    const currentUser = useSelector((state) => state.auth.user);
+    const currentUser = useSelector((state) => state.auth.me);
 
-    // const {id: propertyId} = useSelector((state) => state.auth.user.property);
+
     const dispatch = useDispatch();
 
-    const {map} = useContext(MapContext);
+    const { map } = useContext(MapContext);
 
     const [marker] = useState(
         new window.google.maps.Marker({
@@ -66,9 +64,9 @@ const EditUserProperty = ({
             email: '',
             rural: false,
             primaryAddress: true,
-            hightRiseOrCommercial:false,
-            totalFloors:'1',
-            totalUnitsEachFloor:'1',
+            hightRiseOrCommercial: false,
+            totalFloors: '1',
+            totalUnitsEachFloor: '1',
             addressType: '',
             settlementType: '',
             unitNo: '',
@@ -85,7 +83,7 @@ const EditUserProperty = ({
             location: {},
         },
         validationSchema: additionalPropertySchema,
-        onSubmit: (values, {setSubmitting}) => {
+        onSubmit: (values, { setSubmitting }) => {
             setSubmitting(true);
 
             if (values.settlementType === 'lowRise') {
@@ -98,25 +96,25 @@ const EditUserProperty = ({
 
             dispatch(saveAdditionalAddress(property)).then((savedProperty) => {
                 console.log(' savedProperty=' + JSON.stringify(savedProperty));
-                if(savedProperty.value.error){
-                    if(savedProperty.value.error === -1){
-                        toastr.error('Error','Address has been activated! Contact Primary Resident and request to be added as Secondary Resident or Contact anything@alphc.com if you are the Primary Resident.',{
-                            "positionClass":"toast-top-right",
+                if (savedProperty.value.error) {
+                    if (savedProperty.value.error === -1) {
+                        toastr.error('Error', 'Address has been activated! Contact Primary Resident and request to be added as Secondary Resident or Contact anything@alphc.com if you are the Primary Resident.', {
+                            "positionClass": "toast-top-right",
                             "timeOut": "6000",
                         });
-                    }else if(savedProperty.value.error ===-2){
-                        toastr.error('Error','You already added this address',{
-                            "positionClass":"toast-top-right",
+                    } else if (savedProperty.value.error === -2) {
+                        toastr.error('Error', 'You already added this address', {
+                            "positionClass": "toast-top-right",
                             "timeOut": "6000",
                         });
-                    }else{
-                        toastr.error('Error','Add property error! Please contact anything@alphc.com',{
-                            "positionClass":"toast-top-right",
+                    } else {
+                        toastr.error('Error', 'Add property error! Please contact anything@alphc.com', {
+                            "positionClass": "toast-top-right",
                             "timeOut": "6000",
                         });
                     }
                     setSubmitting(false);
-                }else{
+                } else {
                     setSubmitting(false);
                     if (isAppEmbedWebview()) {
                         history.push('/mobile-user-properties');
@@ -174,14 +172,14 @@ const EditUserProperty = ({
 
     const changeMarkerPosition = useCallback(
         (longitude, latitude, geocode = true) => {
-            if(isPrimaryHolder || (id==null || id==undefined)){
+            if (isPrimaryHolder || (id == null || id == undefined)) {
                 marker.setPosition({
                     lng: longitude,
                     lat: latitude,
                 });
 
                 if (geocode)
-                    reverseGeocodePoint({latitude, longitude}).then((data) => {
+                    reverseGeocodePoint({ latitude, longitude }).then((data) => {
                         Object.keys(data).forEach((i) => {
                             if (data[i] === undefined) data[i] = '';
                         });
@@ -207,15 +205,15 @@ const EditUserProperty = ({
     );
 
     useEffect(() => {
-        if(id){
-            console.log('property id='+id);
-            dispatch(getUserPropertyById(id)).then(({value: property}) => {
+        if (id) {
+            console.log('property id=' + id);
+            dispatch(getUserPropertyById(id)).then(({ value: property }) => {
                 console.log('get property....' + JSON.stringify(property));
                 const users = property.users;
-                const user = users.find(u =>{
+                const user = users.find(u => {
                     return u.id === currentUser.id;
                 });
-                if(property.primaryHolder){
+                if (property.primaryHolder) {
                     setIsPrimaryHolder(true);
                 }
                 setValues({
@@ -223,7 +221,7 @@ const EditUserProperty = ({
                     ...property.location,
                 });
 
-                const {latitude, longitude} = property.location;
+                const { latitude, longitude } = property.location;
 
                 if (longitude && latitude && map) {
                     marker.setPosition({
@@ -238,10 +236,10 @@ const EditUserProperty = ({
                     });
                 }
             });
-       }else{
-         //adding property
-         setIsPrimaryHolder(true);
-       }
+        } else {
+            //adding property
+            setIsPrimaryHolder(true);
+        }
     }, [dispatch, map, marker, id, setValues]);
 
     useEffect(() => {
@@ -251,7 +249,7 @@ const EditUserProperty = ({
                 marker.setMap(map);
             };
 
-            if(isPrimaryHolder || (id==null || id==undefined)){
+            if (isPrimaryHolder || (id == null || id == undefined)) {
                 map.addListener('click', onClickMap);
 
                 const onDragMarker = (e) => {
@@ -263,7 +261,7 @@ const EditUserProperty = ({
                     'dragend',
                     onDragMarker,
                 );
-            
+
 
                 return () => {
                     window.google.maps.event.clearListeners(map, 'click');
@@ -305,13 +303,13 @@ const EditUserProperty = ({
 
     return (
         <Card className="mb-1">
-            <CardHeader> { id === null || id === undefined ? 'Add Property' : isPrimaryHolder? 'Edit Property':'View Property' } </CardHeader>
+            <CardHeader> {id === null || id === undefined ? 'Add Property' : isPrimaryHolder ? 'Edit Property' : 'View Property'} </CardHeader>
             <Form onSubmit={handleSubmit}>
                 <CardBody className="pb-4 d-flex flex-column">
                     <div
                         className="d-flex flex-fill mb-4"
-                        style={{height: '400px'}}>
-                    {isPrimaryHolder?    <div className={'map-top-actions'}>
+                        style={{ height: '400px' }}>
+                        {isPrimaryHolder ? <div className={'map-top-actions'}>
                             <div className={'search-actions'}>
                                 <Form onSubmit={onSubmitSearchText}>
                                     <Input
@@ -335,7 +333,7 @@ const EditUserProperty = ({
                                     </Button>
                                 </Form>
                             </div>
-                        </div> : null }
+                        </div> : null}
                         <GMap />
                     </div>
 
@@ -683,21 +681,21 @@ const EditUserProperty = ({
                         </FormGroup>
                     </Col>
                 </CardBody>
-                <CardFooter className="text-right" style={{"padding-bottom":"60px"}}>
-               {isPrimaryHolder?     <Button
+                <CardFooter className="text-right" style={{ "padding-bottom": "60px" }}>
+                    {isPrimaryHolder ? <Button
                         disabled={!isValid || isSubmitting}
                         type="submit"
                         block
                         color="primary">
                         {isSubmitting ? <Spinner size="sm" /> : 'Submit'}
                     </Button> : null}
-                    { isAppEmbedWebview()?  <Button
-                            className="mt-1"
-                            block
-                            tag={Link}
-                            to={`/mobile-user-properties`}>
-                            Back
-                        </Button> : null}
+                    {isAppEmbedWebview() ? <Button
+                        className="mt-1"
+                        block
+                        tag={Link}
+                        to={`/mobile-user-properties`}>
+                        Back
+                    </Button> : null}
                 </CardFooter>
             </Form>
         </Card>

@@ -1,7 +1,7 @@
-import {useFormik} from 'formik';
-import React, {useState} from "react";
-import {useDispatch} from 'react-redux';
-import {Link} from "react-router-dom";
+import { useFormik } from 'formik';
+import React, { useState } from "react";
+import { useDispatch } from 'react-redux';
+import { Link } from "react-router-dom";
 import {
     Button,
     Col,
@@ -16,7 +16,7 @@ import {
 import Alert from 'reactstrap/es/Alert';
 import * as Yup from 'yup';
 import MobileInput from '../../common/components/MobileInput';
-import {loginUser} from '../../redux/actionCreators/authActionCreators';
+import { loginUser, getMe } from '../../redux/actionCreators/authActionCreators';
 import HomeLayout from '../layouts/HomeLayout';
 
 const validationSchema = Yup.object().shape({
@@ -27,7 +27,7 @@ const validationSchema = Yup.object().shape({
         .required('Password is required'),
 });
 
-const Login = ({history}) => {
+const Login = ({ history }) => {
     const dispatch = useDispatch();
     const [error, setError] = useState(null);
 
@@ -37,18 +37,24 @@ const Login = ({history}) => {
             password: '123456',
         },
         validationSchema,
-        onSubmit: (values, {setSubmitting}) => {
+        onSubmit: (values, { setSubmitting }) => {
             setError(null);
             setSubmitting(true);
             dispatch(loginUser(values.email, values.password))
                 .then((response) => {
                     if (response.statusCode > 300) {
-                        setError(response.message[0].messages[0].message);
+                        toastr.error('Error', response.message[0].messages[0].message);
                     } else {
-                        history.push('/');
+                        console.log('..start get me');
+                        dispatch(getMe()).then(resp => {
+                            history.push('/');
+                        }).catch(error => {
+                            toastr.error('Error', "Mobile Or Password doesn't match, Please verify!");
+                        });
+
                     }
                 })
-                .catch(() => {})
+                .catch(() => { })
                 .finally(() => {
                     setSubmitting(false);
                 });

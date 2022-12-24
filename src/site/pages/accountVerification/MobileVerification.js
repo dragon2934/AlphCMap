@@ -1,6 +1,6 @@
 import moment from 'moment';
-import React, {useCallback, useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     Button,
     Collapse,
@@ -11,10 +11,10 @@ import {
     Row,
     Spinner,
 } from 'reactstrap';
-import {resendMobileVerificationCode} from '../../../redux/actionCreators/appActionCreators';
-import {verifyAccount} from '../../../redux/actionCreators/registrationActionCreators';
+import { resendMobileVerificationCode } from '../../../redux/actionCreators/appActionCreators';
+import { verifyAccount } from '../../../redux/actionCreators/registrationActionCreators';
 
-const MobileVerification = ({currentUser}) => {
+const MobileVerification = ({ currentUser }) => {
     const [error, setError] = useState(null);
     const [verificationCode, setVerificationCode] = useState();
     const [remainingTime, setRemainingTime] = useState(0);
@@ -25,25 +25,16 @@ const MobileVerification = ({currentUser}) => {
 
     const dispatch = useDispatch();
 
-    let user = useSelector((state) => state.auth.user);
+    let user = useSelector((state) => state.auth.me);
     const registrationUser = useSelector((state) => state.registerForm.user);
-    if(currentUser===null|| currentUser===undefined){
-        if(user===null || user === undefined){
+    if (currentUser === null || currentUser === undefined) {
+        if (user === null || user === undefined) {
             user = registrationUser;
         }
-    }else{
+    } else {
         user = currentUser;
     }
-    // let user = useSelector((state) => state.auth.user);
 
-    // const registrationUser = useSelector((state) => state.registerForm.user);
-    // if(user===null || user === undefined){
-    //     user = registrationUser;
-    // }
-    // if(user===null || user ===undefined){
-    //     user = currentUser;
-    // }
-    // console.log('MobileVerification.....'+ JSON.stringify(user));
     const onClickVerify = useCallback(() => {
         setPendingVerify(true);
         dispatch(
@@ -52,15 +43,15 @@ const MobileVerification = ({currentUser}) => {
                 mobileVerificationCode: verificationCode,
             }),
         )
-            .then(({value: {user}}) => {
+            .then(({ value: { user } }) => {
                 if (!user.mobileVerified) setError('Invalid Verification Code');
-                else{
+                else {
                     setError(null);
-                    console.log('mobile verfied...'+ JSON.stringify(user));
-                    if(currentUser!=null|| currentUser!=undefined){
+                    console.log('mobile verfied...' + JSON.stringify(user));
+                    if (currentUser != null || currentUser != undefined) {
                         window.location.reload();
                     }
-                } 
+                }
             })
             .finally(() => {
                 setPendingVerify(false);
@@ -154,8 +145,8 @@ const MobileVerification = ({currentUser}) => {
                             pendingResend
                                 ? 'link'
                                 : remainingTime !== 0
-                                ? 'danger'
-                                : 'success'
+                                    ? 'danger'
+                                    : 'success'
                         }
                         onClick={onClickResendVerificationCode}>
                         {pendingResend ? (

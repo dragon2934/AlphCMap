@@ -1,5 +1,5 @@
-import React, {useCallback,useContext, useEffect, useRef, useState,} from "react";
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useCallback, useContext, useEffect, useRef, useState, } from "react";
+import { useDispatch, useSelector } from 'react-redux';
 // import {useDispatch, useSelector} from 'react-redux';
 import MapContext from '../../../common/contexts/MapContext/MapContext';
 import UserPin from './showcase/UserPin.js';
@@ -16,28 +16,28 @@ const Showcase = () => {
 
     const dispatch = useDispatch();
 
-    const user = useSelector((state) => state.auth.user);
+    const user = useSelector((state) => state.auth.me);
     const registerFormUser = useSelector((state) => state.registerForm.user);
-  
+
     const context = useContext(MapContext);
-    const [properties,setProperties ] = useState([]);
+    const [properties, setProperties] = useState([]);
 
 
     useEffect(() => {
-        if(user!==null && user !== undefined){
-            dispatch(fetchProperties({page: 1, pageSize: 100000,mobile:user.mobileNumber})).then(resp=>{
+        if (user !== null && user !== undefined) {
+            dispatch(fetchProperties({ page: 1, pageSize: 100000, mobile: user.mobileNumber })).then(resp => {
                 // console.log('...properties..' + JSON.stringify(resp));
                 setProperties(resp.value);
-            }).catch(error=>{
+            }).catch(error => {
                 console.log('...properties error..' + JSON.stringify(error));
             })
         }
     });
     useEffect(() => {
-        const initializeMap = ({setMap, mapContainer}) => {
-            if(window.google && window.google.maps){
+        const initializeMap = ({ setMap, mapContainer }) => {
+            if (window.google && window.google.maps) {
                 const map = new window.google.maps.Map(mapContainer.current, {
-                    center: {lat: 43.63982499999999, lng: -79.4164156},
+                    center: { lat: 43.63982499999999, lng: -79.4164156 },
                     zoom: 11,
 
                     mapTypeControl: true,
@@ -61,22 +61,22 @@ const Showcase = () => {
             !mapContainer.current.querySelector('canvas.mapboxgl-canvas') &&
             !map
         ) {
-            initializeMap({setMap, mapContainer});
+            initializeMap({ setMap, mapContainer });
         }
     }, [context, map]);
 
-    return  (
+    return (
         <>
             {(!user || registerFormUser) && <ShowcaseActions />}
             {!registerFormUser && user && user.property && <UserPin />}
             {/* {properties &&  properties.map( property =>{
               return  <UserPin key={property.email} propertyMarker={property} />
             } )  } */}
-            {properties && properties.length >0 && <PropertiesLayer  properties={properties} map={map} /> }
-  
+            {properties && properties.length > 0 && <PropertiesLayer properties={properties} map={map} />}
+
             {context.disabled && <div className="map-disabled" />}
             <div
-                style={{height: '100%'}}
+                style={{ height: '100%' }}
                 className={
                     context.disabled
                         ? 'map disabled mapboxgl-map'

@@ -41,8 +41,8 @@ import MobileAccountVerification from './pages/mobile/MobileAccountVerification'
 import ChangeEMail from './pages/newHome/ChangeEMail';
 import ChangeMobile from './pages/newHome/ChangeMobile';
 import ChangePassword from "./pages/newHome/ChangePassword";
-
-import MapProvider from  '../common/contexts/MapContext/MapProvider';
+import MemberShip from "./pages/newHome/MemberShip";
+import MapProvider from '../common/contexts/MapContext/MapProvider';
 const Site = () => {
   return (
     <Switch>
@@ -50,27 +50,28 @@ const Site = () => {
       <Route component={Logout} path={`/logout`} exact />
 
       <Route
-                component={MobileAccountVerification}
-                path={`/mobile-verify`}
-                exact
-      />  
+        component={MobileAccountVerification}
+        path={`/mobile-verify`}
+        exact
+      />
       <Route
-                component={(props) => (
-                    <MapProvider>
-                        <EditProperty {...props} />
-                    </MapProvider>
-                )}    
-                path={`/edit-property`}
-                exact
-      />  
-      
-      
-      <Route exact path="/change-email" component={ChangeEMail} />   
-      <Route exact path="/change-mobile" component={ChangeMobile} />   
-      <Route exact path="/change-password" component={ChangePassword} />  
-      
+        component={(props) => (
+          <MapProvider>
+            <EditProperty {...props} />
+          </MapProvider>
+        )}
+        path={`/edit-property`}
+        exact
+      />
 
-      <Route exact path="/about-us" component={AboutUs} />                
+
+      <Route exact path="/change-email" component={ChangeEMail} />
+      <Route exact path="/pricing" component={MemberShip} />
+      <Route exact path="/change-mobile" component={ChangeMobile} />
+      <Route exact path="/change-password" component={ChangePassword} />
+
+
+      <Route exact path="/about-us" component={AboutUs} />
       <Route exact path="/how-it-works" component={HowItWorks} />
       <Route exact path="/patents" component={Patents} />
       <Route exact path="/contact-us" component={ContactUs} />
@@ -86,9 +87,9 @@ const Site = () => {
                 isAdmin() ? <Component component={Site} path="/" />: <Redirect to="/login" />
               }} /> */}
 
-        <Route component={Home} path={`/`} />
+      <Route component={Home} path={`/`} />
 
-      
+
     </Switch>
   );
 };

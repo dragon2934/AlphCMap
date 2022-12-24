@@ -1,7 +1,7 @@
 import mapboxgl from 'mapbox-gl';
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {withRouter} from 'react-router';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import Map from '../../../common/components/Map';
 import MapContext from '../../../common/contexts/MapContext/MapContext';
 import {
@@ -26,9 +26,9 @@ import {
 } from '../../../utils/propertyUtils';
 import PropertiesTooltip from '../../../admin/components/PropertiesTooltip';
 import PropertyForm from '../property/PropertyForm';
-import {Button, Col, Form, Input, Row} from 'reactstrap';
+import { Button, Col, Form, Input, Row } from 'reactstrap';
 import ReactDOM from 'react-dom';
-import {setPropertyRegistrationForm} from '../../../redux/actionCreators/registrationActionCreators';
+import { setPropertyRegistrationForm } from '../../../redux/actionCreators/registrationActionCreators';
 
 import { saveBatchProperties, deleteUserAdditionalAddressById } from '../../../redux/actionCreators/appActionCreators';
 
@@ -41,7 +41,7 @@ import BindingForm from './BindingForm';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import FlyerForm from './FlyerForm';
-
+import { convertAttributes } from '../../../utils/utils';
 
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_GL_ACCESS_TOKEN;
@@ -55,23 +55,23 @@ class Showcase extends Component {
         searchText: '',
         // active: false,
         selectedAddress: null,
-        email:'',
-        properties:[],
+        email: '',
+        properties: [],
         changeColor: false,
-        layerAdded:[],
+        layerAdded: [],
         draw: null,
         drawedBefore: false,
         drawing: false,
         selectedProperties: [],
         feature: null,
-        selectedPropertyEmail:[],
+        selectedPropertyEmail: [],
         satelliteMode: false,
         showMapLegend: false
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const {map} = this.context;
-        const {mapInitialized} = this.state;
+        const { map } = this.context;
+        const { mapInitialized } = this.state;
         if (!mapInitialized && map) {
             this.initializeLayers();
 
@@ -82,8 +82,8 @@ class Showcase extends Component {
     }
 
     componentWillUnmount() {
-        const {map} = this.context;
-        try{
+        const { map } = this.context;
+        try {
             if (map) {
                 clearPropertiesFromMap(map);
                 clearResidentsFromMap(map);
@@ -91,7 +91,7 @@ class Showcase extends Component {
                 map.removeLayer('area');
                 map.removeSource('area');
             }
-        }catch(e){
+        } catch (e) {
             console.log('..componment unmount error');
         }
     }
@@ -102,50 +102,51 @@ class Showcase extends Component {
     //     return <ResidentTooltip email={email} id={id} history={history} />;
     // };
 
-    renderPropertiesTooltip = ({id, email,property}) => {
+    renderPropertiesTooltip = ({ id, email, property }) => {
         const { utilsData } = this.props;
-        return <PropertiesTooltip email={email} id={id} 
-        property ={property} cb={this.removeProperty} 
-        changeColor={this.changeColor} editMode={utilsData.editMode} 
-        cbBinding = {this.bindingProperty}
-        cbSendEmail = {this.cbSendEmail}
+        return <PropertiesTooltip email={email} id={id}
+            property={property} cb={this.removeProperty}
+            changeColor={this.changeColor} editMode={utilsData.editMode}
+            cbBinding={this.bindingProperty}
+            cbSendEmail={this.cbSendEmail}
         />;
     };
-    cbSendEmail = (e,property) => {
+    cbSendEmail = (e, property) => {
         const { utilsData } = this.props;
         utilsData.drawFinished = true;
         const data = [];
         data.push({
-            properties:property});
+            properties: property
+        });
         utilsData.selectedProperty = data;
-        
+
         this.setState({
             selectedProperties: data,
         });
     }
-    changeColor = async (email) =>{
+    changeColor = async (email) => {
         const { utilsData } = this.props;
         // const { properties } = this.state;
         utilsData.changeColor = true;
-        utilsData.emailForChangeColor =  email;
+        utilsData.emailForChangeColor = email;
         console.log('....setting utilsData.changeColor.....' + email);
         this.setState({
             changeColor: true
         });
     }
-    bindingProperty = async(email,property) =>{
+    bindingProperty = async (email, property) => {
         const { utilsData } = this.props;
         // const { properties } = this.state;
         utilsData.bindingProperty = true;
-        utilsData.emailForChangeColor =  email;
+        utilsData.emailForChangeColor = email;
         utilsData.selectedProperty = property;
         console.log('....setting utilsData.bindingProperty.....' + email);
         this.setState({
             bindingProperty: true
         });
     }
-    redrawMap = async() => {
-        const {map} = this.context;
+    redrawMap = async () => {
+        const { map } = this.context;
         if (map) {
             clearPropertiesFromMap(map);
             clearResidentsFromMap(map);
@@ -164,21 +165,21 @@ class Showcase extends Component {
                 uncombine_features: false,
             },
         });
-        const {fetchProperties, } = this.props;
-        const {value: properties} = await fetchProperties();
-    
+        const { fetchProperties, } = this.props;
+        const { value: properties } = await fetchProperties();
+        const convertedProperties = convertAttributes(properties, true);
 
-        try{
+        try {
             //remove all the markers
             const { pins } = this.state;
-            pins.map(pin =>{
+            pins.map(pin => {
                 const markerTobeRemove = pin.marker;
                 markerTobeRemove.remove();
             })
-            
+
             this.setState({
-                properties:  
-                    properties.map((p) => ({
+                properties:
+                    convertedProperties.map((p) => ({
                         type: 'Feature',
                         properties: p,
                         geometry: {
@@ -189,7 +190,7 @@ class Showcase extends Component {
                             ],
                         },
                     })),
-                
+
                 draw: draw
             });
             map.addSource('area', {
@@ -214,41 +215,38 @@ class Showcase extends Component {
             console.log('...remove popup box...popups.length ..' + popups.length);
             if (popups.length) {
                 let popupTotal = popups.length;
-                for(let i=0; i < popupTotal;i++){
+                for (let i = 0; i < popupTotal; i++) {
                     console.log('...remove popup box i= ..' + i);
-                    try{
-                        if(popups[i]){
+                    try {
+                        if (popups[i]) {
                             popups[i].remove();
                         }
-                    }catch(e1){
+                    } catch (e1) {
                         console.log('..remove popup error..');
                     }
                 };
             }
-            console.log('...redraw....properties..' + JSON.stringify(properties));
-            // console.log('..properties..' + JSON.stringify(properties));
-            showPropertiesOnMap(map, properties, this.renderPropertiesTooltip,false);
-            // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
-            showPrimaryDistancesOnMap(map, properties);
-        }catch(e){
+            showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, false);
+            showPrimaryDistancesOnMap(map, convertedProperties);
+        } catch (e) {
 
         }
     }
 
-    changeColorCallack = async( callbackResult, color, email) => {
-        if(callbackResult){
-           this.redrawMap();
-        }else{
+    changeColorCallack = async (callbackResult, color, email) => {
+        if (callbackResult) {
+            this.redrawMap();
+        } else {
             // change color failed
             // find the pin
             // console.log('..this property not added yet, but we still need to update the color');
-             const { pins } = this.state;
-             const currentPin = pins.filter(item => item.email.split('@')[0] === email.split('@')[0]);
-             const othersPin = pins.filter(item => item.email.split('@')[0] !== email.split('@')[0]);
-             console.log('..others pin..' + othersPin.length + '..current pin..' + currentPin.length + ' email=' + email + ' color=' + color);
-             if(currentPin && currentPin.length >0 ){
+            const { pins } = this.state;
+            const currentPin = pins.filter(item => item.email.split('@')[0] === email.split('@')[0]);
+            const othersPin = pins.filter(item => item.email.split('@')[0] !== email.split('@')[0]);
+            console.log('..others pin..' + othersPin.length + '..current pin..' + currentPin.length + ' email=' + email + ' color=' + color);
+            if (currentPin && currentPin.length > 0) {
                 //change the marker
-                const {map} = this.context;
+                const { map } = this.context;
                 const markerTobeRemove = currentPin[0].marker;
                 markerTobeRemove.remove();
 
@@ -257,17 +255,17 @@ class Showcase extends Component {
                 const height = 48;
                 el.className = 'marker';
                 let imgSrc = 'map-markers/blue_home_pin.png';
-                if(color  === 'default') imgSrc = '/map-markers/blue_home_pin.png';
-                if(color  === 'hasInjured') imgSrc = '/map-markers/red_home_pin.png';
-                if(color  === 'pending') imgSrc = '/map-markers/grey_home_pin.png';
-                if(color  === 'safe') imgSrc = '/map-markers/green_home_pin.png';
-                if(color  === 'secondary') imgSrc = '/map-markers/second_home_pin.png';
+                if (color === 'default') imgSrc = '/map-markers/blue_home_pin.png';
+                if (color === 'hasInjured') imgSrc = '/map-markers/red_home_pin.png';
+                if (color === 'pending') imgSrc = '/map-markers/grey_home_pin.png';
+                if (color === 'safe') imgSrc = '/map-markers/green_home_pin.png';
+                if (color === 'secondary') imgSrc = '/map-markers/second_home_pin.png';
                 console.log('..change color..' + imgSrc);
                 el.style.backgroundImage = `url(` + imgSrc + `)`;
                 el.style.width = `${width}px`;
                 el.style.height = `${height}px`;
                 el.style.backgroundSize = '100%';
-        
+
                 const marker = new mapboxgl.Marker(el).setPopup(
                     new mapboxgl.Popup({
                         closeOnClick: true,
@@ -280,42 +278,42 @@ class Showcase extends Component {
 
                 const element = document.createElement('div');
                 ReactDOM.render(
-                        <div className={'info-window'}>
-                            <h4>{email}</h4>
-                            <Row className="justify-content-end ">
-                                <Col className="list-unstyled text-right">
-                                    
-                                    <li>
+                    <div className={'info-window'}>
+                        <h4>{email}</h4>
+                        <Row className="justify-content-end ">
+                            <Col className="list-unstyled text-right">
+
+                                <li>
                                     <Button
-                    size={'sm'}
-                    onClick={() => this.bindingProperty(email)}>
-                    Info
-                </Button> &nbsp;&nbsp;&nbsp;&nbsp;
+                                        size={'sm'}
+                                        onClick={() => this.bindingProperty(email)}>
+                                        Info
+                                    </Button> &nbsp;&nbsp;&nbsp;&nbsp;
                                     <Button
-                    size={'sm'}
-                    onClick={() => this.changeColor(email)}>
-                    Color
-                </Button>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                 <Button
-                    size={'sm'}
-                    onClick={() => this.addAddress()}>
-                    Add
-                </Button> &nbsp;&nbsp;&nbsp;&nbsp;
-                                        
+                                        size={'sm'}
+                                        onClick={() => this.changeColor(email)}>
+                                        Color
+                                    </Button>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
                                     <Button
-                                            size={'sm'}
-                                            onClick={() => this.removeAddress(email)}>
-                                            Remove
-                                        </Button> &nbsp;&nbsp;&nbsp;&nbsp;
-                                        
-                                    </li>
-                                </Col>
-                            </Row>
-                        </div>,
-                        element,
+                                        size={'sm'}
+                                        onClick={() => this.addAddress()}>
+                                        Add
+                                    </Button> &nbsp;&nbsp;&nbsp;&nbsp;
+
+                                    <Button
+                                        size={'sm'}
+                                        onClick={() => this.removeAddress(email)}>
+                                        Remove
+                                    </Button> &nbsp;&nbsp;&nbsp;&nbsp;
+
+                                </li>
+                            </Col>
+                        </Row>
+                    </div>,
+                    element,
                 );
-        
+
                 marker.getPopup().setDOMContent(element);// setHTML(html);
 
                 this.setState((state) => {
@@ -332,47 +330,44 @@ class Showcase extends Component {
                         ],
                     };
                 });
-             }
+            }
         }
     }
-    removeProperty = async (email,primaryAddress) =>  {
+    removeProperty = async (email, primaryAddress) => {
         console.log('..remove this property..' + email);
         const prePart = email.split('@')[0];
         const { properties } = this.state;
-         let tobeRemain = properties.filter( property => property.email.split('@')[0] !== prePart);
-         let tobeDelete = properties.filter( property => property.email.split('@')[0] === prePart);
-         if(primaryAddress){
+        let tobeRemain = properties.filter(property => property.email.split('@')[0] !== prePart);
+        let tobeDelete = properties.filter(property => property.email.split('@')[0] === prePart);
+        if (primaryAddress) {
             const { history } = this.props;
             history.push("/edit-property");
             return;
-         }
-         console.log('..to be remove..' + JSON.stringify(tobeDelete));
+        }
+        console.log('..to be remove..' + JSON.stringify(tobeDelete));
         //clear everything, then reload
         const { deleteUserAdditionalAddressById } = this.props;
 
-        if(tobeDelete &&  tobeDelete.length >0){
+        if (tobeDelete && tobeDelete.length > 0) {
             const resp = await deleteUserAdditionalAddressById(tobeDelete[0].id);
         }
-        const {map} = this.context;
+        const { map } = this.context;
 
 
-        // const {value: properties} = await fetchProperties();
-       
+        try {
 
-        try{
-            
             const popups = document.getElementsByClassName("mapboxgl-popup");
 
             console.log('...remove popup box...popups.length ..' + popups.length);
             if (popups.length) {
                 let popupTotal = popups.length;
-                for(let i= popupTotal -1; i >=0 ;i--){
+                for (let i = popupTotal - 1; i >= 0; i--) {
                     console.log('...remove popup box i= ..' + i);
-                    try{
-                        if(popups[i]){
+                    try {
+                        if (popups[i]) {
                             popups[i].remove();
                         }
-                    }catch(e1){
+                    } catch (e1) {
                         console.log('..remove popup error..');
                     }
                 };
@@ -385,8 +380,8 @@ class Showcase extends Component {
             //         currentPin[0].marker.togglePopup();
             //       }
             // }
-            
-            
+
+
             console.log('...remove map...');
             if (map) {
                 clearPropertiesFromMap(map);
@@ -399,18 +394,18 @@ class Showcase extends Component {
             });
             console.log('...redraw the map after remove property...');
             // console.log('..properties..' + JSON.stringify(properties));
-            showPropertiesOnMap(map, tobeRemain, this.renderPropertiesTooltip,false);
+            showPropertiesOnMap(map, tobeRemain, this.renderPropertiesTooltip, false);
             // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
             showPrimaryDistancesOnMap(map, tobeRemain);
-        }catch(e){
+        } catch (e) {
 
             console.log('...remove property error...' + JSON.stringify(e));
         }
     }
 
     async initializeLayers() {
-        const {map} = this.context;
-        const {fetchProperties, } = this.props;
+        const { map } = this.context;
+        const { fetchProperties, } = this.props;
         const draw = new MapboxDraw({
             controls: {
                 point: false,
@@ -421,13 +416,13 @@ class Showcase extends Component {
                 uncombine_features: false,
             },
         });
-        const {value: properties} = await fetchProperties();
-       
+        const { value: properties } = await fetchProperties();
+        const convertedProperties = convertAttributes(properties, true);
 
-        try{
+        try {
             this.setState({
-                properties:  
-                    properties.map((p) => ({
+                properties:
+                    convertedProperties.map((p) => ({
                         type: 'Feature',
                         properties: p,
                         geometry: {
@@ -438,7 +433,7 @@ class Showcase extends Component {
                             ],
                         },
                     })),
-                
+
                 draw: draw
             });
             map.addSource('area', {
@@ -458,38 +453,38 @@ class Showcase extends Component {
                     'fill-opacity': 0.8,
                 },
             });
-            // console.log('..properties..' + JSON.stringify(properties));
-            showPropertiesOnMap(map, properties, this.renderPropertiesTooltip,true);
+
+            showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true);
             // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
-            showPrimaryDistancesOnMap(map, properties);
-        }catch(e){
+            showPrimaryDistancesOnMap(map, convertedProperties);
+        } catch (e) {
 
         }
         // map.on('click', this.onClickMap);
     }
 
     onClickMap = (e) => {
-        const {lng: longitude, lat: latitude} = e.lngLat;
+        const { lng: longitude, lat: latitude } = e.lngLat;
         // console.log('..map..on click..' + longitude);
         const { utilsData, auth } = this.props;
         const user = auth.user;
-        if(utilsData.editMode){
+        if (utilsData.editMode) {
             console.log('..in edit mode..');
-            this.createMarker({latitude, longitude});
-        }else{
-            if(user === null || user == undefined){
+            this.createMarker({ latitude, longitude });
+        } else {
+            if (user === null || user == undefined) {
                 //user logout Or not register
-                this.createMarker({latitude, longitude});
-            }else{
+                this.createMarker({ latitude, longitude });
+            } else {
                 console.log('.. editMode turn off..');
             }
         }
     };
 
 
-    createMarker = async ({latitude, longitude}) => {
+    createMarker = async ({ latitude, longitude }) => {
         // const {domain} = this.state;
-        const {map} = this.context;
+        const { map } = this.context;
 
         const el = document.createElement('div');
         const width = 48;
@@ -513,56 +508,56 @@ class Showcase extends Component {
         marker.on('dragend', this.onDragMarker);
         marker.on('click', () => marker.togglePopup());
 
-        const geocodeData = await reverseGeocodePoint({longitude, latitude});
+        const geocodeData = await reverseGeocodePoint({ longitude, latitude });
 
         let domain = localStorage.getItem('current_domain');
-        if(domain === undefined || domain === null){
+        if (domain === undefined || domain === null) {
             domain = 'alphc.com'
         }
-        const email = generateEmail(geocodeData) +  '@' + domain;
+        const email = generateEmail(geocodeData) + '@' + domain;
         this.setState({
             selectedAddress: geocodeData,
             email: email
         });
         const { auth } = this.props;
 
-        
+
         const element = document.createElement('div');
 
-        if(auth.user !== null && auth.user !== undefined){
+        if (auth.user !== null && auth.user !== undefined) {
             //这里需要区分
             ReactDOM.render(
                 <div className={'info-window'}>
                     <h4>{email}</h4>
                     <Row className="justify-content-end ">
                         <Col className="list-unstyled text-right">
-                            
+
                             <li>
-                            <Button
-            size={'sm'}
-            onClick={() => this.changeColor(email)}>
-            Color
-        </Button>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-         <Button
-            size={'sm'}
-            onClick={() => this.addAddress()}>
-            Add
-        </Button> &nbsp;&nbsp;&nbsp;&nbsp;
-                                
-                            <Button
+                                <Button
+                                    size={'sm'}
+                                    onClick={() => this.changeColor(email)}>
+                                    Color
+                                </Button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <Button
+                                    size={'sm'}
+                                    onClick={() => this.addAddress()}>
+                                    Add
+                                </Button> &nbsp;&nbsp;&nbsp;&nbsp;
+
+                                <Button
                                     size={'sm'}
                                     onClick={() => this.removeAddress(email)}>
                                     Remove
                                 </Button> &nbsp;&nbsp;&nbsp;&nbsp;
-                                
+
                             </li>
                         </Col>
                     </Row>
                 </div>,
                 element,
             );
-        }else{
+        } else {
             ReactDOM.render(
                 <div className={'info-window'}>
                     <h4>{email}</h4>
@@ -585,12 +580,12 @@ class Showcase extends Component {
         marker.getPopup().setDOMContent(element);// setHTML(html);
         marker.togglePopup();
 
-        
-        const {pins} = this.state;
+
+        const { pins } = this.state;
         // console.log('..pins..' + JSON.stringify(pins));
 
 
-        if(auth.user !== null && auth.user !== undefined){
+        if (auth.user !== null && auth.user !== undefined) {
             pins.forEach((p) => {
                 // console.log('..pins..' + JSON.stringify(p));
                 if (p.marker.getPopup().isOpen()) {
@@ -611,7 +606,7 @@ class Showcase extends Component {
                     ],
                 };
             });
-        }else{
+        } else {
             pins.forEach((p) => {
                 // console.log('..pins..' + JSON.stringify(p));
                 if (p.marker.getPopup().isOpen()) {
@@ -635,8 +630,8 @@ class Showcase extends Component {
         }
     };
 
-    removeAddress = (emailIn) =>{
-        const {pins } = this.state;
+    removeAddress = (emailIn) => {
+        const { pins } = this.state;
         const tobeRemove = pins.filter((p) => p.email === emailIn);
         const marker = tobeRemove[0].marker;
         marker.remove();
@@ -648,31 +643,31 @@ class Showcase extends Component {
             };
         });
         //check wheter exist
-        const {  layerAdded } = this.state;
+        const { layerAdded } = this.state;
         // console.log('..layerAdded..' + JSON.stringify(layerAdded) + " ..emailIn.." + emailIn);
-        let tobeDelete = layerAdded.filter( layer => layer.email === emailIn);
-        const {map} = this.context;
-        if(tobeDelete && tobeDelete.length > 0){
+        let tobeDelete = layerAdded.filter(layer => layer.email === emailIn);
+        const { map } = this.context;
+        if (tobeDelete && tobeDelete.length > 0) {
             // console.log('..tobeDelete..' + JSON.stringify(tobeDelete));
-            clearLayer( map, tobeDelete[0].layerId);
+            clearLayer(map, tobeDelete[0].layerId);
         }
 
     }
     addAddress = () => {
         const { selectedAddress, email, properties, pins, layerAdded } = this.state;
-        const {map} = this.context;
+        const { map } = this.context;
         const currentPin = pins.filter(item => item.email === email);
         const postData = {
-            item:{ 
-                email:email,
+            item: {
+                email: email,
                 ...selectedAddress,
                 color: currentPin[0].color
             }
         }
-        const data ={
+        const data = {
             type: 'Feature',
-            properties: { 
-                email:email,
+            properties: {
+                email: email,
                 ...selectedAddress,
                 color: currentPin[0].color
             },
@@ -686,73 +681,73 @@ class Showcase extends Component {
         }
         const { saveBatchProperties } = this.props;
         properties.push(data);
-        saveBatchProperties(postData).then( async(resp) => {
-             console.log('..saveBatchProperties..' + JSON.stringify(resp));
-             //remove the popup and show line
-             
-             // console.log('..pins..' + JSON.stringify(pins));
-     
+        saveBatchProperties(postData).then(async (resp) => {
+            console.log('..saveBatchProperties..' + JSON.stringify(resp));
+            //remove the popup and show line
+
+            // console.log('..pins..' + JSON.stringify(pins));
+
             //  pins.forEach((p) => {
             //      // console.log('..pins..' + JSON.stringify(p));
             //      if (p.marker.getPopup().isOpen()) {
             //          p.marker.togglePopup();
             //      }
             //  });
-             
+
             //  console.log('... current pin ..'  +  currentPin.length );
-             if(currentPin){
+            if (currentPin) {
                 //rebind
                 const element = document.createElement('div');
 
                 ReactDOM.render(
-                        <div className={'info-window'}>
-                            <h4>{email}</h4>
-                            <Row className="justify-content-end ">
-                                <Col className="list-unstyled text-right">
-                                    
-                                    <li>
+                    <div className={'info-window'}>
+                        <h4>{email}</h4>
+                        <Row className="justify-content-end ">
+                            <Col className="list-unstyled text-right">
+
+                                <li>
                                     <Button
-                    size={'sm'}
-                    onClick={() => this.bindingProperty(email)}>
-                    Info
-                </Button>
-                &nbsp;&nbsp;&nbsp;&nbsp;
+                                        size={'sm'}
+                                        onClick={() => this.bindingProperty(email)}>
+                                        Info
+                                    </Button>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
                                     <Button
-                    size={'sm'}
-                    onClick={() => this.changeColor(email)}>
-                    Color
-                </Button>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                                        
+                                        size={'sm'}
+                                        onClick={() => this.changeColor(email)}>
+                                        Color
+                                    </Button>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+
                                     <Button
-                                            size={'sm'}
-                                            onClick={() => this.removeAddress(email)}>
-                                            Remove
-                                        </Button> &nbsp;&nbsp;&nbsp;&nbsp;
-                                        
-                                    </li>
-                                </Col>
-                            </Row>
-                        </div>,
-                        element,
+                                        size={'sm'}
+                                        onClick={() => this.removeAddress(email)}>
+                                        Remove
+                                    </Button> &nbsp;&nbsp;&nbsp;&nbsp;
+
+                                </li>
+                            </Col>
+                        </Row>
+                    </div>,
+                    element,
                 );
                 currentPin[0].marker.getPopup().setDOMContent(element);
                 if (currentPin[0].marker.getPopup().isOpen()) {
-                  currentPin[0].marker.togglePopup();
+                    currentPin[0].marker.togglePopup();
                 }
-             }
+            }
 
             //  this.redrawMap();
-             //get primery address
-             const primaryAddress = properties.filter( property => property.properties.primaryAddress === true);
-             
+            //get primery address
+            const primaryAddress = properties.filter(property => property.properties.primaryAddress === true);
 
-             const residentsWithLocation =[];
-             residentsWithLocation.push(selectedAddress);
-             const randomString = generateString(10);
-             
-             const newItem = { 
-                email:email,
+
+            const residentsWithLocation = [];
+            residentsWithLocation.push(selectedAddress);
+            const randomString = generateString(10);
+
+            const newItem = {
+                email: email,
                 layerId: randomString
             };
             layerAdded.push(newItem);
@@ -760,7 +755,7 @@ class Showcase extends Component {
                 layerAdded: layerAdded,
                 properties: properties
             });
-             showLineLayer(
+            showLineLayer(
                 map,
                 MapMarkerUrls.user.injured,
                 randomString,
@@ -770,12 +765,12 @@ class Showcase extends Component {
                     [i.location.longitude, i.location.latitude],
                 ],
             );
-           
+
         });
 
     }
     activateAddress = () => {
-        const { setPropertyRegistrationForm,registerForm } = this.props;
+        const { setPropertyRegistrationForm, registerForm } = this.props;
         const { selectedAddress } = this.state;
         //  = address;
         // console.log('..selectedAddress..' + JSON.stringify(selectedAddress));
@@ -798,7 +793,7 @@ class Showcase extends Component {
         // );
     };
     onDragMarker = async (event) => {
-        const {pins } = this.state;
+        const { pins } = this.state;
 
         pins.forEach((p) => {
             if (p.marker.getPopup().isOpen()) {
@@ -806,11 +801,11 @@ class Showcase extends Component {
             }
         });
 
-        const {lng: longitude, lat: latitude} = event.target.getLngLat();
+        const { lng: longitude, lat: latitude } = event.target.getLngLat();
 
-        const geocodeData = await reverseGeocodePoint({longitude, latitude});
+        const geocodeData = await reverseGeocodePoint({ longitude, latitude });
         let domain = localStorage.getItem('current_domain');
-        if(domain === undefined || domain === null){
+        if (domain === undefined || domain === null) {
             domain = 'alphc.com'
         }
         const email = generateEmail(geocodeData) + '@' + domain;
@@ -823,17 +818,17 @@ class Showcase extends Component {
 
         const marker = pins[index].marker;
         const { auth } = this.props;
-        
+
         const element = document.createElement('div');
 
-        if(auth.user !== null && auth.user !== undefined){
+        if (auth.user !== null && auth.user !== undefined) {
             ReactDOM.render(
                 <div className={'info-window'}>
                     <h4>{email}@alphc.com</h4>
                     <Row className="justify-content-end ">
                         <Col className="list-unstyled text-right">
                             <li>
-                               <Button
+                                <Button
                                     size={'sm'}
                                     onClick={() => this.removeAddress(email)}>
                                     Remove
@@ -849,7 +844,7 @@ class Showcase extends Component {
                 </div>,
                 element,
             );
-        }else{
+        } else {
             ReactDOM.render(
                 <div className={'info-window'}>
                     <h4>{email}@alphc.com</h4>
@@ -889,14 +884,14 @@ class Showcase extends Component {
     onSubmitSearch = (e) => {
         e.preventDefault();
 
-        const {searchText} = this.state;
+        const { searchText } = this.state;
 
         if (!searchText.trim()) return;
         // const { utilsData } = this.props;
         // if(!utilsData.editMode) return;
 
-        geocodeAddress({address: searchText}).then((data) => {
-            const {map} = this.context;
+        geocodeAddress({ address: searchText }).then((data) => {
+            const { map } = this.context;
 
             if (data) {
                 this.createMarker({
@@ -917,10 +912,10 @@ class Showcase extends Component {
     };
     toggleSatelliteMode = (e) => {
         const { satelliteMode } = this.state;
-        const {map} = this.context;
-        if(!satelliteMode){
+        const { map } = this.context;
+        if (!satelliteMode) {
             map.setStyle('mapbox://styles/mapbox/satellite-streets-v12');
-        }else{
+        } else {
             map.setStyle('mapbox://styles/mapbox/streets-v12');
         }
         this.setState({
@@ -929,54 +924,54 @@ class Showcase extends Component {
         this.redrawMap();
     }
     toggleDrawing = (e) => {
-        const { drawing,draw,selectedProperties,feature, properties } = this.state;
+        const { drawing, draw, selectedProperties, feature, properties } = this.state;
         console.log('...toggleDrawing...');
-        const {map} = this.context;
+        const { map } = this.context;
         const { utilsData } = this.props;
         utilsData.drawing = !drawing;
-        if(!drawing){
-            try{
+        if (!drawing) {
+            try {
                 map.addControl(draw, 'top-left');
                 draw.changeMode(draw.modes.DRAW_POLYGON);
-                
+
                 map.getSource('area').setData({
                     type: 'FeatureCollection',
                     features: [],
                 });
                 this.setState({
                     drawing: !drawing,
-                    selectedProperties:[],
+                    selectedProperties: [],
                     feature: null,
                     selectedPropertyEmail: []
                 });
-            }catch(e){
-                
-            }
-        }else{
-            const featureCollection = draw.getAll();
-            try{
-                map.getSource('area').setData(featureCollection);
-            }catch(e){
+            } catch (e) {
 
             }
-            
+        } else {
+            const featureCollection = draw.getAll();
+            try {
+                map.getSource('area').setData(featureCollection);
+            } catch (e) {
+
+            }
+
             const data = properties.filter((p) =>
                 booleanPointInPolygon(p, featureCollection.features[0]),
             );
-            let selected =[];
-            selectedProperties.map(property =>{
-                let columnJson ={
-                    "Email":property.properties.email
+            let selected = [];
+            selectedProperties.map(property => {
+                let columnJson = {
+                    "Email": property.properties.email
                 }
                 selected.push(columnJson)
             });
-            console.log(' end drawing 1=' + JSON.stringify(data)+ ' 2=' + JSON.stringify(selected));
-           
+            console.log(' end drawing 1=' + JSON.stringify(data) + ' 2=' + JSON.stringify(selected));
+
             // const { properties } = this.state;
             utilsData.drawFinished = true;
-            
+
             utilsData.selectedProperty = data;
-            
+
             this.setState({
                 drawing: !drawing,
                 selectedProperties: data,
@@ -985,7 +980,7 @@ class Showcase extends Component {
             });
             map.removeControl(draw);
         }
-        
+
     }
     toggleShowMapLegend = (e) => {
         const { showMapLegend } = this.state;
@@ -996,136 +991,138 @@ class Showcase extends Component {
     PropertyMarkerDescriptions = [
         {
             marker: MapMarkerUrls.property.default,
-            description: 'Add your Address Makers base on need and requirements',
+            description: 'Add your Address Makers based on need and requirements',
         },
         {
             marker: MapMarkerUrls.property.hasInjured,
             description:
-                'Add your Address Makers base on need and requirements',
+                'Add your Address Makers based on need and requirements',
         },
         {
             marker: MapMarkerUrls.property.pending,
             description:
-                'Add your Address Makers base on need and requirements',
+                'Add your Address Makers based on need and requirements',
         },
         {
             marker: MapMarkerUrls.property.safe,
             description:
-                'Add your Address Makers base on need and requirements',
+                'Add your Address Makers based on need and requirements',
         },
     ];
     render() {
-        const {pins,  searchText, drawing, satelliteMode, showMapLegend } = this.state;
-        const { utilsData,active,editMode, auth } = this.props;
+        const { pins, searchText, drawing, satelliteMode, showMapLegend } = this.state;
+        const { utilsData, active, editMode, auth } = this.props;
 
         const user = auth.user;
         let showIcon = true;
-        if(user === null || user === undefined) showIcon  = false;
-        if(utilsData.editMode) showIcon  = false;
-        if(utilsData.changeColor) showIcon = false;
-        if(utilsData.bindingProperty) showIcon = false;
-        if(utilsData.drawFinished) showIcon = false;
-        if(showMapLegend) showIcon = false;
+        if (user === null || user === undefined) showIcon = false;
+        if (utilsData.editMode) showIcon = false;
+        if (utilsData.changeColor) showIcon = false;
+        if (utilsData.bindingProperty) showIcon = false;
+        if (utilsData.drawFinished) showIcon = false;
+        if (showMapLegend) showIcon = false;
 
         return <>
-        <div className={'showcase-map-top-actions'}>
-                        <div className={'search-actions'}>
-                            <Form onSubmit={this.onSubmitSearch}>
-                                <Input
-                                    bsSize={'lg'}
-                                    disabled={ !utilsData.editMode && user !== null && user !== undefined }
-                                    className=""
-                                    value={searchText}
-                                    onChange={this.onChangeSearchText}
-                                    placeholder={'Search...'}
-                                />
-                            </Form>
-                        </div>
-                    </div> 
-                   
-  { !showIcon ? null :    satelliteMode ? null :       
-                      drawing ?
-                     (
+            <div className={'showcase-map-top-actions'}>
+                <div className={'search-actions'}>
+                    <Form onSubmit={this.onSubmitSearch}>
+                        <Input
+                            bsSize={'lg'}
+                            disabled={!utilsData.editMode && user !== null && user !== undefined}
+                            className=""
+                            value={searchText}
+                            onChange={this.onChangeSearchText}
+                            placeholder={'Search...'}
+                        />
+                    </Form>
+                </div>
+            </div>
 
-<i title='End Drawing' onClick={(e) => this.toggleDrawing(e)} className="draw-button fa-2x fa-solid fa-arrow-pointer"></i> 
+            {!showIcon ? null : satelliteMode ? null :
+                drawing ?
+                    (
 
-                     ):(
-                        
-                       
-<i title='Pan, Draw, Connect, Addresses boundary and identify area to Send Email' onClick={(e) => this.toggleDrawing(e)} className="draw-button fa-2x fa-solid fa-draw-polygon"></i>
+                        <i title='End Drawing' onClick={(e) => this.toggleDrawing(e)} className="draw-button fa-2x fa-solid fa-arrow-pointer"></i>
+
+                    ) : (
 
 
-                     )
-                    }
-  {
-    !showIcon  ? null:  satelliteMode ? 
-    (
-        <i onClick={(e) => this.toggleSatelliteMode(e)} className="satellite-button red-color fa-2x fa-solid fa-globe"></i>
-    ):
-    (
-<i onClick={(e) => this.toggleSatelliteMode(e)} className="satellite-button fa-2x fa-solid fa-satellite"></i>
-    )
-                   
-                
-}                 
+                        <i title='Pan, Draw, Connect, Addresses boundary and identify area to Send Email' onClick={(e) => this.toggleDrawing(e)} className="draw-button fa-2x fa-solid fa-draw-polygon"></i>
 
 
-   {!showMapLegend && (
-                    <>
-                    
+                    )
+            }
+            {
+                !showIcon ? null : satelliteMode ?
+                    (
+                        <i onClick={(e) => this.toggleSatelliteMode(e)} className="satellite-button red-color fa-2x fa-solid fa-globe"></i>
+                    ) :
+                    (
+                        <i onClick={(e) => this.toggleSatelliteMode(e)} className="satellite-button fa-2x fa-solid fa-satellite"></i>
+                    )
+
+
+            }
+
+
+            {!showMapLegend && (
+                <>
+
                     <i
                         className="mapLegend-button  close-button fa-3x fa fa-question"
                         onClick={(e) => this.toggleShowMapLegend(e)}
                     />
- 
-                    </>
-                )}
-                {showMapLegend && (
-                    <div className="map-legend_content">
-                        <i
-                            className="mapLegend-button-close  fa fa-3x fa-close"
-                            onClick={(e) => this.toggleShowMapLegend(e)}
-                        />
 
-                        <b>Address Markers</b>
+                </>
+            )}
+            {showMapLegend && (
+                <div className="map-legend_content">
+                    <i
+                        className="mapLegend-button-close  fa fa-3x fa-close"
+                        onClick={(e) => this.toggleShowMapLegend(e)}
+                    />
 
-                        <table>
-                            {  this.PropertyMarkerDescriptions.map(
-                                ({marker, description}) => (
-                                    <tr>
-                                        <td>
-                                            <img
-                                                alt={description}
-                                                src={marker}
-                                                height={40}
-                                            />
-                                        </td>
-                                        <td>{description}</td>
-                                    </tr>
-                                ),
-                            )}
-                        </table>
-                        <b>Tools Bar</b>
-                        <table>
-                            <tr><td><i  className="fa-2x fa-solid fa-draw-polygon"></i></td><td>Pan, Draw, Connect, Addresses boundary and identify area to Send Email</td></tr>
-                            <tr><td><i  className="fa-2x fa-solid fa-arrow-pointer"></i></td><td>Send Email to identified Opt-in Addresses</td></tr>
-                            <tr><td><i  className="fa-2x fa-solid fa-satellite"></i></td><td>Satellite Mode</td></tr>
-                            <tr><td><i  className="fa-2x fa-solid fa-globe"></i></td><td>Map Mode</td></tr>
-                        </table>
+                    <b>Address Markers</b>
 
-                        
+                    <table> <tr>
+                        {this.PropertyMarkerDescriptions.map(
+                            ({ marker, description }) => (
 
-                    </div>
-                )}                 
+                                <td>
+                                    <img
+                                        alt={description}
+                                        src={marker}
+                                        height={40}
+                                    /> &nbsp;&nbsp;
+                                </td>
 
-                    <Map />
-                    {active && <PropertyForm />}
-                    {utilsData.changeColor && <ChangeColorForm  callback = {this.changeColorCallack} />}
-                    {utilsData.bindingProperty && <BindingForm />}
-                    {utilsData.drawFinished && <FlyerForm />}
+
+                            ),
+                        )}
+                    </tr>
+                        <tr><td colSpan={this.PropertyMarkerDescriptions.length}><hr />{this.PropertyMarkerDescriptions[0].description}<hr /></td></tr>
+                    </table>
+                    <b>Tools Bar</b>
+                    <table>
+                        <tr><td><i className="fa-2x fa-solid fa-draw-polygon"></i></td><td>Pan, Draw, Connect, Addresses boundary and identify area to Send Email<hr /></td></tr>
+                        <tr><td><i className="fa-2x fa-solid fa-arrow-pointer"></i></td><td>Send Email to identified Opt-in Addresses<hr /></td></tr>
+                        <tr><td><i className="fa-2x fa-solid fa-satellite"></i></td><td>Satellite Mode<hr /></td></tr>
+                        <tr><td><i className="fa-2x fa-solid fa-globe"></i></td><td>Map Mode</td></tr>
+                    </table>
+
+
+
+                </div>
+            )}
+
+            <Map />
+            {active && <PropertyForm />}
+            {utilsData.changeColor && <ChangeColorForm callback={this.changeColorCallack} />}
+            {utilsData.bindingProperty && <BindingForm />}
+            {utilsData.drawFinished && <FlyerForm />}
         </>
-                
-        ;
+
+            ;
     }
 }
 
@@ -1139,10 +1136,10 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     fetchProperties: () =>
-        dispatch(fetchProperties({page: 1, pageSize: 100000})),
-    fetchUsers: () => dispatch(fetchUsers({page: 1, pageSize: 100000})),
+        dispatch(fetchProperties({ page: 1, pageSize: 100000 })),
+    fetchUsers: () => dispatch(fetchUsers({ page: 1, pageSize: 100000 })),
     setPropertyRegistrationForm: (data) => dispatch(setPropertyRegistrationForm(data)),
-    saveBatchProperties: (data)  => dispatch(saveBatchProperties(data)),
+    saveBatchProperties: (data) => dispatch(saveBatchProperties(data)),
     deleteUserAdditionalAddressById: (propertyId) => dispatch(deleteUserAdditionalAddressById(propertyId))
 });
 

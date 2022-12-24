@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import {
     Button,
@@ -16,11 +16,11 @@ import {
     CListGroup,
     CListGroupItem,
 } from '@coreui/react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { cancelChangePropertyColor } from '../../../redux/actionCreators/appActionCreators';
 import { sendPromotionContents } from '../../../redux/actionCreators/adminActionCreators';
-import {useHistory} from 'react-router';
-import {useFormik} from 'formik';
+import { useHistory } from 'react-router';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import TextArea from "antd/lib/input/TextArea";
 const bindingSchema = Yup.object().shape({
@@ -28,17 +28,17 @@ const bindingSchema = Yup.object().shape({
     promotionContent: Yup.string().required('This field is required'),
 
 });
-const FlyerForm = ({callback}) => {
+const FlyerForm = ({ callback }) => {
 
     const utilsData = useSelector((state) => state.utilsData);
     // console.log('...utilsData..' + JSON.stringify(utilsData));
     const dispatch = useDispatch();
     const history = useHistory();
-    const [color,setColor] = useState('default');
+    const [color, setColor] = useState('default');
     const properties = utilsData.selectedProperty;
 
     let domain = localStorage.getItem('current_domain');
-    if(domain === undefined || domain === null){
+    if (domain === undefined || domain === null) {
         domain = 'alphc.com'
     }
     const formik = useFormik({
@@ -48,13 +48,13 @@ const FlyerForm = ({callback}) => {
         },
         isInitialValid: false,
         validationSchema: bindingSchema,
-        onSubmit: (values, {setSubmitting}) => {
+        onSubmit: (values, { setSubmitting }) => {
             setSubmitting(true);
             utilsData.drawFinished = false;
             let bindingEmails = [];
-            properties.map((p) =>{
+            properties.map((p) => {
                 console.log('....flyer form, property..' + JSON.stringify(p));
-                if(p.properties.bindingEmail){
+                if (p.properties.bindingEmail) {
                     bindingEmails.push(p.properties.bindingEmail);
                 }
             });
@@ -77,9 +77,9 @@ const FlyerForm = ({callback}) => {
         setFieldValue,
         values,
     } = formik;
- 
+
     const [current, setCurrent] = useState(0);
-    const limitWords = (e) =>{
+    const limitWords = (e) => {
         const currentLength = e.target.value.length;
         setCurrent(currentLength)
     }
@@ -93,87 +93,87 @@ const FlyerForm = ({callback}) => {
                 />
             </Link>
             <Form onSubmit={handleSubmit}>
-         <Row >
-         
-         <Col style={{textAlign:"left"}}>
-                <FormGroup tag="fieldset">
-                <CLabel>Send Flyer to:</CLabel>
-                <CListGroup accent className="mb-3">
-                                    {properties.map((p) => (
-                                        <CListGroupItem key={p.properties.id}>
-                                            {p.properties.email + '@' + domain}
-                                        </CListGroupItem>
-                                    ))}
-                                </CListGroup>                   
-                </FormGroup>  
-            </Col>     
-        </Row>
-        <Row>
-            <Col>
-            <FormGroup>
-                        <Label for="lblPropertyName">Title:</Label>
-                        <Input
-                            type="text"
-                            name="promotionTitle"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.promotionTitle}
-                            invalid={touched.promotionTitle && errors.promotionTitle}
-                        />
-                        <FormFeedback>{errors.promotionTitle}</FormFeedback>
-                    </FormGroup>
-            </Col>
-        </Row>
-        <Row>
-            <Col>
-            <FormGroup class="wrapper">
-                        <Label for="lblPropertyName">Content:</Label>
-                        <TextArea
-                            maxLength={5000}
-                            rows= {5}
-                            type="text"
-                            name="promotionContent"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            onKeyUp={ (e) => limitWords(e)}
-                            value={values.promotionContent}
-                            invalid={touched.promotionContent && errors.promotionContent}
-                        />
-                         <div id="the-count">
-    <span id="current">{current}</span>
-    <span id="maximum">/ 5000</span>
-  </div>
-                        <FormFeedback>{errors.promotionContent}</FormFeedback>
-                    </FormGroup>
-            </Col>
-        </Row>
-        <Row>
-            <Col>        
-                <Button block disabled={!isValid || isSubmitting}>
-                    {isSubmitting ? <Spinner size={'sm'} /> : 'Confirm'}
-                </Button>
+                <Row >
 
-                   
-            </Col> 
-            <Col>
-                <Button
-                    className="mt-1 mb-5"
-                    color={'danger'}
-                    block
-                    onClick={() => {
-                        // const data = {
-                        //     email: utilsData.emailForChangeColor,
-                        //     color: color
-                        // };
-                        utilsData.drawFinished = false;
-                        dispatch(cancelChangePropertyColor());
-                    }}>
-                    Cancel
-                </Button>
-              </Col>
+                    <Col style={{ textAlign: "left" }}>
+                        <FormGroup tag="fieldset">
+                            <CLabel>Send Communication:</CLabel>
+                            <CListGroup accent className="mb-3">
+                                {properties.map((p) => (
+                                    <CListGroupItem key={p.properties.id}>
+                                        {p.properties.email + '@' + domain}
+                                    </CListGroupItem>
+                                ))}
+                            </CListGroup>
+                        </FormGroup>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <FormGroup>
+                            <Label for="lblPropertyName">Title:</Label>
+                            <Input
+                                type="text"
+                                name="promotionTitle"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.promotionTitle}
+                                invalid={touched.promotionTitle && errors.promotionTitle}
+                            />
+                            <FormFeedback>{errors.promotionTitle}</FormFeedback>
+                        </FormGroup>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <FormGroup class="wrapper">
+                            <Label for="lblPropertyName">Content:</Label>
+                            <TextArea
+                                maxLength={1000}
+                                rows={5}
+                                type="text"
+                                name="promotionContent"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                onKeyUp={(e) => limitWords(e)}
+                                value={values.promotionContent}
+                                invalid={touched.promotionContent && errors.promotionContent}
+                            />
+                            <div id="the-count">
+                                <span id="current">{current}</span>
+                                <span id="maximum">/ 1000</span>
+                            </div>
+                            <FormFeedback>{errors.promotionContent}</FormFeedback>
+                        </FormGroup>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <Button block disabled={!isValid || isSubmitting}>
+                            {isSubmitting ? <Spinner size={'sm'} /> : 'Confirm'}
+                        </Button>
 
-                
-            </Row>
+
+                    </Col>
+                    <Col>
+                        <Button
+                            className="mt-1 mb-5"
+                            color={'danger'}
+                            block
+                            onClick={() => {
+                                // const data = {
+                                //     email: utilsData.emailForChangeColor,
+                                //     color: color
+                                // };
+                                utilsData.drawFinished = false;
+                                dispatch(cancelChangePropertyColor());
+                            }}>
+                            Cancel
+                        </Button>
+                    </Col>
+
+
+                </Row>
             </Form>
         </Col>
     );

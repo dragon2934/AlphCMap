@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import {NavLink as ReactRouterLink} from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink as ReactRouterLink } from "react-router-dom";
 import {
     Collapse,
     Nav,
@@ -57,6 +57,14 @@ const Footer = () => {
                                 onClick={collapse}
                                 to="/our-video">
                                 Our Video
+                            </NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink
+                                tag={ReactRouterLink}
+                                onClick={collapse}
+                                to="/about-us">
+                                About AlphCMap
                             </NavLink>
                         </NavItem>
                     </Nav>

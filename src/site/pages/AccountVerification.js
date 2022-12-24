@@ -1,8 +1,8 @@
 import React from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {useHistory} from 'react-router';
-import {Button, Modal, ModalBody, Row} from 'reactstrap';
-import {toggleVerificationModal} from '../../redux/actionCreators/appActionCreators';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import { Button, Modal, ModalBody, Row } from 'reactstrap';
+import { toggleVerificationModal } from '../../redux/actionCreators/appActionCreators';
 import EmailVerification from './accountVerification/EmailVerification';
 import MobileVerification from './accountVerification/MobileVerification';
 
@@ -15,7 +15,7 @@ const AccountVerification = () => {
     );
 
     const registrationUser = useSelector((state) => state.registerForm.user);
-    const user = useSelector((state) => state.auth.user);
+    const user = useSelector((state) => state.auth.me);
 
     if (registrationUser) return null;
     if (!user) return null;
@@ -54,14 +54,14 @@ const AccountVerification = () => {
                             onClick={() => {
                                 try {
                                     window.ReactNativeWebView.postMessage(
-                                        JSON.stringify({action: 'goBack'}),
+                                        JSON.stringify({ action: 'goBack' }),
                                     );
-                                } catch (e) {}
+                                } catch (e) { }
 
                                 dispatch(toggleVerificationModal());
-                                setTimeout(function(){
+                                setTimeout(function () {
                                     location.reload(true);
-                                },500)
+                                }, 500)
                             }}>
                             Start Using Website
                         </Button>
