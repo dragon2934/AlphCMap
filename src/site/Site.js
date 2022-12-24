@@ -43,6 +43,10 @@ import ChangeMobile from './pages/newHome/ChangeMobile';
 import ChangePassword from "./pages/newHome/ChangePassword";
 import MemberShip from "./pages/newHome/MemberShip";
 import MapProvider from '../common/contexts/MapContext/MapProvider';
+import Checkout from "./pages/newHome/Checkout";
+import CheckoutSuccess from './pages/newHome/CheckoutSuccess';
+import CheckoutFailed from './pages/newHome/CheckoutFailed';
+
 const Site = () => {
   return (
     <Switch>
@@ -67,8 +71,12 @@ const Site = () => {
 
       <Route exact path="/change-email" component={ChangeEMail} />
       <Route exact path="/pricing" component={MemberShip} />
+      <Route exact path="/checkout/:id" component={Checkout} />
       <Route exact path="/change-mobile" component={ChangeMobile} />
       <Route exact path="/change-password" component={ChangePassword} />
+
+      <Route exact path="/checkout_success" component={CheckoutSuccess} />
+      <Route exact path="/checkout_failed" component={CheckoutFailed} />
 
 
       <Route exact path="/about-us" component={AboutUs} />

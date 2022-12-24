@@ -33,13 +33,14 @@ const BindingForm = ({ callback }) => {
     const history = useHistory();
     const [color, setColor] = useState('default');
     const property = utilsData.selectedProperty;
+    const user = useSelector((state) => state.auth.me);
 
     const formik = useFormik({
         initialValues: {
-            bindingName: property !== null && property !== undefined ? property.bindingName : '',
-            bindingEmail: property !== null && property !== undefined ? property.bindingEmail : '',
-            bindingPhone: property !== null && property !== undefined ? property.bindingPhone : '',
-            bindingOthers: property !== null && property !== undefined ? property.bindingOthers : '',
+            bindingName: property !== null && property !== undefined && property.bindingName !== 'null' ? property.bindingName : '',
+            bindingEmail: property !== null && property !== undefined && property.bindingEmail !== 'null' ? property.bindingEmail : '',
+            bindingPhone: property !== null && property !== undefined && property.bindingPhone !== 'null' ? property.bindingPhone : '',
+            bindingOthers: property !== null && property !== undefined && property.bindingOthers !== 'null' ? property.bindingOthers : '',
         },
         isInitialValid: false,
         validationSchema: bindingSchema,
@@ -49,6 +50,7 @@ const BindingForm = ({ callback }) => {
             const email = utilsData.emailForChangeColor
             const data = {
                 email: email,
+                ownerMobileNumber: user.mobileNumber,
                 ...values
             }
             dispatch(propertyBinding(data)).then(resp => {
