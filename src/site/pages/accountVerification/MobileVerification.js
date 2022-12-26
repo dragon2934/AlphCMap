@@ -25,7 +25,7 @@ const MobileVerification = ({ currentUser }) => {
 
     const dispatch = useDispatch();
 
-    let user = useSelector((state) => state.auth.me);
+    let user = useSelector((state) => state.auth.user);
     const registrationUser = useSelector((state) => state.registerForm.user);
     if (currentUser === null || currentUser === undefined) {
         if (user === null || user === undefined) {
@@ -34,6 +34,7 @@ const MobileVerification = ({ currentUser }) => {
     } else {
         user = currentUser;
     }
+    // console.log('mobile verify..current user..' + JSON.stringify(user));
 
     const onClickVerify = useCallback(() => {
         setPendingVerify(true);

@@ -1,4 +1,4 @@
-import {ActionType} from 'redux-promise-middleware';
+import { ActionType } from 'redux-promise-middleware';
 import {
     AUTH_REGISTER,
     REGISTER_PROPERTY,
@@ -11,11 +11,12 @@ const initialState = {};
 
 const registerFormReducer = (state = initialState, action) => {
     switch (action.type) {
-        case `${AUTH_REGISTER}_${ActionType.Fulfilled}`:
-            return {
-                ...state,
-                user: action.payload,
-            };
+        // case `${AUTH_REGISTER}_${ActionType.Fulfilled}`:
+        //     return {
+        //         ...state,
+        //         user: action.payload,
+        //         me: action.payload
+        //     };
         case `${REGISTER_PROPERTY}_${ActionType.Fulfilled}`: {
             return {
                 ...state,

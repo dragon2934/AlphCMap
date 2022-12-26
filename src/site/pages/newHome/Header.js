@@ -42,7 +42,7 @@ const Header = () => {
     } catch (e) { }
 
 
-    if (user != null) {
+    if (user !== null && user !== undefined && user.property !== null && user.property !== undefined) {
         //  console.log('user.property =' + JSON.stringify(user.property));
         if (user.companyName) {
             userEmail = user.property.email + '@' + user.companyName + '.com';

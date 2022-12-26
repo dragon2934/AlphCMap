@@ -25,7 +25,7 @@ const EmailVerification = ({ currentUser }) => {
     const [pendingVerify, setPendingVerify] = useState(false);
 
     const dispatch = useDispatch();
-    let user = useSelector((state) => state.auth.me);
+    let user = useSelector((state) => state.auth.user);
     const registrationUser = useSelector((state) => state.registerForm.user);
     if (currentUser === null || currentUser === undefined) {
         if (user === null || user === undefined) {

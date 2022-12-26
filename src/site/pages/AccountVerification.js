@@ -15,9 +15,15 @@ const AccountVerification = () => {
     );
 
     const registrationUser = useSelector((state) => state.registerForm.user);
-    const user = useSelector((state) => state.auth.me);
-
+    let user = useSelector((state) => state.auth.user);
+    // const user1 = useSelector((state) => state.auth.user);
+    // const state = useSelector((state) => state);
+    // console.log('..state..' + JSON.stringify(state));
     if (registrationUser) return null;
+    // if (user === null || user === undefined) {
+    //     user = user1;
+    // }
+
     if (!user) return null;
 
     const userHasEmail = user.username !== user.email;
