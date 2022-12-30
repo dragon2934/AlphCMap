@@ -133,14 +133,14 @@ const Header = () => {
                             onstyle="btn-success"
                         /> : null}
                     </NavItem>
-                    <NavItem>
+                    {/* <NavItem>
                         <NavLink
                             tag={ReactRouterLink}
                             onClick={collapse}
                             to="/pricing">
                             Pricing
                         </NavLink>
-                    </NavItem>
+                    </NavItem> */}
                     <NavItem>
                         <NavLink
                             tag={ReactRouterLink}
