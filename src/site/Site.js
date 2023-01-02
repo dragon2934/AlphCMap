@@ -46,7 +46,7 @@ import MapProvider from '../common/contexts/MapContext/MapProvider';
 import Checkout from "./pages/newHome/Checkout";
 import CheckoutSuccess from './pages/newHome/CheckoutSuccess';
 import CheckoutFailed from './pages/newHome/CheckoutFailed';
-
+import BusinessProfile from "./pages/newHome/BusinessProfile";
 const Site = () => {
   return (
     <Switch>
@@ -77,6 +77,7 @@ const Site = () => {
 
       <Route exact path="/checkout_success" component={CheckoutSuccess} />
       <Route exact path="/checkout_failed" component={CheckoutFailed} />
+      <Route exact path="/business-profile" component={BusinessProfile} />
 
 
       <Route exact path="/about-us" component={AboutUs} />

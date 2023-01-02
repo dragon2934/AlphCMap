@@ -7,6 +7,7 @@ import MapContext from '../../../common/contexts/MapContext/MapContext';
 import {
     fetchProperties,
     fetchUsers,
+    loadBusinessAddress,
 } from '../../../redux/actionCreators/adminActionCreators';
 import {
     clearDistancesFromMap,
@@ -41,7 +42,8 @@ import BindingForm from './BindingForm';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import FlyerForm from './FlyerForm';
-import { convertAttributes } from '../../../utils/utils';
+import { convertAttributes, convertLocation } from '../../../utils/utils';
+import BusinessInfo from './BusinessInfo';
 
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_GL_ACCESS_TOKEN;
@@ -66,7 +68,8 @@ class Showcase extends Component {
         feature: null,
         selectedPropertyEmail: [],
         satelliteMode: false,
-        showMapLegend: false
+        showMapLegend: false,
+        showBusinessInfo: false
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -104,12 +107,22 @@ class Showcase extends Component {
 
     renderPropertiesTooltip = ({ id, email, property }) => {
         const { utilsData } = this.props;
-        return <PropertiesTooltip email={email} id={id}
-            property={property} cb={this.removeProperty}
-            changeColor={this.changeColor} editMode={utilsData.editMode}
-            cbBinding={this.bindingProperty}
-            cbSendEmail={this.cbSendEmail}
-        />;
+        if (property.is_business && property.is_business === true) {
+            utilsData.selectedProperty = property;
+            utilsData.showBusinessInfo = true;
+
+            this.setState({
+                showBusinessInfo: true,
+            });
+        } else {
+            return <PropertiesTooltip email={email} id={id}
+                property={property} cb={this.removeProperty}
+                changeColor={this.changeColor} editMode={utilsData.editMode}
+                cbBinding={this.bindingProperty}
+                cbSendEmail={this.cbSendEmail}
+                cbBusiness={this.cbBusiness}
+            />;
+        }
     };
     cbSendEmail = (e, property) => {
         const { utilsData } = this.props;
@@ -134,6 +147,10 @@ class Showcase extends Component {
             changeColor: true
         });
     }
+    cbBusiness = async (email, property) => {
+        const { history } = this.props;
+        history.push("/business-profile?id=" + property.id);
+    }
     bindingProperty = async (email, property) => {
         const { utilsData } = this.props;
         // const { properties } = this.state;
@@ -144,6 +161,9 @@ class Showcase extends Component {
         this.setState({
             bindingProperty: true
         });
+    }
+    bindingBusiness = (email) => {
+
     }
     redrawMap = async () => {
         const { map } = this.context;
@@ -286,6 +306,11 @@ class Showcase extends Component {
                                 <li>
                                     <Button
                                         size={'sm'}
+                                        onClick={() => this.bindingBusiness(email)}>
+                                        Business
+                                    </Button> &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <Button
+                                        size={'sm'}
                                         onClick={() => this.bindingProperty(email)}>
                                         Info
                                     </Button> &nbsp;&nbsp;&nbsp;&nbsp;
@@ -405,7 +430,7 @@ class Showcase extends Component {
 
     async initializeLayers() {
         const { map } = this.context;
-        const { fetchProperties, } = this.props;
+        const { fetchProperties, loadBusinessAddress } = this.props;
         const draw = new MapboxDraw({
             controls: {
                 point: false,
@@ -416,9 +441,20 @@ class Showcase extends Component {
                 uncombine_features: false,
             },
         });
-        const { value: properties } = await fetchProperties();
-        const convertedProperties = convertAttributes(properties, true);
+        const { auth } = this.props;
+        const user = auth.user;
+        let convertedProperties = [];
 
+        if (user === null || user === undefined) {
+            const { value: properties } = await loadBusinessAddress();
+
+            convertedProperties = convertLocation(properties.propertyInfo);
+        } else {
+            const { value: properties } = await fetchProperties();
+            convertedProperties = convertAttributes(properties, true);
+        }
+
+        console.log('..load business.. ' + JSON.stringify(convertedProperties));
         try {
             this.setState({
                 properties:
@@ -454,11 +490,16 @@ class Showcase extends Component {
                 },
             });
 
-            showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true);
+            if (user === null || user === undefined) {
+                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true);
+            } else {
+                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true);
+                showPrimaryDistancesOnMap(map, convertedProperties);
+            }
             // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
-            showPrimaryDistancesOnMap(map, convertedProperties);
-        } catch (e) {
 
+        } catch (e) {
+            console.log('init map layer error:' + JSON.stringify(e));
         }
         // map.on('click', this.onClickMap);
     }
@@ -706,6 +747,11 @@ class Showcase extends Component {
                             <Col className="list-unstyled text-right">
 
                                 <li>
+                                    <Button
+                                        size={'sm'}
+                                        onClick={() => this.bindingBusiness(email)}>
+                                        Business
+                                    </Button> &nbsp;&nbsp;&nbsp;&nbsp;
                                     <Button
                                         size={'sm'}
                                         onClick={() => this.bindingProperty(email)}>
@@ -1065,7 +1111,7 @@ class Showcase extends Component {
             }
 
 
-            {!showMapLegend && (
+            {!showIcon ? null : !showMapLegend && (
                 <>
 
                     <i
@@ -1120,6 +1166,7 @@ class Showcase extends Component {
             {utilsData.changeColor && <ChangeColorForm callback={this.changeColorCallack} />}
             {utilsData.bindingProperty && <BindingForm />}
             {utilsData.drawFinished && <FlyerForm />}
+            {utilsData.showBusinessInfo && <BusinessInfo />}
         </>
 
             ;
@@ -1137,6 +1184,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
     fetchProperties: () =>
         dispatch(fetchProperties({ page: 1, pageSize: 100000 })),
+    loadBusinessAddress: () =>
+        dispatch(loadBusinessAddress()),
     fetchUsers: () => dispatch(fetchUsers({ page: 1, pageSize: 100000 })),
     setPropertyRegistrationForm: (data) => dispatch(setPropertyRegistrationForm(data)),
     saveBatchProperties: (data) => dispatch(saveBatchProperties(data)),

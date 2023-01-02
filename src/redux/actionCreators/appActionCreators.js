@@ -1,5 +1,5 @@
-import {SERVICE_URL,PARTNER_TOKEN} from '../../constants';
-import {getNavigatorLocation} from '../../utils/mapUtils';
+import { SERVICE_URL, PARTNER_TOKEN } from '../../constants';
+import { getNavigatorLocation } from '../../utils/mapUtils';
 import {
     DELETE_ACCOUNT,
     DELETE_INMATE,
@@ -19,7 +19,8 @@ import {
     SAVE_USER_PROPERTIES_DATA,
     SAVE_SECONDORY_PROPERTY,
     CHANGE_PROPERTY_COLOR,
-    CANCEL_CHANGE_PROPERTY_COLOR
+    CANCEL_CHANGE_PROPERTY_COLOR,
+    CANCEL_DISPLAY_BUSINESS
 } from '../actionTypes';
 
 
@@ -31,7 +32,7 @@ export const getUserLocation = () => {
 };
 
 export const sendContactForm = (data) => {
-    if(data!=null && data!=undefined){
+    if (data != null && data != undefined) {
         data['tenant'] = PARTNER_TOKEN;
         console.log('send contact form' + JSON.stringify(data));
     }
@@ -89,6 +90,11 @@ export const cancelChangePropertyColor = () => {
     };
 };
 
+export const cancelShowBusinessInfo = () => {
+    return {
+        type: CANCEL_DISPLAY_BUSINESS,
+    };
+}
 
 export const deleteAccount = () => {
     return (dispatch, getState) => {
@@ -109,7 +115,7 @@ export const deleteAccount = () => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                       
+
                         return responseData;
                     }
                 }),
@@ -143,7 +149,7 @@ export const fetchInmates = (propertyId) => {
     };
 };
 
-export const deleteUserAdditionalAddress = (userPropertyId,propertyId) =>{
+export const deleteUserAdditionalAddress = (userPropertyId, propertyId) => {
     console.log('1=' + userPropertyId + '2=' + propertyId);
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
@@ -157,8 +163,8 @@ export const deleteUserAdditionalAddress = (userPropertyId,propertyId) =>{
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    userPropertyId:userPropertyId,
-                    propertyId:propertyId
+                    userPropertyId: userPropertyId,
+                    propertyId: propertyId
                 }),
                 method: 'POST',
             })
@@ -173,8 +179,8 @@ export const deleteUserAdditionalAddress = (userPropertyId,propertyId) =>{
         });
     };
 }
-export const deleteUserAdditionalAddressById = (propertyId) =>{
-    console.log( '2=' + propertyId);
+export const deleteUserAdditionalAddressById = (propertyId) => {
+    console.log('2=' + propertyId);
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
 
@@ -187,7 +193,7 @@ export const deleteUserAdditionalAddressById = (propertyId) =>{
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    propertyId:propertyId
+                    propertyId: propertyId
                 }),
                 method: 'POST',
             })
@@ -228,13 +234,13 @@ export const fetchUserProperties = () => {
     };
 };
 
-export const getInmate = (id,propertyId) => {
+export const getInmate = (id, propertyId) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
 
         return dispatch({
             type: FETCH_INMATES,
-            payload: fetch(`${SERVICE_URL}/residents/inmates/get/${id}?propertyId=`+propertyId, {
+            payload: fetch(`${SERVICE_URL}/residents/inmates/get/${id}?propertyId=` + propertyId, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -285,7 +291,7 @@ export const saveInmate = (data) => {
     };
 };
 
-export const deleteInmate = (id,propertyId) => {
+export const deleteInmate = (id, propertyId) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
 
@@ -531,7 +537,7 @@ export const resendEmailVerificationCode = () => {
 };
 
 export const toggleVerificationModal = () => {
-    return {type: TOGGLE_VERIFICATION_MODAL};
+    return { type: TOGGLE_VERIFICATION_MODAL };
 };
 
 export const updateAccount = (data) => {
@@ -561,9 +567,9 @@ export const updateAccount = (data) => {
     };
 };
 
-export const saveBatchProperties = (data) =>{
+export const saveBatchProperties = (data) => {
     // console.log('......saving batch 111...' + JSON.stringify(data));
-    
+
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
 
@@ -587,5 +593,5 @@ export const saveBatchProperties = (data) =>{
                     }
                 }),
         });
-    };    
+    };
 }

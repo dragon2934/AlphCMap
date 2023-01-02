@@ -3,7 +3,7 @@ import React from 'react';
 import { Button, Col, Row } from 'reactstrap';
 import { useSelector, useDispatch } from 'react-redux';
 
-const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbBinding, cbSendEmail }) => {
+const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbBinding, cbSendEmail, cbBusiness }) => {
     // console.log('..property..' + JSON.stringify(property))
     // const utilsData = useSelector((state) => state.utilsData);
     const sendEmail = (e) => {
@@ -28,6 +28,11 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
                     <Row className="justify-content-end">
                         <Col className="list-unstyled text-right">
                             <li>
+                                <Button
+                                    size={'sm'}
+                                    onClick={() => cbBusiness(email, property)}>
+                                    Business
+                                </Button> &nbsp;&nbsp;&nbsp;&nbsp;
                                 <Button
                                     size={'sm'}
                                     onClick={() => {

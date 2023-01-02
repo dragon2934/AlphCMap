@@ -82,6 +82,19 @@ export const generateString = (length) => {
     return result;
 }
 
+export const convertLocation = (items) => {
+    let retItems = [];
+    items.map(item => {
+        const retItem = {
+            id: item.id,
+            ...item,
+            location: JSON.parse(item.location)
+        }
+        retItems.push(retItem);
+
+    });
+    return retItems;
+}
 export const convertAttributes = (items, isArray) => {
     if (isArray) {
         let retItems = [];

@@ -7,7 +7,7 @@ const Patents = () => {
     return (
         <main>
             <Header />
-            <div className="full-screen patents">
+            <div className="content patents">
                 <Container>
                     <Row className="section-title">
                         <Col>Patents</Col>

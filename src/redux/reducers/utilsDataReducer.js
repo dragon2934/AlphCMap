@@ -1,18 +1,20 @@
-import {ActionType} from 'redux-promise-middleware';
+import { ActionType } from 'redux-promise-middleware';
 import {
     SET_EDIT_MODE,
     ADMIN_PROPERTY_BINDING,
-    ADMIN_SEND_PROMOTE_EMAIL
+    ADMIN_SEND_PROMOTE_EMAIL,
+    CANCEL_DISPLAY_BUSINESS
 } from '../actionTypes';
 
 const initialState = {
     editMode: false,
     changeColor: false,
-    emailForChangeColor:'',
+    emailForChangeColor: '',
     bindingProperty: false,
     selectedProperty: null,
     drawFinished: false,
     drawing: false,
+    showBusinessInfo: false,
 };
 
 function utilsDataReducer(state = initialState, action) {
@@ -40,10 +42,11 @@ function utilsDataReducer(state = initialState, action) {
                 ...state,
                 ...action.payload,
             };
+        case `${CANCEL_DISPLAY_BUSINESS}`:
         case 'CANCEL_CHANGE_PROPERTY_COLOR':
-           return {
-            ...state,
-           };
+            return {
+                ...state,
+            };
         default:
             return state;
     }

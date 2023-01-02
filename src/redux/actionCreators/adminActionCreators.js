@@ -29,7 +29,10 @@ import {
     ADMIN_DELETE_CITY,
     ADMIN_ADD_CITY,
     ADMIN_PROPERTY_BINDING,
-    ADMIN_SEND_PROMOTE_EMAIL
+    ADMIN_SEND_PROMOTE_EMAIL,
+    ADMIN_SAVE_BUSINESS_PROFILE,
+    ADMIN_GET_BUSINESS_PROFILE,
+    ADMIN_GET_BUSINESS_ADDRESS
 } from '../actionTypes';
 
 // UI
@@ -954,4 +957,81 @@ export const sendPromotionContents = (data) => {
                 }),
         });
     };
+};
+
+export const saveBusinessProfile = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_SAVE_BUSINESS_PROFILE,
+            payload: fetch(`${SERVICE_URL}/business-profiles/save-business-profile`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData.roles;
+                    }
+                }),
+        });
+    };
+};
+
+export const getBusinessProfile = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_GET_BUSINESS_PROFILE,
+            payload: fetch(`${SERVICE_URL}/public/load-business-profile`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const loadBusinessAddress = (data) => {
+
+
+    return ({
+        type: ADMIN_GET_BUSINESS_ADDRESS,
+        payload: fetch(`${SERVICE_URL}/public/load-business-address`, {
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            method: 'GET',
+        })
+            .then((r) => r.json())
+            .then((responseData) => {
+                if (responseData.statusCode >= 300) {
+                    return Promise.reject(responseData);
+                } else {
+                    return responseData;
+                }
+            }),
+    });
+
 };
