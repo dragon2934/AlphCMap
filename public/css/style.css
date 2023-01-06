@@ -2479,3 +2479,14 @@ a:hover {
 .pricing_item {
   border: .0625rem solid #bcbab8
 }
+
+@media only screen and (max-width: 768px) {
+  .content {
+    padding-bottom: 80px;
+  }
+
+}
+
+.about_us_list li {
+  color: black !important;
+}

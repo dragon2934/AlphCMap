@@ -31,7 +31,7 @@ const AboutUs = () => {
                         <br />
                         <a href="https://alphcmap.com/about-us" target="_blank">AlphCMap</a> is an extension of our <a href="https://www.alphc.com/patents">IP and technology</a>  with <a href="https://www.newswire.ca/news-releases/alphabet-communication-patent-granted-by-the-uspto-we-have-the-ability-to-map-the-global-population-and-connect-all-humanity-668560533.html" target="_blank">infinite possibilities</a>. This communication breakthrough is based on a closed and secure communication network between addresses. Opt-in businesses and consumers can communicate for mutual benefit via their mapped address.  As an example, when a food delivery order is placed by a customer their address is provided to the restaurant for delivery purposes.  AlphCMap, maps all the addresses, providing the ability for restaurants to communicate with their customers via their address.
 
-                        Benefits for this timely and instant communication for businesses. <ul>
+                        Benefits for this timely and instant communication for businesses. <ul className='about_us_list'>
 
                             <li> Instant-mapped and targeted communication with customers based on their address (including high-rise residential). </li>
 
