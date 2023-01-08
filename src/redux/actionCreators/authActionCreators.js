@@ -1,4 +1,4 @@
-import {SERVICE_URL,PARTNER_TOKEN} from '../../constants';
+import { SERVICE_URL, PARTNER_TOKEN } from '../../constants';
 import {
     AUTH_CHANGE_PASSWORD_ALT,
     AUTH_CHANGE_PASSWORD,
@@ -6,6 +6,7 @@ import {
     AUTH_LOGOUT,
     AUTH_RESET_PASSWORD,
     AUTH_RESET_PASSWORD_VERIFY,
+    AUTH_GET_ME
 } from '../actionTypes';
 import md5 from 'md5';
 export const loginUser = (identifier, password) => {
@@ -43,7 +44,7 @@ export const logoutUser = () => {
 export const changePassword = (password) => {
     return (dispatch, getState) => {
         let token = getState().auth.jwt;
-        console.log('password: =' +password + ' token=' + token);
+        console.log('password: =' + password + ' token=' + token);
         return dispatch({
             type: AUTH_CHANGE_PASSWORD,
             payload: fetch(`${SERVICE_URL}/residents/change-password?tenant=${PARTNER_TOKEN}`, {
@@ -70,9 +71,9 @@ export const changePassword = (password) => {
 };
 
 
-export const iOSChangePassword = (mobileNumber,password) => {
-    const hash = md5('29'+mobileNumber+'34'+password+'046');
-    return (dispatch) => {   
+export const iOSChangePassword = (mobileNumber, password) => {
+    const hash = md5('29' + mobileNumber + '34' + password + '046');
+    return (dispatch) => {
         return dispatch({
             type: AUTH_CHANGE_PASSWORD_ALT,
             payload: fetch(`${SERVICE_URL}/public/ios-change-password?tenant=${PARTNER_TOKEN}`, {
@@ -97,7 +98,7 @@ export const iOSChangePassword = (mobileNumber,password) => {
                 }),
         });
     };
-    
+
 };
 
 export const resetPassword = (mobileNumber) => {
@@ -140,6 +141,31 @@ export const verifyResetPassword = (mobileNumber, mobileVerificationCode) => {
                     'Content-Type': 'application/json',
                 },
                 method: 'POST',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+export const getMe = () => {
+    return (dispatch, getState) => {
+        let token = getState().auth.jwt;
+        console.log('..get me..token..' + token);
+        return dispatch({
+            type: AUTH_GET_ME,
+            payload: fetch(`${SERVICE_URL}/users/me?populate=*`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'GET',
             })
                 .then((r) => r.json())
                 .then((responseData) => {

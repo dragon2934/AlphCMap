@@ -1,6 +1,6 @@
-import React, {useState, useCallback} from "react";
-import {useSelector, useDispatch } from 'react-redux';
-import {NavLink as ReactRouterLink, useHistory} from "react-router-dom";
+import React, { useState, useCallback } from "react";
+import { useSelector, useDispatch } from 'react-redux';
+import { NavLink as ReactRouterLink, useHistory } from "react-router-dom";
 import {
     Collapse,
     Nav,
@@ -20,20 +20,16 @@ import { logoutUser } from '../../../redux/actionCreators/authActionCreators';
 import { toastr } from 'react-redux-toastr';
 
 const Header = () => {
-    const user = useSelector((state) => state.auth.user);
+    const user = useSelector((state) => state.auth.me);
     const history = useHistory();
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
     const collapse = () => setIsOpen(false);
-    const [dropDownOpen,setDropDownOpen] = useState(false);
+    const [dropDownOpen, setDropDownOpen] = useState(false);
     const utilsData = useSelector((state) => state.utilsData);
-    const [editSwitch,setEditSwitch] = useState(false);
-    
-    const dispatch = useDispatch();
+    const [editSwitch, setEditSwitch] = useState(false);
 
-    // const switchButtonActive=(type)=>{
-    //     setSearchType(type);
-    // }
+    const dispatch = useDispatch();
 
     let userName = '';
     let userEmail = '';
@@ -43,64 +39,73 @@ const Header = () => {
             .filter((i) => i)
             .join(' ')
             .trim();
-    } catch (e) {}
+    } catch (e) { }
 
 
-    if(user!=null){
+    if (user !== null && user !== undefined && user.property !== null && user.property !== undefined) {
         //  console.log('user.property =' + JSON.stringify(user.property));
-        if(user.companyName){
+        if (user.companyName) {
             userEmail = user.property.email + '@' + user.companyName + '.com';
             localStorage.setItem("current_domain", user.companyName + '.com');
-        }else if(user.lastName){
+        } else if (user.lastName) {
             userEmail = user.property.email + '@' + user.lastName + '.com';
             localStorage.setItem("current_domain", user.lastName + '.com');
         }
-        
-    }else{
-        userEmail = 'Add your address to create your account';
+
+    } else {
+        userEmail = 'Enter your address to create your account';
     }
-    const toggleDropDownMenu=useCallback(() => {
+    const toggleDropDownMenu = useCallback(() => {
         setDropDownOpen(!dropDownOpen)
     });
-    const handleEditModeChange=useCallback(() => {
+    const handleEditModeChange = useCallback(() => {
         // setEditMode(!editMode);
+        if (utilsData.drawing) {
+            toastr.error('Error', 'Drawing addresses boundary, can not switch');
+            return;
+        }
         utilsData.editMode = !editSwitch;
-        if( utilsData.editMode ){
+        if (utilsData.editMode) {
             console.log('...edit mode is enable !!!!..');
-        }else{
+        } else {
             console.log('...edit mode is turn off !!!..');
         }
-       
-        setEditSwitch( utilsData.editMode );
+
+        setEditSwitch(utilsData.editMode);
         const data = {
             utilsData: {
-               editMode: !editSwitch
+                editMode: !editSwitch
             }
         };
         dispatch(setEditMode(data));
 
     });
     const onClickDeleteAccount = useCallback(() => {
-        dispatch( deleteAccount()).then(({value:retObj}) => {
+        dispatch(deleteAccount()).then(({ value: retObj }) => {
             console.log('....delete acount return...' + JSON.stringify(retObj));
-            if(retObj.status==='successed'){
-                dispatch(logoutUser()).then(()=>{
-                    history.push('/');
+            if (retObj.status === 'successed') {
+                dispatch(logoutUser()).then(() => {
+                    // history.push('/');
+                    localStorage.removeItem("current_domain");
+                    setTimeout(() => {
+                        location.reload(true);
+                    }, 500);
+
                 });
-            }else{
+            } else {
                 console.log('error message:' + retObj.message);
-                toastr.error('Error !',retObj.message);
+                toastr.error('Error !', retObj.message);
             }
         });
     }, [dispatch, history]);
-    const adminGroup = [process.env.REACT_APP_ROLE_ADMIN_NAME,process.env.REACT_APP_ROLE_PM_NAME];
-    const menuLinks =[
-        {menuText:'Change Address',menuID:1},
-        {menuText:'Change Email',menuID:2},
-        {menuText:'Change Mobile',menuID:3},
-        {menuText:'Change Password',menuID:6},
-        {menuText:'Delete Account',menuID:4},
-        {menuText:'logout',menuID:5},
+    const adminGroup = [process.env.REACT_APP_ROLE_ADMIN_NAME, process.env.REACT_APP_ROLE_PM_NAME];
+    const menuLinks = [
+        { menuText: 'Change Address', menuID: 1 },
+        { menuText: 'Change Email', menuID: 2 },
+        { menuText: 'Change Mobile', menuID: 3 },
+        { menuText: 'Change Password', menuID: 6 },
+        { menuText: 'Delete Account', menuID: 4 },
+        { menuText: 'logout', menuID: 5 },
 
     ]
     return (
@@ -115,27 +120,27 @@ const Header = () => {
                 <i className="fa fa-bars" />
             </NavbarToggler>
             <Collapse isOpen={isOpen} navbar>
-                <div style={{width:"64%",textAlign:"center",fontSize:"20px",fontWeight:"bold"}}> { userEmail } </div>
+                <div style={{ width: "64%", textAlign: "center", fontSize: "20px", fontWeight: "bold" }}> {userEmail} </div>
                 <Nav className="ml-auto" navbar>
                     <NavItem>
-                    {user ?   <Toggle
-          checked={editSwitch}
-          text="Edit Mode"
-          size="default"
-          disabled={false}
-          onChange={handleEditModeChange}
-          offstyle="btn-danger"
-          onstyle="btn-success"
-        />:null}
+                        {user ? <Toggle
+                            checked={editSwitch}
+                            text="Edit Mode"
+                            size="default"
+                            disabled={false}
+                            onChange={handleEditModeChange}
+                            offstyle="btn-danger"
+                            onstyle="btn-success"
+                        /> : null}
                     </NavItem>
-                <NavItem>
+                    {/* <NavItem>
                         <NavLink
                             tag={ReactRouterLink}
                             onClick={collapse}
-                            to="/about-us">
-                            About AlphCMap
+                            to="/pricing">
+                            Pricing
                         </NavLink>
-                    </NavItem>
+                    </NavItem> */}
                     <NavItem>
                         <NavLink
                             tag={ReactRouterLink}
@@ -147,55 +152,55 @@ const Header = () => {
                     {user ? (
                         <>
 
-                         <ButtonDropdown >
-            <Dropdown isOpen={dropDownOpen} toggle={toggleDropDownMenu} >
-                <DropdownToggle  className="head-dropdown-toggle">
-                   Menu
-                </DropdownToggle>
-                <DropdownMenu className="city-dropdown">
-                     {
-                        menuLinks.map(menu=>{
-                            return <DropdownItem key={'key'+menu.menuID} onClick={() =>{
-                            // setSelectedCity(city.full_name);
-                            console.log('selected menu..'  + menu.menuID);
-                            switch(menu.menuID){
-                                case 1:
-                                    history.push('/edit-property');
-                                    break;
-                                case 2:
-                                    history.push('/change-email');
-                                    break;
-                                case 3:
-                                    history.push('/change-mobile');
-                                    break;
-                                case 4:
-                                    //delete account
-                                    toastr.confirm(
-                                        'Are you sure you want to delete your account? This action is irreversible!',
+                            <ButtonDropdown >
+                                <Dropdown isOpen={dropDownOpen} toggle={toggleDropDownMenu} >
+                                    <DropdownToggle className="head-dropdown-toggle">
+                                        Menu
+                                    </DropdownToggle>
+                                    <DropdownMenu className="city-dropdown">
                                         {
-                                            onOk: onClickDeleteAccount,
-                                        },
-                                    );
-                                    break;
-                                case 5:
-                                    localStorage.removeItem("current_domain");
-                                    history.push('/logout')
-                                    break;    
-                                case 6:
-                                    history.push('/change-password');
-                                    break;                                                                                                                                                      
-                            }
-                            // localStorage.setItem('city_short_name',city.short_name);
-                            // localStorage.setItem('city_full_name',city.full_name);
-                            // //do search
-                            // window.location.reload();
-                            }
-                         } >{menu.menuText}</DropdownItem>
-                        })
-                     }   
-                    </DropdownMenu>
-                </Dropdown>
-            </ButtonDropdown>
+                                            menuLinks.map(menu => {
+                                                return <DropdownItem key={'key' + menu.menuID} onClick={() => {
+                                                    // setSelectedCity(city.full_name);
+                                                    console.log('selected menu..' + menu.menuID);
+                                                    switch (menu.menuID) {
+                                                        case 1:
+                                                            history.push('/edit-property');
+                                                            break;
+                                                        case 2:
+                                                            history.push('/change-email');
+                                                            break;
+                                                        case 3:
+                                                            history.push('/change-mobile');
+                                                            break;
+                                                        case 4:
+                                                            //delete account
+                                                            toastr.confirm(
+                                                                'Are you sure you want to delete your account? This action is irreversible!',
+                                                                {
+                                                                    onOk: onClickDeleteAccount,
+                                                                },
+                                                            );
+                                                            break;
+                                                        case 5:
+                                                            localStorage.removeItem("current_domain");
+                                                            history.push('/logout')
+                                                            break;
+                                                        case 6:
+                                                            history.push('/change-password');
+                                                            break;
+                                                    }
+                                                    // localStorage.setItem('city_short_name',city.short_name);
+                                                    // localStorage.setItem('city_full_name',city.full_name);
+                                                    // //do search
+                                                    // window.location.reload();
+                                                }
+                                                } >{menu.menuText}</DropdownItem>
+                                            })
+                                        }
+                                    </DropdownMenu>
+                                </Dropdown>
+                            </ButtonDropdown>
 
                             {/* <NavItem>
                                 <NavLink

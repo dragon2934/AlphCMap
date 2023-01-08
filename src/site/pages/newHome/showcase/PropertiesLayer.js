@@ -1,21 +1,21 @@
-import React, {useEffect, useState} from "react";
-import {useHistory} from 'react-router';
-import {    
+import React, { useEffect, useState } from "react";
+import { useHistory } from 'react-router';
+import {
     clearDistancesFromMap,
     clearPropertiesFromMap,
     clearResidentsFromMap,
     showPrimaryDistancesOnMap,
     showPropertiesOnMap,
- } from '../../../../utils/mapUtils';
+} from '../../../../utils/mapUtils';
 
 import PropertiesTooltip from '../../../../admin/components/PropertiesTooltip';
-const PropertiesLayer = ({properties,map}) => {
+const PropertiesLayer = ({ properties, map }) => {
     const history = useHistory();
     // const {map} = useContext(MapContext);
-    const [ zoomLevel,setZoomLevel ] = useState(11);
-    // const user = useSelector((state) => state.auth.user);
+    const [zoomLevel, setZoomLevel] = useState(11);
+
     let marker = null;
-    if(map){
+    if (map) {
         // map.addListener('zoom_changed', () => {
         //     const zoomLevel = map.getZoom();
         //     // console.log(' zoom changed...' + zoomLevel);
@@ -26,28 +26,26 @@ const PropertiesLayer = ({properties,map}) => {
         //     }
         // });
     }
-    // const {
-    //     location: {latitude, longitude},
-    // } = propertyMarker;
-    const renderPropertiesTooltip = ({id, email}) => {
-        const {history} = this.props;
+
+    const renderPropertiesTooltip = ({ id, email }) => {
+        const { history } = this.props;
 
         return <PropertiesTooltip email={email} id={id} history={history} />;
     };
     useEffect(() => {
         if (!map) return;
-        showPropertiesOnMap(map, properties, renderPropertiesTooltip,true);
+        showPropertiesOnMap(map, properties, renderPropertiesTooltip, true);
         // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
         showPrimaryDistancesOnMap(map, properties);
-        
+
         return {
-            if (map) {
+            if(map) {
                 clearPropertiesFromMap(map);
                 clearResidentsFromMap(map);
                 clearDistancesFromMap(map);
             }
         }
-    }, [history, map,zoomLevel]);
+    }, [history, map, zoomLevel]);
 
     return null;
 };

@@ -1,6 +1,6 @@
-import {useFormik} from 'formik';
-import React, {useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import { useFormik } from 'formik';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     Button,
     Col,
@@ -18,7 +18,7 @@ import {
     updateAccount,
 } from '../../../redux/actionCreators/appActionCreators';
 import MobileVerification from '../accountVerification/MobileVerification';
-import {toastr} from 'react-redux-toastr';
+import { toastr } from 'react-redux-toastr';
 import Footer from './Footer';
 import Header from './Header';
 
@@ -28,7 +28,7 @@ const validationSchema = Yup.object({
 
 const ChangeMobile = () => {
     const [mobileNumberSelected, setMobileNumberSelected] = useState(false);
-    const user = useSelector((state) => state.auth.user);
+    const user = useSelector((state) => state.auth.me);
 
     const dispatch = useDispatch();
 
@@ -37,7 +37,7 @@ const ChangeMobile = () => {
             mobileNumber: user.mobileNumber,
         },
         validationSchema: validationSchema,
-        onSubmit: (values, {setSubmitting}) => {
+        onSubmit: (values, { setSubmitting }) => {
             setSubmitting(true);
             dispatch(
                 updateAccount({
@@ -50,27 +50,27 @@ const ChangeMobile = () => {
                 setMobileNumberSelected(true);
 
                 dispatch(resendMobileVerificationCode(values.mobileNumber))
-                    .then(({value: {user}}) => {
+                    .then(({ value: { user } }) => {
                         console.log('change mobile..ret:' + JSON.stringify(user));
                         if (user.mobileVerified) {
                             if (window.ReactNativeWebView) {
                                 window.ReactNativeWebView.postMessage(
-                                    JSON.stringify({result: 'success'}),
+                                    JSON.stringify({ result: 'success' }),
                                 );
                             }
                         }
-                    }).catch(error=>{
+                    }).catch(error => {
                         console.log(' error...' + JSON.stringify(error));
                     })
                     .finally(() => {
                         setSubmitting(false);
                     });
-            }).catch(error=>{
-                if(error.statusCode && error.statusCode ===401){
-                    toastr.error('Error',error.message);
+            }).catch(error => {
+                if (error.statusCode && error.statusCode === 401) {
+                    toastr.error('Error', error.message);
                 }
-                if(error.statusCode && error.statusCode ===500){
-                    toastr.error('Error','Mobile No. already registered');
+                if (error.statusCode && error.statusCode === 500) {
+                    toastr.error('Error', 'Mobile No. already registered');
                 }
                 setSubmitting(false);
                 console.log('update account...error:' + JSON.stringify(error));
@@ -92,50 +92,50 @@ const ChangeMobile = () => {
     return (
         <main>
             <Header />
-        <div className="full-screen">
-            <Container>
-                <Row className="section-title">
-                    <Col>Change Mobile Number</Col>
-                </Row>
-                {!mobileNumberSelected && (
-                    <Form onSubmit={handleSubmit}>
-                        <InputGroup className="mb-3">
-                            <MobileInput
-                                setFieldValue={setFieldValue}
-                                setFieldTouched={setFieldTouched}
-                                placeholder="Mobile Number"
-                                disabled={mobileNumberSelected}
-                                name={'mobileNumber'}
-                                value={values.mobileNumber}
-                                invalid={
-                                    touched.mobileNumber && errors.mobileNumber
-                                }
-                            />
-                            <FormFeedback>{errors.mobileNumber}</FormFeedback>
-                        </InputGroup>
-                        <Row className="contact-us-submit-container">
-                            <Col>
-                                <Button
-                                    type={'submit'}
-                                    block
-                                    disabled={!isValid || isSubmitting}
-                                    outline
-                                    className="float-right my-3">
-                                    {isSubmitting ? (
-                                        <Spinner size="sm" />
-                                    ) : (
-                                        'Submit'
-                                    )}
-                                </Button>
-                            </Col>
-                        </Row>
-                    </Form>
-                )}
+            <div className="full-screen">
+                <Container>
+                    <Row className="section-title">
+                        <Col>Change Mobile Number</Col>
+                    </Row>
+                    {!mobileNumberSelected && (
+                        <Form onSubmit={handleSubmit}>
+                            <InputGroup className="mb-3">
+                                <MobileInput
+                                    setFieldValue={setFieldValue}
+                                    setFieldTouched={setFieldTouched}
+                                    placeholder="Mobile Number"
+                                    disabled={mobileNumberSelected}
+                                    name={'mobileNumber'}
+                                    value={values.mobileNumber}
+                                    invalid={
+                                        touched.mobileNumber && errors.mobileNumber
+                                    }
+                                />
+                                <FormFeedback>{errors.mobileNumber}</FormFeedback>
+                            </InputGroup>
+                            <Row className="contact-us-submit-container">
+                                <Col>
+                                    <Button
+                                        type={'submit'}
+                                        block
+                                        disabled={!isValid || isSubmitting}
+                                        outline
+                                        className="float-right my-3">
+                                        {isSubmitting ? (
+                                            <Spinner size="sm" />
+                                        ) : (
+                                            'Submit'
+                                        )}
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Form>
+                    )}
 
-                {mobileNumberSelected && <MobileVerification />}
-            </Container>
-        </div>
-        <Footer />
+                    {mobileNumberSelected && <MobileVerification />}
+                </Container>
+            </div>
+            <Footer />
         </main>
     );
 };

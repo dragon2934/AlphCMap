@@ -1,10 +1,10 @@
 import mapboxgl from 'mapbox-gl';
-import React, {useContext, useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useContext, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 // import {connect} from 'react-redux';
 // import {withRouter} from 'react-router';
 import Map from '../../../common/components/Map';
-import {useHistory} from 'react-router';
+import { useHistory } from 'react-router';
 import MapContext from '../../../common/contexts/MapContext/MapContext';
 import {
     fetchUserProperties,
@@ -20,32 +20,32 @@ import {
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_GL_ACCESS_TOKEN;
 
-const MobileViewPropertiesAtMap =() => {
+const MobileViewPropertiesAtMap = () => {
     //  static contextType = MapContext;
     const dispatch = useDispatch();
-    const currentUser = useSelector((state) => state.auth.user);
-    const [mapInitialized,setMapInitialized] = useState( false);
-    const {map} = useContext(MapContext);
+    const currentUser = useSelector((state) => state.auth.me);
+    const [mapInitialized, setMapInitialized] = useState(false);
+    const { map } = useContext(MapContext);
     const history = useHistory();
     useEffect(() => {
         try {
             document.querySelector('body').style.marginTop = 0;
             document.querySelector('#root').style.height = '100%';
             document.querySelector('.content').style.height = '100%';
-        } catch (e) {}
+        } catch (e) { }
     });
 
     useEffect(() => {
-       
+
         // const {mapInitialized} = this.state;
         if (!mapInitialized && map) {
-            dispatch(fetchUserProperties()).then((properties)=>{
+            dispatch(fetchUserProperties()).then((properties) => {
                 // console.log(' properties =' + JSON.stringify(properties));
                 // properties.push(currentUser.property);
-                showPropertiesOnMapEx(map, properties.value, renderPropertiesTooltip,true);
+                showPropertiesOnMapEx(map, properties.value, renderPropertiesTooltip, true);
                 setMapInitialized(true);
             });
-            
+
         }
         // return function cleanup(){
         //       if(map){
@@ -54,33 +54,33 @@ const MobileViewPropertiesAtMap =() => {
         //         clearDistancesFromMap(map);
         //       }
         // };
-    },[dispatch, map]);
+    }, [dispatch, map]);
 
 
     // const renderResidentsTooltip = ({id, email}) => {
-        
+
 
     //     return <ResidentTooltip email={email} id={id} history={history} />;
     // };
 
-    const renderPropertiesTooltip = ({id, email}) => {
-        
+    const renderPropertiesTooltip = ({ id, email }) => {
+
         return <PropertiesTooltip email={email} id={id} history={history} />;
     };
 
-    
+
     return (
         <CRow className="h-100">
-            
-        <CCol  className="pb-4 d-flex flex-column">
-            
-            <div className="d-flex flex-fill">
-                <Map />
-            </div>
-        </CCol>
-    </CRow>
+
+            <CCol className="pb-4 d-flex flex-column">
+
+                <div className="d-flex flex-fill">
+                    <Map />
+                </div>
+            </CCol>
+        </CRow>
     );
-    
+
 }
 
 

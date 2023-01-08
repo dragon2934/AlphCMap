@@ -12,8 +12,8 @@ import {
     CSidebarNavTitle,
 } from '@coreui/react';
 import React from "react";
-import {useDispatch, useSelector} from 'react-redux';
-import {setShowSidebar} from '../../redux/actionCreators/adminActionCreators';
+import { useDispatch, useSelector } from 'react-redux';
+import { setShowSidebar } from '../../redux/actionCreators/adminActionCreators';
 
 // sidebar nav config
 // import navigation from './_nav';
@@ -34,12 +34,6 @@ const TheSidebar = () => {
         },
     ];
     const show = useSelector((state) => state.admin.sidebarShow);
-    // const user = useSelector((state) => state.auth.user);
-    // const checkUseLevel = (roleName) =>{
-    //     if(roleName === process.env.REACT_APP_ROLE_ADMIN_NAME) return 1;
-    //     if(roleName === process.env.REACT_APP_ROLE_PM_NAME) return 1;
-    //     return 3;
-    // }
     return (
         <CSidebar
             show={show}

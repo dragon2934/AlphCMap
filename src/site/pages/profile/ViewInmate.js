@@ -1,7 +1,7 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {useDispatch,useSelector} from 'react-redux';
-import {useHistory} from 'react-router';
-import {Link} from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 import {
     Button,
     Card,
@@ -19,28 +19,28 @@ import { isAppEmbedWebview } from '../../../utils/utils';
 
 const ViewInmate = ({
     match: {
-        params: {id},
+        params: { id },
     },
 }) => {
     const [user, setUser] = useState(null);
     const [deleting, setDeleting] = useState(false);
     const [loading, setLoading] = useState(!!id);
-    const currentUser = useSelector((state) => state.auth.user);
+    const currentUser = useSelector((state) => state.auth.me);
     const history = useHistory();
-    if(currentUser === null || currentUser === undefined){
+    if (currentUser === null || currentUser === undefined) {
         //back to login
         history.push('/login');
     }
     console.log('current user..' + JSON.stringify(currentUser));
     const dispatch = useDispatch();
-    
-    const [isPrimaryHolder,setIsPrimaryHolder] = useState(false);
 
-    const getPropertyId = () =>{
+    const [isPrimaryHolder, setIsPrimaryHolder] = useState(false);
+
+    const getPropertyId = () => {
         let propertyId = currentUser.property.id;
         const query = new URLSearchParams(window.location.search);
 
-        if(query!=null && query!==undefined){
+        if (query != null && query !== undefined) {
             const pid = query.get('propertyId');
             // console.log('pid ==' + pid);
             propertyId = pid;
@@ -48,9 +48,9 @@ const ViewInmate = ({
         return propertyId;
     }
     useEffect(() => {
-        if (id){
+        if (id) {
             const propertyId = getPropertyId();
-            dispatch(getInmate(id,propertyId)).then(({value: user}) => {
+            dispatch(getInmate(id, propertyId)).then(({ value: user }) => {
                 setUser(user);
                 console.log(' get this inmate ....' + JSON.stringify(user));
                 setIsPrimaryHolder(user.currentUserIsPrimaryHolder);
@@ -59,17 +59,17 @@ const ViewInmate = ({
         }
     }, [dispatch, id]);
 
-    const isDeleteAble = (id) =>{
-        if(isPrimaryHolder){
-            if(id!=null && id!=undefined && id === currentUser.id && currentUser.property.id == getPropertyId()){
+    const isDeleteAble = (id) => {
+        if (isPrimaryHolder) {
+            if (id != null && id != undefined && id === currentUser.id && currentUser.property.id == getPropertyId()) {
                 console.log('xxxx===1111 ****');
                 return false;
             }
             console.log(' return true 1....');
             return true;
-        } 
-        if(id!=null && id!=undefined && id === currentUser.id){
-            if(currentUser.property.id == getPropertyId()){
+        }
+        if (id != null && id != undefined && id === currentUser.id) {
+            if (currentUser.property.id == getPropertyId()) {
                 console.log('xxxx===2222 ****');
                 return false;
             }
@@ -82,15 +82,15 @@ const ViewInmate = ({
     const onClickDeleteInmate = useCallback(() => {
         setDeleting(true);
         const propertyId = getPropertyId();
-        dispatch(deleteInmate(id,propertyId)).then(() => {
+        dispatch(deleteInmate(id, propertyId)).then(() => {
 
-            
-            if(isAppEmbedWebview()){
+
+            if (isAppEmbedWebview()) {
                 history.push(`/mobile-residents/` + propertyId);
-            }else{
-                history.push(`/profile/other-residents/` +propertyId);
+            } else {
+                history.push(`/profile/other-residents/` + propertyId);
             }
-            
+
         });
     }, [dispatch, history, id]);
 
@@ -128,21 +128,21 @@ const ViewInmate = ({
             </CardBody>
             <CardFooter>
 
-{ isPrimaryHolder || (id!=null && id!=undefined && id === currentUser.id) ? isAppEmbedWebview()? <Button
+                {isPrimaryHolder || (id != null && id != undefined && id === currentUser.id) ? isAppEmbedWebview() ? <Button
                     block
                     tag={Link}
                     color={'success'}
-                    to={`/mobile-resident/edit/${id}?propertyId=` +getPropertyId()}>
+                    to={`/mobile-resident/edit/${id}?propertyId=` + getPropertyId()}>
                     Edit
-                </Button>: <Button
+                </Button> : <Button
                     block
                     tag={Link}
                     color={'success'}
                     to={`/profile/other-resident/edit/${id}?propertyId=` + getPropertyId()}>
                     Edit
                 </Button> : null
-               }
- {/* 
+                }
+                {/* 
  删除逻辑: 只有 primary holder 可以删除别人，
  自己在 Primay / Secondary 的情况下，可以删除自己，
  但在自己注册的 property，不能删除自己 
@@ -152,21 +152,21 @@ const ViewInmate = ({
  
  */}
 
-            { isDeleteAble(id) ?  <Button
+                {isDeleteAble(id) ? <Button
                     block
                     color={'danger'}
                     onClick={() => onClickDeleteInmate()}
                     disabled={deleting}>
                     {deleting ? <Spinner size={'sm'} /> : 'Delete'}
-                </Button> :null
-            }
-                { isAppEmbedWebview()?  <Button
-                            className="mt-1"
-                            block
-                            tag={Link}
-                            to={`/mobile-residents/` +getPropertyId()}>
-                            Back
-                        </Button> : null}
+                </Button> : null
+                }
+                {isAppEmbedWebview() ? <Button
+                    className="mt-1"
+                    block
+                    tag={Link}
+                    to={`/mobile-residents/` + getPropertyId()}>
+                    Back
+                </Button> : null}
             </CardFooter>
         </Card>
     );

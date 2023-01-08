@@ -1,5 +1,5 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {useDispatch} from 'react-redux';
+import React, { useContext, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
     Card,
     CardBody,
@@ -13,11 +13,11 @@ import {
 } from 'reactstrap';
 import GMap from '../../../common/components/GMap';
 import MapContext from '../../../common/contexts/MapContext/MapContext';
-import {getUserProperty} from '../../../redux/actionCreators/appActionCreators';
+import { getUserProperty } from '../../../redux/actionCreators/appActionCreators';
 
 const ViewProperty = () => {
     const dispatch = useDispatch();
-    const {map} = useContext(MapContext);
+    const { map } = useContext(MapContext);
 
     const [property, setProperty] = useState(null);
     const [marker] = useState(
@@ -27,13 +27,13 @@ const ViewProperty = () => {
     );
 
     useEffect(() => {
-        dispatch(getUserProperty()).then(({value: property}) => {
+        dispatch(getUserProperty()).then(({ value: property }) => {
             setProperty({
                 ...property,
                 ...property.location,
             });
 
-            const {latitude, longitude} = property.location;
+            const { latitude, longitude } = property.location;
 
             if (longitude && latitude && map) {
                 marker.setPosition({
@@ -55,7 +55,7 @@ const ViewProperty = () => {
             <CardBody className="pb-4 d-flex flex-column">
                 <div
                     className="d-flex flex-fill mb-4"
-                    style={{height: '400px'}}>
+                    style={{ height: '400px' }}>
                     <GMap />
                 </div>
                 {!property && (
@@ -63,7 +63,7 @@ const ViewProperty = () => {
                         <Spinner
                             type={'grow'}
                             color={'primary'}
-                            style={{width: '5rem', height: '5rem'}}>
+                            style={{ width: '5rem', height: '5rem' }}>
                             {''}
                         </Spinner>
                     </div>
@@ -192,7 +192,7 @@ const ViewProperty = () => {
                         <Col xs="12">
                             <FormGroup>
                                 <Label htmlFor="route">
-                                    Route / Lot No / Plot No / Local Identifier
+                                    Street /Route / Lot No / Plot No / Local Identifier
                                 </Label>
                                 <Input
                                     id="route"
@@ -203,7 +203,7 @@ const ViewProperty = () => {
                         </Col>
                         <Col xs="12">
                             <FormGroup>
-                                <Label htmlFor="locality">Locality</Label>
+                                <Label htmlFor="locality"> City / Locality</Label>
                                 <Input
                                     id="locality"
                                     value={property.locality}
@@ -266,7 +266,7 @@ const ViewProperty = () => {
                         <Col xs="12">
                             <FormGroup>
                                 <Label htmlFor="city">
-                                    City / Province / State
+                                    Province / State
                                 </Label>
                                 <Input
                                     id="city"

@@ -1,4 +1,4 @@
-import {ActionType} from 'redux-promise-middleware';
+import { ActionType } from 'redux-promise-middleware';
 import {
     AUTH_LOGIN,
     AUTH_LOGOUT,
@@ -8,12 +8,24 @@ import {
     RESEND_EMAIL_VERIFICATION_CODE,
     RESEND_MOBILE_VERIFICATION_CODE,
     SET_AUTH,
+    AUTH_GET_ME
 } from '../actionTypes';
 
 const initialState = {};
 
 const authReducer = (state = initialState, action) => {
     switch (action.type) {
+        case `${AUTH_GET_ME}_${ActionType.Fulfilled}`:
+            console.log('..get me ..' + JSON.stringify(action.payload) + '.. state..' + JSON.stringify(state));
+            return {
+                ...state,
+                user: {
+                    ...action.payload
+                },
+                me: {
+                    ...action.payload,
+                }
+            };
         case `${AUTH_LOGIN}_${ActionType.Fulfilled}`:
             return {
                 ...action.payload,
@@ -31,6 +43,7 @@ const authReducer = (state = initialState, action) => {
         case `${AUTH_RESET_PASSWORD_VERIFY}_${ActionType.Fulfilled}`:
             if (action.payload.jwt)
                 return {
+                    ...state,
                     ...action.payload,
                 };
             else return state;
@@ -40,6 +53,10 @@ const authReducer = (state = initialState, action) => {
         case `${AUTH_REGISTER}_${ActionType.Fulfilled}`:
             return {
                 ...action.payload,
+                // user: action.payload.user,
+                me: {
+                    ...action.payload.user
+                }
             };
 
         case SET_AUTH:

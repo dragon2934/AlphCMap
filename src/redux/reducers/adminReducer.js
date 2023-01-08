@@ -1,4 +1,4 @@
-import {ActionType} from 'redux-promise-middleware';
+import { ActionType } from 'redux-promise-middleware';
 import {
     ADMIN_FETCH_ALERTS,
     ADMIN_FETCH_CONTACTS,
@@ -6,16 +6,20 @@ import {
     ADMIN_FETCH_ROLES,
     ADMIN_FETCH_USERS,
     ADMIN_SHOW_SIDEBAR,
-    
+    ADMIN_GET_BUSINESS_PROFILE
+
 } from '../actionTypes';
 
 const initialState = {
     users: [],
+    me: {},
     properties: [],
     contacts: [],
     roles: [],
     alerts: [],
     sidebarShow: 'responsive',
+    companyProfile: {},
+    workingHour: [],
 };
 
 function adminReducer(state = initialState, action) {
@@ -25,6 +29,11 @@ function adminReducer(state = initialState, action) {
             return {
                 ...state,
                 users: [],
+            };
+        case `${ADMIN_GET_BUSINESS_PROFILE}_${ActionType.Fulfilled}`:
+            return {
+                ...state,
+                ...action.payload,
             };
         case `${ADMIN_FETCH_USERS}_${ActionType.Fulfilled}`:
             return {

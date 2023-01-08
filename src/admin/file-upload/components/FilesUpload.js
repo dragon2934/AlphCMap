@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import UploadService from "../services/FileUploadService";
-import { listFiles,updateProperty,updateLatLng}  from '../../../redux/actionCreators/adminActionCreators';
-import {useDispatch, useSelector} from 'react-redux';
+import { listFiles, updateProperty, updateLatLng } from '../../../redux/actionCreators/adminActionCreators';
+import { useDispatch, useSelector } from 'react-redux';
 
 const UploadFiles = () => {
   const [selectedFiles, setSelectedFiles] = useState(undefined);
@@ -10,7 +10,6 @@ const UploadFiles = () => {
   const [fileInfos, setFileInfos] = useState([]);
   const progressInfosRef = useRef(null)
   const dispatch = useDispatch();
-  // const user = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.jwt);
   // console.log('token =' + token );
 
@@ -27,13 +26,13 @@ const UploadFiles = () => {
     setProgressInfos({ val: [] });
   };
 
-  const uploadFile = async (idx, file) =>  {
+  const uploadFile = async (idx, file) => {
     let _progressInfos = [...progressInfosRef.current.val];
     // dispatch(uploadFiles()).then((response) => {
     //   setFileInfos(response.data);
     // });
-    console.log('uploading ..file='+ JSON.stringify( file));
-    return UploadService.upload(file,token, (event) => {
+    console.log('uploading ..file=' + JSON.stringify(file));
+    return UploadService.upload(file, token, (event) => {
       _progressInfos[idx].percentage = Math.round(
         (100 * event.loaded) / event.total
       );
@@ -47,27 +46,27 @@ const UploadFiles = () => {
         //Do update database for property
         //resp.url
         // console.log('upload completed...' + JSON.stringify(resp));
-        dispatch(updateProperty( file.name,resp.data[0].url)).then((response) => {
-          console.log(' update property..'+ JSON.stringify(response));
+        dispatch(updateProperty(file.name, resp.data[0].url)).then((response) => {
+          console.log(' update property..' + JSON.stringify(response));
           //upload next
           const files = Array.from(selectedFiles);
-          idx = idx +1;
-          if(idx < files.length){
+          idx = idx + 1;
+          if (idx < files.length) {
             sleep(500);
             uploadFile(idx, files[idx]);
-          }else{
+          } else {
             //upload completed
             // setMessage([]);
             setMessage((prevMessage) => ([
               ...prevMessage,
               "Uploaded Completed,now update Lat/Lng for the property, please wait.... ",
             ]));
-            dispatch(updateLatLng()).then(resp=>{
+            dispatch(updateLatLng()).then(resp => {
               setMessage((prevMessage) => ([
                 ...prevMessage,
                 "update Lat/Lng successful ",
               ]));
-            }).catch(error=>{
+            }).catch(error => {
               setMessage((prevMessage) => ([
                 ...prevMessage,
                 "update Lat/Lng error: " + JSON.stringify(error),
@@ -76,11 +75,11 @@ const UploadFiles = () => {
 
 
           }
-          
-        }).catch(error=>{
-          console.log('update property error..'+ JSON.stringify(error));
+
+        }).catch(error => {
+          console.log('update property error..' + JSON.stringify(error));
         });
-        
+
       })
       .catch((error) => {
         console.log('upload file error..' + JSON.stringify(error));

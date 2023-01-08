@@ -1,4 +1,4 @@
-import {SERVICE_URL} from '../../constants';
+import { SERVICE_URL } from '../../constants';
 import {
     ADMIN_ADD_PROPERTY,
     ADMIN_ADD_USER,
@@ -28,7 +28,11 @@ import {
     ADMIN_FETCH_CITY_COUNT,
     ADMIN_DELETE_CITY,
     ADMIN_ADD_CITY,
-    ADMIN_PROPERTY_BINDING
+    ADMIN_PROPERTY_BINDING,
+    ADMIN_SEND_PROMOTE_EMAIL,
+    ADMIN_SAVE_BUSINESS_PROFILE,
+    ADMIN_GET_BUSINESS_PROFILE,
+    ADMIN_GET_BUSINESS_ADDRESS
 } from '../actionTypes';
 
 // UI
@@ -121,7 +125,7 @@ export const fetchCityCount = () => {
         });
     };
 };
-export const fetchCities = ({page = 1, pageSize = 10}) => {
+export const fetchCities = ({ page = 1, pageSize = 10 }) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
         const start = (page - 1) * pageSize;
@@ -178,7 +182,7 @@ export const deleteCity = (id) => {
 
 // Users
 
-export const fetchUsers = ({page = 1, pageSize = 10}) => {
+export const fetchUsers = ({ page = 1, pageSize = 10 }) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
         const start = (page - 1) * pageSize;
@@ -287,7 +291,7 @@ export const saveTenant = (data) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
 
-        const url =`${SERVICE_URL}/residents/save-tenant`;
+        const url = `${SERVICE_URL}/residents/save-tenant`;
 
         console.log('save Tenant=' + JSON.stringify(data));
         return dispatch({
@@ -374,7 +378,7 @@ export const searchUsers = (value) => {
 };
 
 ///properties/search-by-keyword
-export const searchProperties = (keywords, searchType,cityShorName) => {
+export const searchProperties = (keywords, searchType, cityShorName) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
         let url = `${SERVICE_URL}/properties/search-by-keyword`;
@@ -411,21 +415,21 @@ export const searchProperties = (keywords, searchType,cityShorName) => {
 };
 
 // Properties
-export const fetchProperties = ({page = 1, pageSize = 10,roleName = 'Admin'}) => {
+export const fetchProperties = ({ page = 1, pageSize = 10, roleName = 'Admin' }) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
         const user = getState().auth.user;
-        if(user === null || user === undefined){
-            const responseData ={
-                statusCode:200,
-                value:[]
+        if (user === null || user === undefined) {
+            const responseData = {
+                statusCode: 200,
+                value: []
             }
             return responseData;
         }
         const mobile = user.mobileNumber;
         const start = (page - 1) * pageSize;
-        let url = `${SERVICE_URL}/properties?_start=${start}&_limit=${pageSize}&ownerMobileNumber=${mobile}`;
-        if(roleName=='PropertyManager'){
+        let url = `${SERVICE_URL}/properties?_start=${start}&_limit=${pageSize}&filters[$and][0][ownerMobileNumber][$eq]=${mobile}`;
+        if (roleName == 'PropertyManager') {
             url = url + '&hidden=false'
         }
         // console.log('fetchProperties=' + url);
@@ -448,7 +452,7 @@ export const fetchProperties = ({page = 1, pageSize = 10,roleName = 'Admin'}) =>
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData;
+                        return responseData.data;
                     }
                 }),
         });
@@ -491,11 +495,11 @@ export const fetchProperty = (param) => {
 
         const params = Array.isArray(param)
             ? '?' +
-              new URLSearchParams(
-                  param.map((id) => {
-                      return ['id_in', id];
-                  }),
-              )
+            new URLSearchParams(
+                param.map((id) => {
+                    return ['id_in', id];
+                }),
+            )
             : param;
 
         return dispatch({
@@ -627,7 +631,7 @@ export const saveProperty = (data) => {
 
 // Alerts
 // 
-export const fetchAlerts = ({page = 1, pageSize = 10}) => {
+export const fetchAlerts = ({ page = 1, pageSize = 10 }) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
         const start = (page - 1) * pageSize;
@@ -839,7 +843,7 @@ export const uploadFiles = () => {
     };
 };
 
-export const updateProperty = (fileName,fileUrl) => {
+export const updateProperty = (fileName, fileUrl) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
 
@@ -875,8 +879,8 @@ export const updateLatLng = () => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
 
-        const data ={
-            
+        const data = {
+
         }
         return dispatch({
             type: ADMIN_UPDATE_LAT_LNG,
@@ -887,7 +891,7 @@ export const updateLatLng = () => {
                     Authorization: `Bearer ${token}`,
                 },
                 method: 'POST',
-                body:JSON.stringify(data),
+                body: JSON.stringify(data),
             })
                 .then((r) => r.json())
                 .then((responseData) => {
@@ -914,7 +918,7 @@ export const propertyBinding = (data) => {
                     Authorization: `Bearer ${token}`,
                 },
                 method: 'POST',
-                body:JSON.stringify(data),
+                body: JSON.stringify(data),
             })
                 .then((r) => r.json())
                 .then((responseData) => {
@@ -922,6 +926,135 @@ export const propertyBinding = (data) => {
                         return Promise.reject(responseData);
                     } else {
                         return responseData.roles;
+                    }
+                }),
+        });
+    };
+};
+
+export const sendPromotionContents = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_SEND_PROMOTE_EMAIL,
+            payload: fetch(`${SERVICE_URL}/residents/send-promote-email`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData.roles;
+                    }
+                }),
+        });
+    };
+};
+
+export const saveBusinessProfile = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_SAVE_BUSINESS_PROFILE,
+            payload: fetch(`${SERVICE_URL}/business-profiles/save-business-profile`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData.roles;
+                    }
+                }),
+        });
+    };
+};
+
+export const getBusinessProfile = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_GET_BUSINESS_PROFILE,
+            payload: fetch(`${SERVICE_URL}/public/load-business-profile`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const loadBusinessAddress = (data) => {
+
+
+    return ({
+        type: ADMIN_GET_BUSINESS_ADDRESS,
+        payload: fetch(`${SERVICE_URL}/public/load-business-address`, {
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            method: 'GET',
+        })
+            .then((r) => r.json())
+            .then((responseData) => {
+                if (responseData.statusCode >= 300) {
+                    return Promise.reject(responseData);
+                } else {
+                    return responseData;
+                }
+            }),
+    });
+
+};
+export const loadConnected = (data) => {
+
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_GET_BUSINESS_ADDRESS,
+            payload: fetch(`${SERVICE_URL}/residents/load-connected`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'GET',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
                     }
                 }),
         });

@@ -1,4 +1,4 @@
-import {SERVICE_URL,PARTNER_TOKEN} from '../../constants';
+import { SERVICE_URL, PARTNER_TOKEN } from '../../constants';
 import {
     AUTH_REGISTER,
     GET_INSTITUTE,
@@ -102,6 +102,9 @@ export const registerUser = (data) => {
                 if (responseData.statusCode >= 300) {
                     return Promise.reject(responseData);
                 } else {
+                    //do get me
+                    console.log('..register return..' + JSON.stringify(responseData));
+
                     return responseData;
                 }
             }),
@@ -134,7 +137,7 @@ export const isPropertyRegistered = (email) => {
             type: REGISTER_PROPERTY,
             payload: fetch(`${SERVICE_URL}/public/is-property-registered?tenant=${PARTNER_TOKEN}`, {
                 method: 'POST',
-                body: JSON.stringify({email}),
+                body: JSON.stringify({ email }),
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -158,7 +161,7 @@ export const isMobileRegistered = (mobileNumber) => {
             type: REGISTER_PROPERTY,
             payload: fetch(`${SERVICE_URL}/public/is-mobile-registered`, {
                 method: 'POST',
-                body: JSON.stringify({mobileNumber}),
+                body: JSON.stringify({ mobileNumber }),
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',

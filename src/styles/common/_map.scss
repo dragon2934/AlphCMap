@@ -50,8 +50,10 @@
     top: 0;
     right: 3px;
   }
-
   &_content {
+    position: absolute;
+    top: 100px;
+    right: 20px;
     border-radius: 15px 0 15px 15px;
     box-shadow: rgba(0,0,0,0.4) 5px 5px 5px;
     padding: 10px;
@@ -59,9 +61,13 @@
     max-width: 400px;
     max-height: 490px;
     overflow: auto;
+    z-index: 99999;
 
     & img {
       margin-right: 10px;
+    }
+    & i {
+      margin-right: 15px;
     }
   }
 }

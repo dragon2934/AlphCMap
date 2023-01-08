@@ -1,6 +1,6 @@
-import {useFormik} from 'formik';
+import { useFormik } from 'formik';
 import React from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     Button,
     Col,
@@ -18,12 +18,14 @@ import {
     resetRegistrationForm,
     setPropertyRegistrationForm,
 } from '../../../redux/actionCreators/registrationActionCreators';
-import {generateEmail} from '../../../utils/propertyUtils';
+import { generateEmail } from '../../../utils/propertyUtils';
+import { getMe } from '../../../redux/actionCreators/authActionCreators';
+import { toastr } from 'react-redux-toastr';
 
 const validationSchema = Yup.object().shape({
     mobileNumber: Yup.string().required('Mobile number is required'),
     email: Yup.string().required('Email is required')
-           .email('Invalid email'),
+        .email('Invalid email'),
     companyName: Yup.string(),
     lastName: Yup.string(),
     // email: Yup.string().email('Invalid email'),
@@ -41,19 +43,20 @@ const validationSchema = Yup.object().shape({
             'Confirm you have read Privacy Policy and Terms of Use.',
         ),
     liability: Yup.boolean()
-    .required('Confirm you have read above instruction')
-    .oneOf(
-        [true],
-        'Confirm you have read above instruction.',
-    )
+        .required('Confirm you have read above instruction')
+        .oneOf(
+            [true],
+            'Confirm you have read above instruction.',
+        )
 
 });
 
-const UserInfoStep = ({wizardInstance}) => {
+const UserInfoStep = ({ wizardInstance }) => {
     const dispatch = useDispatch();
 
     const registerForm = useSelector((state) => state.registerForm);
-    const {address} = useSelector((state) => state.registerForm);
+    const utilsData = useSelector((state) => state.utilsData);
+    const { address } = useSelector((state) => state.registerForm);
     address.steps = 3;
 
     const formik = useFormik({
@@ -65,11 +68,11 @@ const UserInfoStep = ({wizardInstance}) => {
             password: '',
             passwordConfirmation: '',
             consent: false,
-            liability:false
+            liability: false
         },
         isInitialValid: false,
         validationSchema,
-        onSubmit: (values, {setSubmitting}) => {
+        onSubmit: (values, { setSubmitting }) => {
             setSubmitting(true);
 
             const newUser = {
@@ -81,7 +84,7 @@ const UserInfoStep = ({wizardInstance}) => {
                     hightRiseOrCommercial: registerForm.hightRiseOrCommercial,
                     totalFloors: registerForm.totalFloors,
                     propertyName: registerForm.propertyName,
-                    totalUnitsEachFloor:registerForm.totalUnitsEachFloor,
+                    totalUnitsEachFloor: registerForm.totalUnitsEachFloor,
                     settlementType: registerForm.settlementType,
                     unitNo: registerForm.unitNo,
                     location: {
@@ -97,20 +100,29 @@ const UserInfoStep = ({wizardInstance}) => {
                 username: values.email,
                 password: values.password,
                 provider: 'local',
+                connectToMerchantId: utilsData.connectToMerchantId
             };
 
             dispatch(registerUser(newUser))
                 .then(() => {
-                    dispatch(
-                        setPropertyRegistrationForm({
-                            user: newUser,
-                        }),
-                    ).then(() => {
-                        wizardInstance.nextStep();
+                    dispatch(getMe()).then(resp => {
+                        console.log('.get me.resp..' + JSON.stringify(resp));
+                        dispatch(
+                            setPropertyRegistrationForm({
+                                user: newUser,
+                                me: resp.value,
+
+                            }),
+                        ).then(() => {
+                            wizardInstance.nextStep();
+                        });
+                    }).catch(error => {
+                        toastr.error('Error', "Mobile Or Password doesn't match, Please verify!");
                     });
+
                 })
                 .catch((response) => {
-                    if(response.message && response.message[0].messages){
+                    if (response.message && response.message[0].messages) {
                         switch (response.message[0].messages[0].id) {
                             case 'Auth.form.error.mobileNumber.taken':
                                 setFieldError(
@@ -267,8 +279,8 @@ const UserInfoStep = ({wizardInstance}) => {
                                 invalid={touched.consent && errors.consent}
                             />
                             I've read{' '}
-                            <a href="/privacy-policy">Privacy Policy</a> and{' '}
-                            <a href="/terms-of-use">Terms of Use</a>.
+                            <a target={'_blank'} href="/privacy-policy">Privacy Policy</a> and{' '}
+                            <a target={'_blank'} href="/terms-of-use">Terms of Use</a>.
                         </Label>
                         <Label check>
                             <Input
@@ -287,7 +299,7 @@ const UserInfoStep = ({wizardInstance}) => {
                             />
                             Disclaimer: In an emergency contact your local first responder directly. AlphC E-Alert App is only an aid and is not intended to replace first responders. First responders can license this technology to increase the safety of your community.
                         </Label>
-                        
+
                     </FormGroup>
                 </FormGroup>
             </Col>
@@ -316,7 +328,10 @@ const UserInfoStep = ({wizardInstance}) => {
                     className="mt-1 mb-5"
                     color={'danger'}
                     block
-                    onClick={() => dispatch(resetRegistrationForm())}>
+                    onClick={() => {
+                        utilsData.connectToMerchantId = 0;
+                        dispatch(resetRegistrationForm());
+                    }}>
                     Cancel
                 </Button>
             </Col>

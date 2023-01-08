@@ -42,19 +42,25 @@ const showPropertyTooltip = (map, renderTooltip, e) => {
 
     const element = document.createElement('div');
 
-    let domain = localStorage.getItem('current_domain') ;
-    if(domain === undefined || domain === null){
+    let domain = localStorage.getItem('current_domain');
+    if (domain === undefined || domain === null) {
         domain = 'alphc.com'
     }
-    if(feature.properties.email.includes("@")){
+    if (feature.properties.companyName) {
+        domain = feature.properties.companyName + ".com";
+    }
+    if (feature.properties.lastName) {
+        domain = feature.properties.lastName + ".com";
+    }
+    if (feature.properties.email.includes("@")) {
         domain = '';
     }
-    if(domain.length > 0) {
+    if (domain.length > 0) {
         domain = "@" + domain;
     }
     ReactDOM.render(
         renderTooltip({
-            email: feature.properties.email  + domain, // CHANGE THIS TO REFLECT THE PROPERTIES YOU WANT TO SHOW
+            email: feature.properties.email + domain, // CHANGE THIS TO REFLECT THE PROPERTIES YOU WANT TO SHOW
             id: feature.properties.id,
             property: feature.properties
         }),
@@ -71,14 +77,14 @@ const showPropertyTooltip = (map, renderTooltip, e) => {
         .setLngLat(feature.geometry.coordinates)
         .addTo(map);
 };
-export const removeAllImages = (map) =>{
-    map.removeStyleImage( MapMarkerUrls.property.default);
-    map.removeStyleImage( MapMarkerUrls.property.hasInjured);
-    map.removeStyleImage( MapMarkerUrls.property.pending);
-    map.removeStyleImage( MapMarkerUrls.property.safe);
-    map.removeStyleImage( MapMarkerUrls.property.secondary);
+export const removeAllImages = (map) => {
+    map.removeStyleImage(MapMarkerUrls.property.default);
+    map.removeStyleImage(MapMarkerUrls.property.hasInjured);
+    map.removeStyleImage(MapMarkerUrls.property.pending);
+    map.removeStyleImage(MapMarkerUrls.property.safe);
+    map.removeStyleImage(MapMarkerUrls.property.secondary);
 }
-export const showPropertiesOnMapEx = (map, data, renderTooltip,bAddImage) => {
+export const showPropertiesOnMapEx = (map, data, renderTooltip, bAddImage) => {
     const propertiesWithAlert = data.filter((i) => i.property_alert);
 
     const other = data.filter((i) => !i.property_alert);
@@ -93,8 +99,8 @@ export const showPropertiesOnMapEx = (map, data, renderTooltip,bAddImage) => {
         (i) => i.property_alert.status === PropertyStatus.HAS_INJURED,
     );
 
-    const secondaryAddress = data.filter( (p) => !p.primaryHolder);
-    const primaryAddress = other.filter( (p) => p.primaryHolder );
+    const secondaryAddress = data.filter((p) => !p.primaryHolder);
+    const primaryAddress = other.filter((p) => p.primaryHolder);
 
     console.log('..primary ..' + primaryAddress.length + ' secondary ..' + secondaryAddress.length);
     showPointLayer(
@@ -144,27 +150,51 @@ export const showPropertiesOnMapEx = (map, data, renderTooltip,bAddImage) => {
 
     map.on('click', showPropertyTooltip.bind(undefined, map, renderTooltip));
 };
-export const showPropertiesOnMap = (map, data, renderTooltip,bAddImage) => {
-    const propertiesWithAlert = data.filter((i) => i.primaryAddress );
+export const showPropertiesOnMap = (map, data, renderTooltip, bAddImage, user) => {
+    const propertiesWithAlert = data.filter((i) => i.primaryAddress);
 
     const other = data.filter((i) => !i.primaryAddress);
 
+
+    // default: '/map-markers/blue_home_pin.png',
+    let defaultItems = other.filter(
+        (i) => i.color === PropertyStatus.DEFAULT,
+    );
+    if (user !== null && user !== undefined) {
+        const noneOwnerData = propertiesWithAlert.filter(
+            (i) => i.primaryAddress === 1 && i.ownerMobileNumber !== user.mobileNumber,
+        );
+        defaultItems = defaultItems.concat(noneOwnerData);
+    }
+    // safe: '/map-markers/green_home_pin.png',
     const safe = other.filter(
         (i) => i.color === PropertyStatus.SAFE,
     );
+
+    // pending: '/map-markers/grey_home_pin.png',
     const pending = other.filter(
         (i) => i.color === PropertyStatus.PENDING,
     );
+
+    // hasInjured: '/map-markers/red_home_pin.png',
     const hasInjured = other.filter(
-        (i) =>  i.color === PropertyStatus.HAS_INJURED ,
+        (i) => i.color === PropertyStatus.HAS_INJURED,
     );
-    const primary = propertiesWithAlert.filter(
-        (i) => i.primaryAddress  ,
-    );
+    let primary = null;
+    if (user !== null && user !== undefined) {
+        primary = propertiesWithAlert.filter(
+            (i) => i.primaryAddress === 1 && i.ownerMobileNumber === user.mobileNumber,
+        );
+    } else {
+        primary = propertiesWithAlert.filter(
+            (i) => i.primaryAddress,
+        );
+    }
+    // secondary: '/map-markers/second_home_pin.png',
     const secondary = other.filter(
         (i) => i.color === PropertyStatus.SECONDARY,
     );
-    primary.map(item=>{
+    primary.map(item => {
         hasInjured.push(item);
     })
 
@@ -173,7 +203,7 @@ export const showPropertiesOnMap = (map, data, renderTooltip,bAddImage) => {
         map,
         MapMarkerUrls.property.default,
         'other-properties',
-        other,
+        defaultItems,
         (i) => [i.location.longitude, i.location.latitude],
     );
 
@@ -248,7 +278,7 @@ const showResidentTooltip = (map, renderTooltip, e) => {
             email: feature.properties.email,
             id: feature.properties.id,
             user: feature.properties,
-            location: JSON.parse( feature.properties.location),
+            location: JSON.parse(feature.properties.location),
         }),
         element,
     );
@@ -422,10 +452,10 @@ const showPointLayer = (
         map.loadImage(imageUrl, function (error, image) {
             if (error) throw error;
 
-            try{
-                    
+            try {
+
                 map.addImage(`${layerId}-marker`, image);
-                    
+
                 map.addSource(layerId, {
                     type: 'geojson',
                     data: {
@@ -452,7 +482,7 @@ const showPointLayer = (
                         'icon-size': 0.6,
                     },
                 });
-            }catch(error){
+            } catch (error) {
                 console.log('add layer error:' + JSON.stringify(error));
             };
 
@@ -497,7 +527,7 @@ export const clearLayer = (map, layerId) => {
     if (map.getSource(layerId)) map.removeSource(layerId);
 };
 
-export const showPrimaryDistancesOnMap = (map, properties) => {
+export const showPrimaryDistancesOnMap = (map, properties, user) => {
     const residentsWithLocation = properties.filter(
         (i) =>
             i.location &&
@@ -505,7 +535,7 @@ export const showPrimaryDistancesOnMap = (map, properties) => {
     );
     const primaryAddress = properties.filter(
         (i) =>
-            i.primaryAddress
+            i.primaryAddress == 1 && i.ownerMobileNumber === user.mobileNumber
     );
 
     showLineLayer(

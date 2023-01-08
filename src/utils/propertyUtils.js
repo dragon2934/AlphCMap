@@ -1,8 +1,8 @@
-import {SERVICE_URL,PARTNER_TOKEN} from '../constants';
+import { SERVICE_URL, PARTNER_TOKEN } from '../constants';
 
-export const reverseGeocodePoint = ({latitude, longitude}) => {
+export const reverseGeocodePoint = ({ latitude, longitude }) => {
     return fetch(`${SERVICE_URL}/public/geocode-point?tenant=${PARTNER_TOKEN}`, {
-        body: JSON.stringify({latitude, longitude}),
+        body: JSON.stringify({ latitude, longitude }),
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
@@ -11,9 +11,9 @@ export const reverseGeocodePoint = ({latitude, longitude}) => {
     }).then((r) => r.json());
 };
 
-export const geocodeAddress = ({address}) => {
+export const geocodeAddress = ({ address }) => {
     return fetch(`${SERVICE_URL}/public/geocode-address?tenant=${PARTNER_TOKEN}`, {
-        body: JSON.stringify({address}),
+        body: JSON.stringify({ address }),
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
@@ -58,6 +58,8 @@ export const generateEmail = ({
     if (unitNo) {
         components = [unitNo, ...components];
     }
+
+    console.log('..components..' + JSON.stringify(components));
 
     if (components.some((value) => !value)) {
         return `Lati${latitude}_Long${longitude}`;

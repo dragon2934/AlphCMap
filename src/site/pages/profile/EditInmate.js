@@ -1,8 +1,8 @@
-import {useFormik} from 'formik';
-import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {useHistory} from 'react-router';
-import {Link} from 'react-router-dom';
+import { useFormik } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 import {
     Button,
     Card,
@@ -24,8 +24,8 @@ import {
     saveInmate,
 } from '../../../redux/actionCreators/appActionCreators';
 import { isAppEmbedWebview } from '../../../utils/utils';
-import {toastr} from 'react-redux-toastr';
-import { isMobileRegistered} from '../../../redux/actionCreators/registrationActionCreators';
+import { toastr } from 'react-redux-toastr';
+import { isMobileRegistered } from '../../../redux/actionCreators/registrationActionCreators';
 
 const validationSchema = Yup.object().shape({
     mobileNumber: Yup.number().required('Mobile number is required'),
@@ -56,23 +56,23 @@ const addUserSchema = Yup.object().shape({
 });
 const EditInmate = ({
     match: {
-        params: {id},
+        params: { id },
     },
 }) => {
-    const currentUser = useSelector((state) => state.auth.user);
+    const currentUser = useSelector((state) => state.auth.me);
     const [loading, setLoading] = useState(!!id);
-    const [mobileAvailable,setMobileAvailable] = useState(id!=null && id!= undefined ? 3: 0);
+    const [mobileAvailable, setMobileAvailable] = useState(id != null && id != undefined ? 3 : 0);
 
 
 
     const dispatch = useDispatch();
     const history = useHistory();
 
-    const getPropertyId = () =>{
+    const getPropertyId = () => {
         let propertyId = currentUser.property.id;
         const query = new URLSearchParams(window.location.search);
 
-        if(query!=null && query!==undefined){
+        if (query != null && query !== undefined) {
             const pid = query.get('propertyId');
             // console.log('pid ==' + pid);
             propertyId = pid;
@@ -80,21 +80,21 @@ const EditInmate = ({
         return propertyId;
     }
 
-    const saveInmateData = (values, {setSubmitting}) =>{
+    const saveInmateData = (values, { setSubmitting }) => {
 
         setSubmitting(true);
         const propertyId = getPropertyId();
 
-        const isEdit = id!=null && id!=undefined ? true: mobileAvailable ==2? true: false;
+        const isEdit = id != null && id != undefined ? true : mobileAvailable == 2 ? true : false;
         //编译用户，或者用户已经存在的，不能传入password，否则密码就变空了
-        const newUser =isEdit? {
+        const newUser = isEdit ? {
             id: id,
             property: propertyId,
             mobileNumber: values.mobileNumber,
             firstName: values.firstName,
             lastName: values.lastName,
             username: values.email,
-        }: {
+        } : {
             id: id,
             property: propertyId,
             mobileNumber: values.mobileNumber,
@@ -105,31 +105,31 @@ const EditInmate = ({
             password: values.password,
             provider: 'local',
         };
-        
+
 
         dispatch(saveInmate(newUser))
-            .then(({value: user}) => {
+            .then(({ value: user }) => {
                 console.log(' save in mate...' + JSON.stringify(user));
-                if(user.error){
-                    toastr.error('Error !',user.message);
-                }else{
-                    if(id===null || id===undefined){
+                if (user.error) {
+                    toastr.error('Error !', user.message);
+                } else {
+                    if (id === null || id === undefined) {
                         toastr.success(
                             'Successful!',
-                            mobileAvailable ==2?'User added as a secondary resident to this address.':
-                            'User added as a secondary resident to this address.  Advise resident to download AlphC E-Alert App and register using SMS verification code and password created. ',
+                            mobileAvailable == 2 ? 'User added as a secondary resident to this address.' :
+                                'User added as a secondary resident to this address.  Advise resident to download AlphC E-Alert App and register using SMS verification code and password created. ',
                         );
                     }
-                    
-                    if(isAppEmbedWebview()){
-                        history.push(`/mobile-resident/view/${user.id}?propertyId=`+propertyId);
-                    }else{
-                        history.push(`/profile/other-resident/view/${user.id}?propertyId=`+propertyId);
+
+                    if (isAppEmbedWebview()) {
+                        history.push(`/mobile-resident/view/${user.id}?propertyId=` + propertyId);
+                    } else {
+                        history.push(`/profile/other-resident/view/${user.id}?propertyId=` + propertyId);
                     }
                 }
             })
             .catch((response) => {
-                if(response && response.message && response.message[0].messages && response.message[0].messages[0].id){
+                if (response && response.message && response.message[0].messages && response.message[0].messages[0].id) {
                     console.log('response: ', response);
 
                     switch (response.message[0].messages[0].id) {
@@ -158,20 +158,20 @@ const EditInmate = ({
             passwordConfirmation: '',
         },
         isInitialValid: false,
-        validationSchema: id!=null && id!=undefined ? validationSchema: mobileAvailable ==2? validationSchema: addUserSchema,
-        onSubmit: (values, {setSubmitting}) => {
+        validationSchema: id != null && id != undefined ? validationSchema : mobileAvailable == 2 ? validationSchema : addUserSchema,
+        onSubmit: (values, { setSubmitting }) => {
 
-            if(mobileAvailable===2){
+            if (mobileAvailable === 2) {
                 toastr.confirm(
                     'Are you sure you want to add this user as resident? The resident’s name and phone no. will be displayed and accessible by all residents at this address!',
                     {
                         onOk: () => {
-                            saveInmateData(values, {setSubmitting});
+                            saveInmateData(values, { setSubmitting });
                         },
                     },
                 );
-            }else{
-                saveInmateData(values, {setSubmitting});
+            } else {
+                saveInmateData(values, { setSubmitting });
             }
         },
     });
@@ -194,27 +194,27 @@ const EditInmate = ({
     useEffect(() => {
         if (id) {
             let propertyId = getPropertyId();
-            dispatch(getInmate(id,propertyId)).then(({value: user}) => {
+            dispatch(getInmate(id, propertyId)).then(({ value: user }) => {
                 setValues(user);
                 setLoading(false);
             });
         }
     }, [dispatch, id, setValues]);
 
-    const searchUser=()=>{
+    const searchUser = () => {
         console.log('checking user existing....' + values.mobileNumber);
-        dispatch(isMobileRegistered(values.mobileNumber)).then(({value: user}) => {
-           console.log('check registration....' + JSON.stringify(user));
-           if(user.id === '-1'){
-            // this mobile is available
-            setMobileAvailable(1);
-           }else{
-            setMobileAvailable(2);
-            toastr.warning('','User is already registered and will be added as secondary resident');
-            values.firstName = user.firstName;
-            values.lastName = user.lastName;
-            // values.email = user.email;
-           }
+        dispatch(isMobileRegistered(values.mobileNumber)).then(({ value: user }) => {
+            console.log('check registration....' + JSON.stringify(user));
+            if (user.id === '-1') {
+                // this mobile is available
+                setMobileAvailable(1);
+            } else {
+                setMobileAvailable(2);
+                toastr.warning('', 'User is already registered and will be added as secondary resident');
+                values.firstName = user.firstName;
+                values.lastName = user.lastName;
+                // values.email = user.email;
+            }
         });
     }
 
@@ -241,13 +241,13 @@ const EditInmate = ({
                             <Col>
                                 <FormGroup>
                                     <Label for="mobileNumber">
-                                        Mobile Number &nbsp;&nbsp; { mobileAvailable===0 || mobileAvailable===3 ?null: mobileAvailable===1?'✅ ':'❌'}
+                                        Mobile Number &nbsp;&nbsp; {mobileAvailable === 0 || mobileAvailable === 3 ? null : mobileAvailable === 1 ? '✅ ' : '❌'}
                                     </Label>
                                     <MobileInput
-                                        
+
                                         setFieldValue={setFieldValue}
-                                        setFieldTouched={()=>{
-                                            
+                                        setFieldTouched={() => {
+
                                             setFieldTouched();
                                             searchUser();
                                         }}
@@ -319,7 +319,7 @@ const EditInmate = ({
                                     <FormFeedback>{errors.email}</FormFeedback>
                                 </FormGroup>
                             </Col> */}
-                         {mobileAvailable===2 || mobileAvailable===3 ?null:   <Col>
+                            {mobileAvailable === 2 || mobileAvailable === 3 ? null : <Col>
                                 <FormGroup>
                                     <Label for="password">Password</Label>
                                     <Input
@@ -339,8 +339,8 @@ const EditInmate = ({
                                     </FormFeedback>
                                 </FormGroup>
                             </Col>
-}
-{mobileAvailable===2 || mobileAvailable===3 ?  null:    <Col>
+                            }
+                            {mobileAvailable === 2 || mobileAvailable === 3 ? null : <Col>
                                 <FormGroup>
                                     <Label for="passwordConfirmation">
                                         Password Confirmation
@@ -362,8 +362,8 @@ const EditInmate = ({
                                         {errors.passwordConfirmation}
                                     </FormFeedback>
                                 </FormGroup>
-                            </Col> 
- } 
+                            </Col>
+                            }
                         </>
                     )}
                 </CardBody>
@@ -376,23 +376,23 @@ const EditInmate = ({
                             disabled={!isValid || isSubmitting}>
                             {isSubmitting ? <Spinner size={'sm'} /> : 'Save'}
                         </Button>
-                      { isAppEmbedWebview()?  <Button
+                        {isAppEmbedWebview() ? <Button
                             className="mt-1"
                             block
                             tag={Link}
                             color={'danger'}
                             to={`/mobile-residents/` + getPropertyId()}>
                             Cancel
-                        </Button> :  <Button
+                        </Button> : <Button
                             className="mt-1"
                             block
                             tag={Link}
                             color={'danger'}
-                            to={`/profile/other-resident/view/${id}?propertyId=`+getPropertyId()}>
+                            to={`/profile/other-resident/view/${id}?propertyId=` + getPropertyId()}>
                             Cancel
                         </Button>
-                      }
-                       {/* { isAppEmbedWebview?  <Button
+                        }
+                        {/* { isAppEmbedWebview?  <Button
                             className="mt-1"
                             block
                             tag={Link}

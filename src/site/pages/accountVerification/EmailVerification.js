@@ -1,6 +1,6 @@
 import moment from 'moment';
-import React, {useCallback, useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     Button,
     Collapse,
@@ -11,11 +11,11 @@ import {
     Row,
     Spinner,
 } from 'reactstrap';
-import {resendEmailVerificationCode} from '../../../redux/actionCreators/appActionCreators';
-import {verifyAccount} from '../../../redux/actionCreators/registrationActionCreators';
-import {toastr} from 'react-redux-toastr';
+import { resendEmailVerificationCode } from '../../../redux/actionCreators/appActionCreators';
+import { verifyAccount } from '../../../redux/actionCreators/registrationActionCreators';
+import { toastr } from 'react-redux-toastr';
 
-const EmailVerification = ({currentUser}) => {
+const EmailVerification = ({ currentUser }) => {
     const [error, setError] = useState(null);
     const [verificationCode, setVerificationCode] = useState();
     const [remainingTime, setRemainingTime] = useState(0);
@@ -27,11 +27,11 @@ const EmailVerification = ({currentUser}) => {
     const dispatch = useDispatch();
     let user = useSelector((state) => state.auth.user);
     const registrationUser = useSelector((state) => state.registerForm.user);
-    if(currentUser===null|| currentUser===undefined){
-        if(user===null || user === undefined){
+    if (currentUser === null || currentUser === undefined) {
+        if (user === null || user === undefined) {
             user = registrationUser;
         }
-    }else{
+    } else {
         user = currentUser;
     }
 
@@ -44,20 +44,20 @@ const EmailVerification = ({currentUser}) => {
                 emailVerificationCode: verificationCode,
             }),
         )
-            .then(({value: {user}}) => {
+            .then(({ value: { user } }) => {
                 if (!user.emailVerified) setError('Invalid Verification Code');
-                else{
+                else {
                     setError(null);
-                    if(currentUser!=null|| currentUser!=undefined){
+                    if (currentUser != null || currentUser != undefined) {
                         if (window.ReactNativeWebView) {
                             window.ReactNativeWebView.postMessage(
-                                JSON.stringify({result: 'verified'}),
+                                JSON.stringify({ result: 'verified' }),
                             );
                         }
                         window.location.reload();
-                        
+
                     }
-                } 
+                }
             })
             .finally(() => {
                 setPendingVerify(false);
@@ -154,8 +154,8 @@ const EmailVerification = ({currentUser}) => {
                             pendingResend
                                 ? 'link'
                                 : remainingTime !== 0
-                                ? 'danger'
-                                : 'success'
+                                    ? 'danger'
+                                    : 'success'
                         }
                         onClick={onClickResendVerificationCode}>
                         {pendingResend ? (
