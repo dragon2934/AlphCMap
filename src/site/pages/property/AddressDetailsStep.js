@@ -1,6 +1,6 @@
-import {useFormik} from 'formik';
+import { useFormik } from 'formik';
 import React from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     Button,
     Col,
@@ -19,14 +19,15 @@ import {
 
 const validationSchema = Yup.object().shape({});
 
-const AddressDetailsStep = ({wizardInstance}) => {
+const AddressDetailsStep = ({ wizardInstance }) => {
     const dispatch = useDispatch();
-    const {address, rural} = useSelector((state) => state.registerForm);
+    const { address, rural } = useSelector((state) => state.registerForm);
+    const utilsData = useSelector((state) => state.utilsData);
     address.steps = 1;
     const formik = useFormik({
         initialValues: address,
         validationSchema,
-        onSubmit: (values, {setSubmitting}) => {
+        onSubmit: (values, { setSubmitting }) => {
             setSubmitting(true);
 
             dispatch(
@@ -68,7 +69,7 @@ const AddressDetailsStep = ({wizardInstance}) => {
     return (
         <Form onSubmit={handleSubmit}>
             <Col>
-                <Input type="hidden" value={1} name="steps"/>
+                <Input type="hidden" value={1} name="steps" />
             </Col>
             <Col>
                 <FormGroup>
@@ -105,7 +106,7 @@ const AddressDetailsStep = ({wizardInstance}) => {
             <Col>
                 <FormGroup>
                     <Label for="route">
-                        Route / Lot No / Plot No / Local Identifier
+                        Street /Route / Lot No / Plot No / Local Identifier
                     </Label>
                     <Input
                         type="text"
@@ -122,7 +123,7 @@ const AddressDetailsStep = ({wizardInstance}) => {
             </Col>
             <Col>
                 <FormGroup>
-                    <Label for="route">Locality</Label>
+                    <Label for="route"> City / Locality</Label>
                     <Input
                         type="text"
                         name="locality"
@@ -206,7 +207,7 @@ const AddressDetailsStep = ({wizardInstance}) => {
             )}
             <Col>
                 <FormGroup>
-                    <Label for="route">City / Province / State</Label>
+                    <Label for="route">Province / State</Label>
                     <Input
                         type="text"
                         name="city"
@@ -246,7 +247,10 @@ const AddressDetailsStep = ({wizardInstance}) => {
                     className="mt-1 mb-5"
                     color={'danger'}
                     block
-                    onClick={() => dispatch(resetRegistrationForm())}>
+                    onClick={() => {
+                        utilsData.connectToMerchantId = 0;
+                        dispatch(resetRegistrationForm())
+                    }}>
                     Cancel
                 </Button>
             </Col>

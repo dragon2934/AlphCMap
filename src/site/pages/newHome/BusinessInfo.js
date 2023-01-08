@@ -13,12 +13,14 @@ import { Link } from 'react-router-dom';
 import { getBusinessProfile } from '../../../redux/actionCreators/adminActionCreators';
 import { changePropertyColor, cancelShowBusinessInfo } from '../../../redux/actionCreators/appActionCreators';
 import { useHistory } from 'react-router';
+import { setPropertyRegistrationForm } from '../../../redux/actionCreators/registrationActionCreators';
 const BusinessInfo = ({ }) => {
 
     const utilsData = useSelector((state) => state.utilsData);
 
     const dispatch = useDispatch();
     const property = utilsData.selectedProperty;
+    console.log('..property.. ' + JSON.stringify(property));
     const user = useSelector((state) => state.auth.me);
     const [companyProfile, setCompanyProfile] = useState(null);
 
@@ -52,6 +54,22 @@ const BusinessInfo = ({ }) => {
         return () => { };
     }, [dispatch]);
 
+    const connectToMerchant = () => {
+        utilsData.connectToMerchantId = property.id;
+        console.log('..start to connect to merchant..' + property.id);
+        const blankAddress = {
+            "postalCode": "",
+            "streetNumber": "",
+            "route": "",
+            "locality": "",
+            "city": "",
+            "country": "",
+        };
+        dispatch(setPropertyRegistrationForm({
+            address: blankAddress,
+            active: true,
+        }));
+    }
 
     return (
         <Col md={3} sm={12} xs={12} className="overlay-form-container">
@@ -75,6 +93,7 @@ const BusinessInfo = ({ }) => {
                                 <Row>   <Col><i className="fa-solid fa-address"></i> {property.street_number + ' ' + property.route + ' ' + property.locality + ',' + property.city + ',' + property.postal_code} </Col> </Row>
                                 <Row>   <Col><i className="fa-solid fa-phone"></i> {companyProfile.phone} </Col> </Row>
                                 <Row>   <Col><i className="fa-solid fa-globe"></i> {companyProfile.website} </Col> </Row>
+                                {property.binding_email && property.binding_email !== null && property.binding_email !== 'null' ? <Row>   <Col><i className="fa-solid fa-envelope"></i> {property.binding_email} </Col> </Row> : null}
                                 <Row>
                                     <Col>Working Hours <hr /></Col>
 
@@ -212,27 +231,7 @@ const BusinessInfo = ({ }) => {
                         className="mt-1 mb-5"
                         color={'success'}
                         block
-                        onClick={() => {
-                            const email = utilsData.emailForChangeColor
-                            const data = {
-                                email: email,
-                                color: color,
-                                ownerMobileNumber: user.mobileNumber,
-                            };
-                            utilsData.changeColor = false;
-                            dispatch(changePropertyColor(data)).then(resp => {
-                                console.log('...change color..' + JSON.stringify(resp));
-                                setTimeout(function () {
-                                    callback(true, color, email);
-                                }, 500)
-
-                                // history.push("/");
-                            })
-                                .catch(error => {
-                                    callback(false, color, email);
-                                    console.log('...change color error..' + JSON.stringify(error));
-                                })
-                        }}>
+                        onClick={() => connectToMerchant()}>
                         Connect
                     </Button>
                 </Col>

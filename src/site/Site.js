@@ -47,6 +47,8 @@ import Checkout from "./pages/newHome/Checkout";
 import CheckoutSuccess from './pages/newHome/CheckoutSuccess';
 import CheckoutFailed from './pages/newHome/CheckoutFailed';
 import BusinessProfile from "./pages/newHome/BusinessProfile";
+import Cart from "./pages/cart";
+
 const Site = () => {
   return (
     <Switch>
@@ -69,6 +71,7 @@ const Site = () => {
       />
 
 
+      <Route exact path="/cart" component={Cart} />
       <Route exact path="/change-email" component={ChangeEMail} />
       <Route exact path="/pricing" component={MemberShip} />
       <Route exact path="/checkout/:id" component={Checkout} />

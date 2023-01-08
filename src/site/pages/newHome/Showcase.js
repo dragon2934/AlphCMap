@@ -5,9 +5,9 @@ import { withRouter } from 'react-router';
 import Map from '../../../common/components/Map';
 import MapContext from '../../../common/contexts/MapContext/MapContext';
 import {
-    fetchProperties,
     fetchUsers,
     loadBusinessAddress,
+    loadConnected,
 } from '../../../redux/actionCreators/adminActionCreators';
 import {
     clearDistancesFromMap,
@@ -42,7 +42,7 @@ import BindingForm from './BindingForm';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import FlyerForm from './FlyerForm';
-import { convertAttributes, convertLocation } from '../../../utils/utils';
+import { convertAttributes, convertLocation, convertGeoProperty } from '../../../utils/utils';
 import BusinessInfo from './BusinessInfo';
 
 
@@ -185,8 +185,8 @@ class Showcase extends Component {
                 uncombine_features: false,
             },
         });
-        const { fetchProperties, } = this.props;
-        const { value: properties } = await fetchProperties();
+        const { loadConnected, } = this.props;
+        const { value: properties } = await loadConnected();
         const convertedProperties = convertAttributes(properties, true);
 
         try {
@@ -246,8 +246,17 @@ class Showcase extends Component {
                     }
                 };
             }
-            showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, false);
-            showPrimaryDistancesOnMap(map, convertedProperties);
+            const { auth } = this.props;
+            const user = auth.user;
+
+            if (user !== null && user !== undefined) {
+                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, false, user);
+                showPrimaryDistancesOnMap(map, convertedProperties);
+            } else {
+                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, false, user);
+                // showPrimaryDistancesOnMap(map, convertedProperties);
+            }
+
         } catch (e) {
 
         }
@@ -362,8 +371,8 @@ class Showcase extends Component {
         console.log('..remove this property..' + email);
         const prePart = email.split('@')[0];
         const { properties } = this.state;
-        let tobeRemain = properties.filter(property => property.email.split('@')[0] !== prePart);
-        let tobeDelete = properties.filter(property => property.email.split('@')[0] === prePart);
+        let tobeRemain = properties.filter(property => property.properties.email.split('@')[0] !== prePart);
+        let tobeDelete = properties.filter(property => property.properties.email.split('@')[0] === prePart);
         if (primaryAddress) {
             const { history } = this.props;
             history.push("/edit-property");
@@ -374,7 +383,7 @@ class Showcase extends Component {
         const { deleteUserAdditionalAddressById } = this.props;
 
         if (tobeDelete && tobeDelete.length > 0) {
-            const resp = await deleteUserAdditionalAddressById(tobeDelete[0].id);
+            const resp = await deleteUserAdditionalAddressById(tobeDelete[0].properties.id);
         }
         const { map } = this.context;
 
@@ -418,10 +427,12 @@ class Showcase extends Component {
                 properties: tobeRemain
             });
             console.log('...redraw the map after remove property...');
-            // console.log('..properties..' + JSON.stringify(properties));
-            showPropertiesOnMap(map, tobeRemain, this.renderPropertiesTooltip, false);
+            const properties = convertGeoProperty(tobeRemain);
+            const { auth } = this.props;
+            const user = auth.user;
+            showPropertiesOnMap(map, properties, this.renderPropertiesTooltip, false, user);
             // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
-            showPrimaryDistancesOnMap(map, tobeRemain);
+            showPrimaryDistancesOnMap(map, properties, user);
         } catch (e) {
 
             console.log('...remove property error...' + JSON.stringify(e));
@@ -430,7 +441,7 @@ class Showcase extends Component {
 
     async initializeLayers() {
         const { map } = this.context;
-        const { fetchProperties, loadBusinessAddress } = this.props;
+        const { loadConnected, loadBusinessAddress } = this.props;
         const draw = new MapboxDraw({
             controls: {
                 point: false,
@@ -450,8 +461,8 @@ class Showcase extends Component {
 
             convertedProperties = convertLocation(properties.propertyInfo);
         } else {
-            const { value: properties } = await fetchProperties();
-            convertedProperties = convertAttributes(properties, true);
+            const { value: properties } = await loadConnected();
+            convertedProperties = convertLocation(properties.value);
         }
 
         console.log('..load business.. ' + JSON.stringify(convertedProperties));
@@ -491,10 +502,11 @@ class Showcase extends Component {
             });
 
             if (user === null || user === undefined) {
-                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true);
+                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true, null);
             } else {
-                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true);
-                showPrimaryDistancesOnMap(map, convertedProperties);
+                console.log('current user..' + JSON.stringify(user));
+                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true, user);
+                showPrimaryDistancesOnMap(map, convertedProperties, user);
             }
             // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
 
@@ -819,7 +831,7 @@ class Showcase extends Component {
         const { setPropertyRegistrationForm, registerForm } = this.props;
         const { selectedAddress } = this.state;
         //  = address;
-        // console.log('..selectedAddress..' + JSON.stringify(selectedAddress));
+        console.log('..selectedAddress..' + JSON.stringify(selectedAddress));
         let that = this;
         registerForm.address = selectedAddress;
         setPropertyRegistrationForm({
@@ -1167,6 +1179,7 @@ class Showcase extends Component {
             {utilsData.bindingProperty && <BindingForm />}
             {utilsData.drawFinished && <FlyerForm />}
             {utilsData.showBusinessInfo && <BusinessInfo />}
+            {utilsData.connectToMerchantId > 0 && <PropertyForm />}
         </>
 
             ;
@@ -1182,10 +1195,10 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    fetchProperties: () =>
-        dispatch(fetchProperties({ page: 1, pageSize: 100000 })),
     loadBusinessAddress: () =>
         dispatch(loadBusinessAddress()),
+    loadConnected: (data) =>
+        dispatch(loadConnected(data)),
     fetchUsers: () => dispatch(fetchUsers({ page: 1, pageSize: 100000 })),
     setPropertyRegistrationForm: (data) => dispatch(setPropertyRegistrationForm(data)),
     saveBatchProperties: (data) => dispatch(saveBatchProperties(data)),

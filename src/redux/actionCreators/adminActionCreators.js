@@ -428,7 +428,7 @@ export const fetchProperties = ({ page = 1, pageSize = 10, roleName = 'Admin' })
         }
         const mobile = user.mobileNumber;
         const start = (page - 1) * pageSize;
-        let url = `${SERVICE_URL}/properties?_start=${start}&_limit=${pageSize}&ownerMobileNumber=${mobile}`;
+        let url = `${SERVICE_URL}/properties?_start=${start}&_limit=${pageSize}&filters[$and][0][ownerMobileNumber][$eq]=${mobile}`;
         if (roleName == 'PropertyManager') {
             url = url + '&hidden=false'
         }
@@ -1034,4 +1034,29 @@ export const loadBusinessAddress = (data) => {
             }),
     });
 
+};
+export const loadConnected = (data) => {
+
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_GET_BUSINESS_ADDRESS,
+            payload: fetch(`${SERVICE_URL}/residents/load-connected`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'GET',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
 };

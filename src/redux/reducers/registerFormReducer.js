@@ -37,6 +37,20 @@ const registerFormReducer = (state = initialState, action) => {
         }
         case REGISTRATION_RESET_FORM:
             return initialState;
+        // {
+        //     ...initialState,
+        //     utilsData: {
+        //         editMode: false,
+        //         changeColor: false,
+        //         emailForChangeColor: '',
+        //         bindingProperty: false,
+        //         selectedProperty: null,
+        //         drawFinished: false,
+        //         drawing: false,
+        //         showBusinessInfo: false,
+        //         connectToMerchantId: 0,
+        //     }
+        // };
         case `${SET_PROPERTY_REGISTRATION_FORM}_${ActionType.Fulfilled}`:
             return {
                 ...state,

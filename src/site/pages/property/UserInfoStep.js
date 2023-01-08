@@ -55,6 +55,7 @@ const UserInfoStep = ({ wizardInstance }) => {
     const dispatch = useDispatch();
 
     const registerForm = useSelector((state) => state.registerForm);
+    const utilsData = useSelector((state) => state.utilsData);
     const { address } = useSelector((state) => state.registerForm);
     address.steps = 3;
 
@@ -99,6 +100,7 @@ const UserInfoStep = ({ wizardInstance }) => {
                 username: values.email,
                 password: values.password,
                 provider: 'local',
+                connectToMerchantId: utilsData.connectToMerchantId
             };
 
             dispatch(registerUser(newUser))
@@ -108,7 +110,8 @@ const UserInfoStep = ({ wizardInstance }) => {
                         dispatch(
                             setPropertyRegistrationForm({
                                 user: newUser,
-                                me: resp.value
+                                me: resp.value,
+
                             }),
                         ).then(() => {
                             wizardInstance.nextStep();
@@ -325,7 +328,10 @@ const UserInfoStep = ({ wizardInstance }) => {
                     className="mt-1 mb-5"
                     color={'danger'}
                     block
-                    onClick={() => dispatch(resetRegistrationForm())}>
+                    onClick={() => {
+                        utilsData.connectToMerchantId = 0;
+                        dispatch(resetRegistrationForm());
+                    }}>
                     Cancel
                 </Button>
             </Col>

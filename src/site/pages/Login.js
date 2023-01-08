@@ -44,8 +44,8 @@ const Login = ({ history }) => {
             setSubmitting(true);
             dispatch(loginUser(values.email, values.password))
                 .then((response) => {
-                    if (response.statusCode > 300) {
-                        toastr.error('Error', response.message[0].messages[0].message);
+                    if (response.value.error && response.value.error.status > 300) {
+                        toastr.error('Error', response.value.error.details[0].messages[0].message);
                     } else {
                         console.log('..start get me');
                         dispatch(getMe()).then(resp => {
@@ -56,7 +56,10 @@ const Login = ({ history }) => {
 
                     }
                 })
-                .catch(() => { })
+                .catch((error) => {
+                    console.log('..login error' + JSON.stringify(error));
+                    // toastr.error('Error', response.message[0].messages[0].message);
+                })
                 .finally(() => {
                     setSubmitting(false);
                 });

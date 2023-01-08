@@ -505,7 +505,7 @@ const EditUserProperty = ({
                     <Col xs="12">
                         <FormGroup>
                             <Label htmlFor="route">
-                                Route / Lot No / Plot No / Local Identifier
+                                Street /Route / Lot No / Plot No / Local Identifier
                             </Label>
                             <Input
                                 id="route"
@@ -521,7 +521,7 @@ const EditUserProperty = ({
                     </Col>
                     <Col xs="12">
                         <FormGroup>
-                            <Label htmlFor="locality">Locality</Label>
+                            <Label htmlFor="locality"> City / Locality</Label>
                             <Input
                                 id="locality"
                                 name="locality"
@@ -617,7 +617,7 @@ const EditUserProperty = ({
                     <Col xs="12">
                         <FormGroup>
                             <Label htmlFor="city">
-                                City / Province / State
+                                Province / State
                             </Label>
                             <Input
                                 id="city"

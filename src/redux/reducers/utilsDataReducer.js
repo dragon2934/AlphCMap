@@ -15,6 +15,7 @@ const initialState = {
     drawFinished: false,
     drawing: false,
     showBusinessInfo: false,
+    connectToMerchantId: 0,
 };
 
 function utilsDataReducer(state = initialState, action) {

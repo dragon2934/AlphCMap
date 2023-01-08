@@ -88,7 +88,20 @@ export const convertLocation = (items) => {
         const retItem = {
             id: item.id,
             ...item,
+            primaryAddress: item.primary_address,
+            ownerMobileNumber: item.owner_mobile_number,
             location: JSON.parse(item.location)
+        }
+        retItems.push(retItem);
+
+    });
+    return retItems;
+}
+export const convertGeoProperty = (items) => {
+    let retItems = [];
+    items.map(item => {
+        const retItem = {
+            ...item.properties,
         }
         retItems.push(retItem);
 
@@ -114,4 +127,14 @@ export const convertAttributes = (items, isArray) => {
         }
     }
 
+}
+export const formatNumber = number => {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(number);
+}
+export const sumItems = cartItems => {
+    // Storage(cartItems);
+    localStorage.setItem('cart', JSON.stringify(cartItems.length > 0 ? cartItems : []));
+    let itemCount = cartItems.reduce((total, product) => total + product.quantity, 0);
+    let total = cartItems.reduce((total, product) => total + product.price * product.quantity, 0).toFixed(2);
+    return { itemCount, total }
 }

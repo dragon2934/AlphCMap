@@ -19,7 +19,7 @@ import * as Yup from 'yup';
 import Footer from './Footer';
 import Header from './Header';
 import { toastr } from 'react-redux-toastr';
-
+import { useCart } from '../../hooks/useCart';
 const bindingSchema = Yup.object().shape({
     companyName: Yup.string().required('This field is required'),
     phone: Yup.string().required('This field is required'),
@@ -59,6 +59,12 @@ const BusinessProfile = () => {
     };
     const [workingHour, setWorkingHour] = useState([]);
 
+    const { addProduct, cartItems, increase } = useCart();
+    const addProductToCard = (product) => {
+        // addProduct(product);
+        // dispatch({ type: 'ADD_ITEM', product });
+        history.push('/cart');
+    }
     const formik = useFormik({
         initialValues: {
             companyName: '',
@@ -78,6 +84,13 @@ const BusinessProfile = () => {
                 console.log('..save business profile..' + JSON.stringify(resp));
                 setSubmitting(false);
                 toastr.success('Success', 'Business profile saved!');
+                const proudct = {
+                    membershipId: 1,
+
+                }
+
+                addProductToCard(proudct);
+
             });
         }
     });
@@ -159,7 +172,7 @@ const BusinessProfile = () => {
                                     <Row>
                                         <Col md={12}>
                                             <FormGroup>
-                                                <Label for="lblPropertyName">Business Name:</Label>
+                                                <Label>Business Name:</Label>
                                                 <Input
                                                     type="text"
                                                     name="companyName"
@@ -175,7 +188,7 @@ const BusinessProfile = () => {
                                     <Row>
                                         <Col md={12}>
                                             <FormGroup>
-                                                <Label for="lblPropertyName">Contact Phone:</Label>
+                                                <Label>Contact Phone:</Label>
                                                 <Input
                                                     type="text"
                                                     name="phone"
@@ -191,7 +204,7 @@ const BusinessProfile = () => {
                                     <Row>
                                         <Col md={12}>
                                             <FormGroup>
-                                                <Label for="lblPropertyName">Website:</Label>
+                                                <Label>Website:</Label>
                                                 <Input
                                                     type="text"
                                                     name="website"
@@ -209,18 +222,18 @@ const BusinessProfile = () => {
                                 <Col md="6">
                                     <Row>
                                         <Col md={12}>
-                                            <Label for="lblPropertyName">Business Hour</Label></Col>
+                                            <Label>Business Hour</Label></Col>
                                     </Row>
                                     <Row>
                                         <Col md={3}>
 
                                             <FormGroup style={{ marginTop: "40px", textAlign: "right" }}>
-                                                <Label for="lblPropertyName">Monday:</Label>
+                                                <Label>Monday:</Label>
                                             </FormGroup>
                                         </Col>
                                         <Col md={3}>
                                             <FormGroup>
-                                                <Label for="lblPropertyName">Open:</Label>
+                                                <Label>Open:</Label>
                                                 <Input
                                                     type="text"
                                                     name="openHour0"
@@ -234,7 +247,7 @@ const BusinessProfile = () => {
                                         </Col>
                                         <Col md={3}>
                                             <FormGroup>
-                                                <Label for="lblPropertyName">Close:</Label>
+                                                <Label>Close:</Label>
                                                 <Input
                                                     type="text"
                                                     name="closeHour0"
@@ -267,7 +280,7 @@ const BusinessProfile = () => {
                                         <Col md={3}>
 
                                             <FormGroup style={{ textAlign: "right" }}>
-                                                <Label for="lblPropertyName">Tuesday:</Label>
+                                                <Label>Tuesday:</Label>
                                             </FormGroup>
                                         </Col>
                                         <Col md={3}>
@@ -319,7 +332,7 @@ const BusinessProfile = () => {
                                         <Col md={3}>
 
                                             <FormGroup style={{ textAlign: "right" }}>
-                                                <Label for="lblPropertyName">Wednesday:</Label>
+                                                <Label>Wednesday:</Label>
                                             </FormGroup>
                                         </Col>
                                         <Col md={3}>
@@ -371,7 +384,7 @@ const BusinessProfile = () => {
                                         <Col md={3}>
 
                                             <FormGroup style={{ textAlign: "right" }}>
-                                                <Label for="lblPropertyName">Thursday:</Label>
+                                                <Label>Thursday:</Label>
                                             </FormGroup>
                                         </Col>
                                         <Col md={3}>
@@ -424,7 +437,7 @@ const BusinessProfile = () => {
                                         <Col md={3}>
 
                                             <FormGroup style={{ textAlign: "right" }}>
-                                                <Label for="lblPropertyName">Friday:</Label>
+                                                <Label>Friday:</Label>
                                             </FormGroup>
                                         </Col>
                                         <Col md={3}>
@@ -476,7 +489,7 @@ const BusinessProfile = () => {
                                         <Col md={3}>
 
                                             <FormGroup style={{ textAlign: "right" }}>
-                                                <Label for="lblPropertyName">Saturday:</Label>
+                                                <Label>Saturday:</Label>
                                             </FormGroup>
                                         </Col>
                                         <Col md={3}>
@@ -528,7 +541,7 @@ const BusinessProfile = () => {
                                         <Col md={3}>
 
                                             <FormGroup style={{ textAlign: "right" }}>
-                                                <Label for="lblPropertyName">Sunday:</Label>
+                                                <Label>Sunday:</Label>
                                             </FormGroup>
                                         </Col>
                                         <Col md={3}>
