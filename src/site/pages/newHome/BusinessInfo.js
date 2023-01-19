@@ -329,7 +329,7 @@ const BusinessInfo = ({ }) => {
             </Row>
 
             {
-                property.ownerMobileNumber === user.mobileNumber || property.owner_mobile_number === user.mobileNumber ?
+                user !== null && user !== undefined && (property.ownerMobileNumber === user.mobileNumber || property.owner_mobile_number === user.mobileNumber) ?
                     <>
                         <Col  >
                             Share your business <br />
