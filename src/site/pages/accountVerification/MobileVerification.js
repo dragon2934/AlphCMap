@@ -34,7 +34,6 @@ const MobileVerification = ({ currentUser }) => {
     } else {
         user = currentUser;
     }
-    // console.log('mobile verify..current user..' + JSON.stringify(user));
 
     const onClickVerify = useCallback(() => {
         setPendingVerify(true);

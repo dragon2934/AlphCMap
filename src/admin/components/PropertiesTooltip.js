@@ -3,10 +3,11 @@ import React from 'react';
 import { Button, Col, Row } from 'reactstrap';
 import { useSelector, useDispatch } from 'react-redux';
 
-const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbBinding, cbSendEmail, cbBusiness }) => {
-    // console.log('..property..' + JSON.stringify(property))
+const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbBinding, cbSendEmail, cbBusiness, user, cbBusinessInfo }) => {
+    console.log('..property..' + JSON.stringify(property))
     // const utilsData = useSelector((state) => state.utilsData);
 
+    // console.log('..me..' + JSON.stringify(user));
     return (
         <>
             <h4>{email}</h4>
@@ -24,11 +25,14 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
                     <Row className="justify-content-end">
                         <Col className="list-unstyled text-right">
                             <li>
-                                <Button
+                                {user !== null && user !== undefined && property.ownerMobileNumber === user.mobileNumber ? <>  <Button
                                     size={'sm'}
                                     onClick={() => cbBusiness(email, property)}>
                                     Business
                                 </Button> &nbsp;&nbsp;&nbsp;&nbsp;
+                                </> : null
+
+                                }
                                 <Button
                                     size={'sm'}
                                     onClick={() => {
@@ -36,15 +40,15 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
                                     }}>
                                     Info
                                 </Button> &nbsp;&nbsp;&nbsp;&nbsp;
-                                <Button
+                                {/* <Button
                                     color={'primary'}
                                     size={'sm'}
                                     onClick={() =>
                                         changeColor(email)
                                     }>
                                     Color
-                                </Button> &nbsp;&nbsp;&nbsp;&nbsp;
-                                {property.primaryAddress ? <Button
+                                </Button> &nbsp;&nbsp;&nbsp;&nbsp; */}
+                                {property.ownerMobileNumber === user.mobileNumber ? property.primaryAddress ? <Button
                                     color={'primary'}
                                     size={'sm'}
                                     onClick={() =>
@@ -58,14 +62,28 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
                                         cb(email, false)
                                     }>
                                     Remove
-                                </Button>
+                                </Button> : null
                                 }
                             </li>
                         </Col>
                     </Row>
 
                 </>
-                : null}
+                : property.is_business ? property.connected === "0" ? <> <Button
+                    size={'sm'}
+                    onClick={() => {
+                        cbBusinessInfo(email, property);
+                    }}>
+                    Info
+                </Button>  </> :
+                    <>
+                        <Button
+                            size={'sm'}
+                            onClick={() => {
+                                cbBusinessInfo(email, property);
+                            }}>
+                            Info
+                        </Button>  </> : null}
         </>
     );
 };

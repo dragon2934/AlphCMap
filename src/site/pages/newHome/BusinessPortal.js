@@ -14,61 +14,20 @@ import { getBusinessProfile, saveMerchantConnection } from '../../../redux/actio
 import { changePropertyColor, cancelShowBusinessInfo } from '../../../redux/actionCreators/appActionCreators';
 import { useHistory } from 'react-router';
 import { setPropertyRegistrationForm } from '../../../redux/actionCreators/registrationActionCreators';
-import {
-    EmailShareButton,
-    FacebookShareButton,
-    HatenaShareButton,
-    InstapaperShareButton,
-    LineShareButton,
-    LinkedinShareButton,
-    LivejournalShareButton,
-    MailruShareButton,
-    OKShareButton,
-    PinterestShareButton,
-    PocketShareButton,
-    RedditShareButton,
-    TelegramShareButton,
-    TumblrShareButton,
-    TwitterShareButton,
-    ViberShareButton,
-    VKShareButton,
-    WhatsappShareButton,
-    WorkplaceShareButton,
-    WeiboShareButton
-} from "react-share";
-import {
-    EmailIcon,
-    FacebookIcon,
-    FacebookMessengerIcon,
-    HatenaIcon,
-    InstapaperIcon,
-    LineIcon,
-    LinkedinIcon,
-    LivejournalIcon,
-    MailruIcon,
-    OKIcon,
-    PinterestIcon,
-    PocketIcon,
-    RedditIcon,
-    TelegramIcon,
-    TumblrIcon,
-    TwitterIcon,
-    ViberIcon,
-    VKIcon,
-    WeiboIcon,
-    WhatsappIcon,
-    WorkplaceIcon
-} from "react-share";
-const BusinessInfo = ({ }) => {
+const BusinessPortal = ({ match }) => {
 
+    // console.log('..match..' + JSON.stringify(match));
+    const propertyId = match.params.id;
     const utilsData = useSelector((state) => state.utilsData);
 
     const dispatch = useDispatch();
-    const property = utilsData.selectedProperty;
-    console.log('. show business info.property.. ' + JSON.stringify(property));
+    // const property = utilsData.selectedProperty;
+    // console.log('..property.. ' + JSON.stringify(property));
     const user = useSelector((state) => state.auth.me);
     const [companyProfile, setCompanyProfile] = useState(null);
-    console.log('. show business info.user.. ' + JSON.stringify(user));
+    const [loading, setLoading] = useState(true);
+    const [property, setProperty] = useState(null);
+
     const getWorkingHourValue = (hours, dayOfWeek, index) => {
         const item = hours.filter((hour) => {
             return parseInt(hour.dayOfWeek) === dayOfWeek;
@@ -88,10 +47,12 @@ const BusinessInfo = ({ }) => {
     const [workingHour, setWorkingHour] = useState([]);
     useEffect(() => {
         // setLoading(true);
-        dispatch(getBusinessProfile({ id: property.id })).then((resp) => {
+        dispatch(getBusinessProfile({ id: propertyId })).then((resp) => {
             console.log('..property ..info..' + JSON.stringify(resp.value));
             setCompanyProfile(resp.value.companyProfile);
             setWorkingHour(resp.value.workingHour);
+            setProperty(resp.value.property);
+            setLoading(false);
 
         }
 
@@ -134,10 +95,8 @@ const BusinessInfo = ({ }) => {
         }
     }
 
-    const shareUrl = "https://alphcmap.com/business-portal/" + property.id;
-    const title = "";
-    return (
-        <Col md={3} sm={12} xs={12} className="overlay-form-container">
+    return !loading && (
+        <Col md={12} sm={12} xs={12} className="overlay-form-container">
             <Link to={'/'}>
                 <img
                     className={'logo-container'}
@@ -155,7 +114,7 @@ const BusinessInfo = ({ }) => {
 
                                 <Row>
                                     <Col><h1>{companyProfile.companyName}</h1></Col> </Row>
-                                <Row>   <Col><i className="fa-solid fa-address"></i> {property.street_number + ' ' + property.route + ' ' + property.locality + ',' + property.city + ',' + property.postal_code} </Col> </Row>
+                                <Row>   <Col><i className="fa-solid fa-address"></i> {property.streetNumber + ' ' + property.route + ' ' + property.locality + ',' + property.city + ',' + property.postalCode} </Col> </Row>
                                 <Row>   <Col><i className="fa-solid fa-phone"></i> {companyProfile.phone} </Col> </Row>
                                 <Row>   <Col><i className="fa-solid fa-globe"></i> {companyProfile.website} </Col> </Row>
                                 {property.binding_email && property.binding_email !== null && property.binding_email !== 'null' ? <Row>   <Col><i className="fa-solid fa-envelope"></i> {property.binding_email} </Col> </Row> : null}
@@ -293,14 +252,14 @@ const BusinessInfo = ({ }) => {
 
                     {property.connected === "1" ?
                         <Button
-
+                            className="mt-1 mb-5"
                             color={'success'}
                             block
                             onClick={() => disConnectToMerchant()}>
                             DisConnect
                         </Button> :
                         <Button
-
+                            className="mt-1 mb-5"
                             color={'success'}
                             block
                             onClick={() => connectToMerchant()}>
@@ -327,72 +286,7 @@ const BusinessInfo = ({ }) => {
 
 
             </Row>
-
-            {
-                property.ownerMobileNumber === user.mobileNumber || property.owner_mobile_number === user.mobileNumber ?
-                    <>
-                        <Col  >
-                            Share your business <br />
-                            <FacebookShareButton url={shareUrl}
-                                quote={title}> <FacebookIcon size={32} round /></FacebookShareButton>     <TwitterShareButton
-                                    url={shareUrl}
-                                    title={title}
-                                >
-                                <TwitterIcon size={32} round />
-                            </TwitterShareButton>
-                            <WhatsappShareButton
-                                url={shareUrl}
-                                title={title}
-                                separator=":: "
-                            >
-                                <WhatsappIcon size={32} round />
-                            </WhatsappShareButton>
-                            <LinkedinShareButton url={shareUrl} >
-                                <LinkedinIcon size={32} round />
-                            </LinkedinShareButton>
-                            <PinterestShareButton
-                                url={String(window.location)}
-
-
-                            >
-                                <PinterestIcon size={32} round />
-                            </PinterestShareButton>
-                            <RedditShareButton
-                                url={shareUrl}
-                                title={title}
-                                windowWidth={660}
-                                windowHeight={460}
-
-                            >
-                                <RedditIcon size={32} round />
-                            </RedditShareButton>
-                            <EmailShareButton
-                                url={shareUrl}
-                                subject={title}
-                                body="body"
-
-                            >
-                                <EmailIcon size={32} round />
-                            </EmailShareButton>
-                            <LineShareButton
-                                url={shareUrl}
-                                title={title}
-
-                            >
-                                <LineIcon size={32} round />
-                            </LineShareButton>
-                            <WeiboShareButton
-                                url={shareUrl}
-                                title={title}
-
-
-                            >
-                                <WeiboIcon size={32} round />
-                            </WeiboShareButton>
-                        </Col>
-                    </> : null
-            }
         </Col>
     );
 };
-export default BusinessInfo;
+export default BusinessPortal;

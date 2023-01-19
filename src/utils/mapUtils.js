@@ -151,12 +151,12 @@ export const showPropertiesOnMapEx = (map, data, renderTooltip, bAddImage) => {
     map.on('click', showPropertyTooltip.bind(undefined, map, renderTooltip));
 };
 export const showPropertiesOnMap = (map, data, renderTooltip, bAddImage, user) => {
-    const propertiesWithAlert = data.filter((i) => i.primaryAddress);
+    const businessProperty = data.filter((i) => i.is_business === 1 || i.is_business);
 
-    const other = data.filter((i) => !i.primaryAddress);
+    const consumerProperty = data.filter((i) => i.is_business === 0 || !i.is_business);
 
 
-    // default: '/map-markers/blue_home_pin.png',
+    /*
     let defaultItems = other.filter(
         (i) => i.color === PropertyStatus.DEFAULT,
     );
@@ -197,13 +197,14 @@ export const showPropertiesOnMap = (map, data, renderTooltip, bAddImage, user) =
     primary.map(item => {
         hasInjured.push(item);
     })
+    */
 
     showPointLayer(
         bAddImage,
         map,
         MapMarkerUrls.property.default,
         'other-properties',
-        defaultItems,
+        consumerProperty,
         (i) => [i.location.longitude, i.location.latitude],
     );
 
@@ -212,7 +213,7 @@ export const showPropertiesOnMap = (map, data, renderTooltip, bAddImage, user) =
         map,
         MapMarkerUrls.property.secondary,
         'secondary-properties',
-        secondary,
+        [],
         (i) => [i.location.longitude, i.location.latitude],
     );
 
@@ -221,7 +222,7 @@ export const showPropertiesOnMap = (map, data, renderTooltip, bAddImage, user) =
         map,
         MapMarkerUrls.property.safe,
         'safe-properties',
-        safe,
+        [],
         (i) => [i.location.longitude, i.location.latitude],
     );
 
@@ -230,7 +231,7 @@ export const showPropertiesOnMap = (map, data, renderTooltip, bAddImage, user) =
         map,
         MapMarkerUrls.property.pending,
         'pending-properties',
-        pending,
+        [],
         (i) => [i.location.longitude, i.location.latitude],
     );
 
@@ -239,7 +240,7 @@ export const showPropertiesOnMap = (map, data, renderTooltip, bAddImage, user) =
         map,
         MapMarkerUrls.property.hasInjured,
         'has_injured-properties',
-        hasInjured,
+        businessProperty,
         (i) => [i.location.longitude, i.location.latitude],
     );
 
@@ -531,7 +532,7 @@ export const showPrimaryDistancesOnMap = (map, properties, user) => {
     const residentsWithLocation = properties.filter(
         (i) =>
             i.location &&
-            i.location.latitude
+            i.location.latitude && i.connected === "1"
     );
     const primaryAddress = properties.filter(
         (i) =>

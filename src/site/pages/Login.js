@@ -19,6 +19,7 @@ import MobileInput from '../../common/components/MobileInput';
 import { loginUser, getMe } from '../../redux/actionCreators/authActionCreators';
 import HomeLayout from '../layouts/HomeLayout';
 import { toastr } from 'react-redux-toastr';
+import { setLoginType } from '../../utils/utils';
 
 
 const validationSchema = Yup.object().shape({
@@ -32,6 +33,7 @@ const validationSchema = Yup.object().shape({
 const Login = ({ history }) => {
     const dispatch = useDispatch();
     const [error, setError] = useState(null);
+    const [loginAs, setLoginAs] = useState(1);
 
     const formik = useFormik({
         initialValues: {
@@ -78,6 +80,18 @@ const Login = ({ history }) => {
         setFieldTouched,
     } = formik;
 
+    const consumerLogin = (e) => {
+        console.log('..consumer login');
+        setLoginType(1);
+        setLoginAs(1);
+        handleSubmit();
+    }
+    const businessOwnerLogin = (e) => {
+        console.log('..business owner login');
+        setLoginType(2);
+        setLoginAs(2);
+        handleSubmit();
+    }
     return (
         <HomeLayout>
             <Row noGutters className="login-container">
@@ -138,16 +152,29 @@ const Login = ({ history }) => {
                                     </FormFeedback>
                                 </FormGroup>
                             </Col>
-                            <Col>
-                                <Button block disabled={isSubmitting}>
-                                    {isSubmitting ? (
-                                        <Spinner size={'sm'} />
-                                    ) : (
-                                        'Login'
-                                    )}
-                                </Button>
-                            </Col>
                         </Form>
+                        <Col>
+                            <Row>
+                                <Col>
+                                    <Button onClick={(e) => consumerLogin(e)} block disabled={isSubmitting}>
+                                        {isSubmitting && loginAs === 1 ? (
+                                            <Spinner size={'sm'} />
+                                        ) : (
+                                            'Login as a Consumer'
+                                        )}
+                                    </Button>
+                                </Col><Col>
+                                    <Button onClick={(e) => businessOwnerLogin(e)} block disabled={isSubmitting}>
+                                        {isSubmitting && loginAs === 2 ? (
+                                            <Spinner size={'sm'} />
+                                        ) : (
+                                            'Login as a Business Owner'
+                                        )}
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Col>
+
                     </div>
                 </Col>
             </Row>

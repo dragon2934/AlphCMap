@@ -32,7 +32,10 @@ import {
     ADMIN_SEND_PROMOTE_EMAIL,
     ADMIN_SAVE_BUSINESS_PROFILE,
     ADMIN_GET_BUSINESS_PROFILE,
-    ADMIN_GET_BUSINESS_ADDRESS
+    ADMIN_GET_BUSINESS_ADDRESS,
+    ADMIN_SAVE_MERCHANT_CONNECTION,
+    ADMIN_SAVE_SHOPPING_CART,
+    ADMIN_LOAD_SHOPPING_CART
 } from '../actionTypes';
 
 // UI
@@ -1042,6 +1045,87 @@ export const loadConnected = (data) => {
         return dispatch({
             type: ADMIN_GET_BUSINESS_ADDRESS,
             payload: fetch(`${SERVICE_URL}/residents/load-connected`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'GET',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+export const saveMerchantConnection = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_SAVE_MERCHANT_CONNECTION,
+            payload: fetch(`${SERVICE_URL}/residents/connect-merchant`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData.roles;
+                    }
+                }),
+        });
+    };
+};
+
+// /api/shopping-carts
+
+export const saveShoppingCart = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_SAVE_SHOPPING_CART,
+            payload: fetch(`${SERVICE_URL}/shopping-carts`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData.roles;
+                    }
+                }),
+        });
+    };
+};
+
+export const loadShoppingCart = (userId) => {
+
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_LOAD_SHOPPING_CART,
+            payload: fetch(`${SERVICE_URL}/shopping-carts?filters[$and][0][users_id][$eq]=` + userId, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',

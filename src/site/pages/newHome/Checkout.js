@@ -5,6 +5,7 @@ import Footer from './Footer';
 import Header from './Header';
 import { fetchProductDetails, createStripeSession } from '../../../redux/actionCreators/checkoutCreators';
 import { useSelector, useDispatch } from 'react-redux';
+import { toastr } from 'react-redux-toastr';
 const Checkout = ({
     match: {
         params: { id },
@@ -36,8 +37,13 @@ const Checkout = ({
     const Checkout = (e) => {
         //do checkout, create session
         dispatch(createStripeSession(productInfo)).then(resp => {
-            // console.log('..stripe session..' + JSON.stringify(resp));
-            window.location.replace(resp.value.url);
+            console.log('..stripe session..' + JSON.stringify(resp));
+            if (resp.value.data === null) {
+                toastr.error('Error', 'Create Payment Error!');
+            } else {
+                window.location.replace(resp.value.url);
+            }
+
         }).catch(error => {
             console.log('..checkout failed');
         })

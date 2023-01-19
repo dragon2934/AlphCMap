@@ -12,7 +12,7 @@ import {
     Spinner,
     Container,
 } from 'reactstrap';
-import { saveBusinessProfile, getBusinessProfile } from '../../../redux/actionCreators/adminActionCreators';
+import { saveBusinessProfile, getBusinessProfile, saveShoppingCart } from '../../../redux/actionCreators/adminActionCreators';
 import { useHistory } from 'react-router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -41,7 +41,7 @@ const BusinessProfile = () => {
     const queryPage = history.location.search.match(/id=([0-9]+)/, '');
     // console.log('..queryPage..' + queryPage);
     const propertyId = queryPage[1];
-
+    const user = useSelector((state) => state.auth.me);
     const [companyProfile, setCompanyProfile] = useState({});
 
     const getWorkingHourValue = (hours, dayOfWeek, index) => {
@@ -62,8 +62,20 @@ const BusinessProfile = () => {
     const { addProduct, cartItems, increase } = useCart();
     const addProductToCard = (product) => {
         // addProduct(product);
-        // dispatch({ type: 'ADD_ITEM', product });
-        history.push('/cart');
+        const jsonData = {
+            data: {
+                users_id: user.id,
+                products_id: "1"
+            }
+        }
+
+        dispatch(saveShoppingCart(jsonData)).then(resp => {
+            // history.push('/cart');
+            history.push('/checkout/1');
+        }).catch(error => {
+            console.log('..add product to cart error..' + JSON.stringify(error));
+        })
+
     }
     const formik = useFormik({
         initialValues: {
@@ -77,6 +89,7 @@ const BusinessProfile = () => {
             setSubmitting(true);
 
             const postData = {
+                profileId: companyProfile !== null && companyProfile !== undefined && companyProfile.id !== null && companyProfile.id !== undefined ? companyProfile.id : 0,
                 ...values,
                 property_id: propertyId
             }
@@ -119,40 +132,41 @@ const BusinessProfile = () => {
             setCompanyProfile(profile);
             console.log('..hours..' + JSON.stringify(hours));
 
-            setValues({
-                companyName: profile.companyName,
-                phone: profile.phone,
-                website: profile.website,
-                openHour0: getWorkingHourValue(hours, 0, 1),
-                closeHour0: getWorkingHourValue(hours, 0, 2),
-                close0: getWorkingHourValue(hours, 0, 2) === true ? true : false,
+            if (profile !== null) {
+                setValues({
+                    companyName: profile.companyName,
+                    phone: profile.phone,
+                    website: profile.website,
+                    openHour0: getWorkingHourValue(hours, 0, 1),
+                    closeHour0: getWorkingHourValue(hours, 0, 2),
+                    close0: getWorkingHourValue(hours, 0, 2) === true ? true : false,
 
-                openHour1: getWorkingHourValue(hours, 1, 1),
-                closeHour1: getWorkingHourValue(hours, 1, 2),
-                close1: getWorkingHourValue(hours, 1, 3) === true ? true : false,
+                    openHour1: getWorkingHourValue(hours, 1, 1),
+                    closeHour1: getWorkingHourValue(hours, 1, 2),
+                    close1: getWorkingHourValue(hours, 1, 3) === true ? true : false,
 
-                openHour2: getWorkingHourValue(hours, 2, 1),
-                closeHour2: getWorkingHourValue(hours, 2, 2),
-                close2: getWorkingHourValue(hours, 2, 3) === true ? true : false,
+                    openHour2: getWorkingHourValue(hours, 2, 1),
+                    closeHour2: getWorkingHourValue(hours, 2, 2),
+                    close2: getWorkingHourValue(hours, 2, 3) === true ? true : false,
 
-                openHour3: getWorkingHourValue(hours, 3, 1),
-                closeHour3: getWorkingHourValue(hours, 3, 2),
-                close3: getWorkingHourValue(hours, 3, 3) === true ? true : false,
+                    openHour3: getWorkingHourValue(hours, 3, 1),
+                    closeHour3: getWorkingHourValue(hours, 3, 2),
+                    close3: getWorkingHourValue(hours, 3, 3) === true ? true : false,
 
-                openHour4: getWorkingHourValue(hours, 4, 1),
-                closeHour4: getWorkingHourValue(hours, 4, 2),
-                close4: getWorkingHourValue(hours, 4, 3) === true ? true : false,
+                    openHour4: getWorkingHourValue(hours, 4, 1),
+                    closeHour4: getWorkingHourValue(hours, 4, 2),
+                    close4: getWorkingHourValue(hours, 4, 3) === true ? true : false,
 
-                openHour5: getWorkingHourValue(hours, 5, 1),
-                closeHour5: getWorkingHourValue(hours, 5, 2),
-                close5: getWorkingHourValue(hours, 5, 3) === true ? true : false,
+                    openHour5: getWorkingHourValue(hours, 5, 1),
+                    closeHour5: getWorkingHourValue(hours, 5, 2),
+                    close5: getWorkingHourValue(hours, 5, 3) === true ? true : false,
 
-                openHour6: getWorkingHourValue(hours, 6, 1),
-                closeHour6: getWorkingHourValue(hours, 6, 2),
-                close6: getWorkingHourValue(hours, 6, 3) === true ? true : false,
-            });
+                    openHour6: getWorkingHourValue(hours, 6, 1),
+                    closeHour6: getWorkingHourValue(hours, 6, 2),
+                    close6: getWorkingHourValue(hours, 6, 3) === true ? true : false,
+                });
 
-
+            }
         });
 
     }, [dispatch]);

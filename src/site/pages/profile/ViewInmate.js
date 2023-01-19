@@ -31,7 +31,7 @@ const ViewInmate = ({
         //back to login
         history.push('/login');
     }
-    console.log('current user..' + JSON.stringify(currentUser));
+
     const dispatch = useDispatch();
 
     const [isPrimaryHolder, setIsPrimaryHolder] = useState(false);

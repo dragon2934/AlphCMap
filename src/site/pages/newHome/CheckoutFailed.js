@@ -15,7 +15,7 @@ const CheckoutFailed = () => {
             <div className="content privacy-policy">
                 <Container>
                     <Row className="section-title">
-                        <Col>Checkout Success</Col>
+                        <Col>Checkout Failed</Col>
                     </Row>
 
 

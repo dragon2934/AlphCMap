@@ -44,7 +44,7 @@ import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import FlyerForm from './FlyerForm';
 import { convertAttributes, convertLocation, convertGeoProperty } from '../../../utils/utils';
 import BusinessInfo from './BusinessInfo';
-
+import { getLoginType } from '../../../utils/utils';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_GL_ACCESS_TOKEN;
 
@@ -107,6 +107,8 @@ class Showcase extends Component {
 
     renderPropertiesTooltip = ({ id, email, property }) => {
         const { utilsData } = this.props;
+        const { auth } = this.props;
+        const user = auth.user;
         if (property.is_business && property.is_business === true) {
             utilsData.selectedProperty = property;
             utilsData.showBusinessInfo = true;
@@ -121,6 +123,8 @@ class Showcase extends Component {
                 cbBinding={this.bindingProperty}
                 cbSendEmail={this.cbSendEmail}
                 cbBusiness={this.cbBusiness}
+                user={user}
+                cbBusinessInfo={this.cbBusinessInfo}
             />;
         }
     };
@@ -150,6 +154,16 @@ class Showcase extends Component {
     cbBusiness = async (email, property) => {
         const { history } = this.props;
         history.push("/business-profile?id=" + property.id);
+    }
+    cbBusinessInfo = async (email, property) => {
+        const { utilsData } = this.props;
+        const { auth } = this.props;
+        utilsData.selectedProperty = property;
+        utilsData.showBusinessInfo = true;
+
+        this.setState({
+            showBusinessInfo: true,
+        });
     }
     bindingProperty = async (email, property) => {
         const { utilsData } = this.props;
@@ -323,12 +337,12 @@ class Showcase extends Component {
                                         onClick={() => this.bindingProperty(email)}>
                                         Info
                                     </Button> &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <Button
+                                    {/* <Button
                                         size={'sm'}
                                         onClick={() => this.changeColor(email)}>
                                         Color
-                                    </Button>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    </Button> */}
+                                    {/* &nbsp;&nbsp;&nbsp;&nbsp; */}
                                     <Button
                                         size={'sm'}
                                         onClick={() => this.addAddress()}>
@@ -465,7 +479,7 @@ class Showcase extends Component {
             convertedProperties = convertLocation(properties.value);
         }
 
-        console.log('..load business.. ' + JSON.stringify(convertedProperties));
+        // console.log('..load business.. ' + JSON.stringify(convertedProperties));
         try {
             this.setState({
                 properties:
@@ -504,7 +518,6 @@ class Showcase extends Component {
             if (user === null || user === undefined) {
                 showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true, null);
             } else {
-                console.log('current user..' + JSON.stringify(user));
                 showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true, user);
                 showPrimaryDistancesOnMap(map, convertedProperties, user);
             }
@@ -586,12 +599,12 @@ class Showcase extends Component {
                         <Col className="list-unstyled text-right">
 
                             <li>
-                                <Button
+                                {/* <Button
                                     size={'sm'}
                                     onClick={() => this.changeColor(email)}>
                                     Color
                                 </Button>
-                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp; */}
                                 <Button
                                     size={'sm'}
                                     onClick={() => this.addAddress()}>
@@ -770,12 +783,12 @@ class Showcase extends Component {
                                         Info
                                     </Button>
                                     &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <Button
+                                    {/* <Button
                                         size={'sm'}
                                         onClick={() => this.changeColor(email)}>
                                         Color
                                     </Button>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp; */}
 
                                     <Button
                                         size={'sm'}
@@ -1073,17 +1086,21 @@ class Showcase extends Component {
 
         const user = auth.user;
         let showIcon = true;
+        const loginType = getLoginType();
         if (user === null || user === undefined) showIcon = false;
         if (utilsData.editMode) showIcon = false;
         if (utilsData.changeColor) showIcon = false;
         if (utilsData.bindingProperty) showIcon = false;
         if (utilsData.drawFinished) showIcon = false;
+        if (utilsData.showBusinessInfo) showIcon = false;
+        if (utilsData.connectToMerchantId > 0) showIcon = false;
         if (showMapLegend) showIcon = false;
+        if (parseInt(loginType) === 1) showIcon = false;
 
         return <>
             <div className={'showcase-map-top-actions'}>
                 <div className={'search-actions'}>
-                    <Form onSubmit={this.onSubmitSearch}>
+                    {parseInt(loginType) === 1 ? null : <Form onSubmit={this.onSubmitSearch}>
                         <Input
                             bsSize={'lg'}
                             disabled={!utilsData.editMode && user !== null && user !== undefined}
@@ -1092,7 +1109,7 @@ class Showcase extends Component {
                             onChange={this.onChangeSearchText}
                             placeholder={'Search...'}
                         />
-                    </Form>
+                    </Form>}
                 </div>
             </div>
 

@@ -18,6 +18,7 @@ import { setEditMode } from '../../../redux/actionCreators/registrationActionCre
 import { deleteAccount } from '../../../redux/actionCreators/appActionCreators';
 import { logoutUser } from '../../../redux/actionCreators/authActionCreators';
 import { toastr } from 'react-redux-toastr';
+import { getLoginType, clearLoginType } from '../../../utils/utils';
 
 const Header = () => {
     const user = useSelector((state) => state.auth.me);
@@ -33,6 +34,7 @@ const Header = () => {
 
     let userName = '';
     let userEmail = '';
+    let loginType = 0;
 
     try {
         userName = [user.firstName, user.lastName]
@@ -44,6 +46,8 @@ const Header = () => {
 
     if (user !== null && user !== undefined && user.property !== null && user.property !== undefined) {
         //  console.log('user.property =' + JSON.stringify(user.property));
+        loginType = getLoginType();
+        // console.log('..loginType=..' + loginType);
         if (user.companyName) {
             userEmail = user.property.email + '@' + user.companyName + '.com';
             localStorage.setItem("current_domain", user.companyName + '.com');
@@ -83,6 +87,7 @@ const Header = () => {
     const onClickDeleteAccount = useCallback(() => {
         dispatch(deleteAccount()).then(({ value: retObj }) => {
             console.log('....delete acount return...' + JSON.stringify(retObj));
+            clearLoginType();
             if (retObj.status === 'successed') {
                 dispatch(logoutUser()).then(() => {
                     // history.push('/');
@@ -123,7 +128,7 @@ const Header = () => {
                 <div style={{ width: "64%", textAlign: "center", fontSize: "20px", fontWeight: "bold" }}> {userEmail} </div>
                 <Nav className="ml-auto" navbar>
                     <NavItem>
-                        {user ? <Toggle
+                        {user && parseInt(loginType) === 2 ? <Toggle
                             checked={editSwitch}
                             text="Edit Mode"
                             size="default"
@@ -184,6 +189,7 @@ const Header = () => {
                                                             break;
                                                         case 5:
                                                             localStorage.removeItem("current_domain");
+                                                            clearLoginType();
                                                             history.push('/logout')
                                                             break;
                                                         case 6:

@@ -138,3 +138,21 @@ export const sumItems = cartItems => {
     let total = cartItems.reduce((total, product) => total + product.price * product.quantity, 0).toFixed(2);
     return { itemCount, total }
 }
+
+export const setLoginType = (consumerOrBusiness) => {
+    localStorage.setItem("login_as", consumerOrBusiness);
+}
+
+// loginAs
+// 1: 
+export const getLoginType = () => {
+    let loginAs = localStorage.getItem("login_as");
+    if (loginAs === null || loginAs === undefined) {
+        loginAs = 1;
+    }
+    return loginAs;
+}
+
+export const clearLoginType = () => {
+    localStorage.removeItem("login_as");
+}
