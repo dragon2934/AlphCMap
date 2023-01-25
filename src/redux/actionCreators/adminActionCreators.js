@@ -36,7 +36,8 @@ import {
     ADMIN_SAVE_MERCHANT_CONNECTION,
     ADMIN_SAVE_SHOPPING_CART,
     ADMIN_LOAD_SHOPPING_CART,
-    ADMIN_UNSUBSCRIBE
+    ADMIN_UNSUBSCRIBE,
+    ADMIN_TOTAL_CONNECTED
 } from '../actionTypes';
 
 import { getLoginType } from '../../utils/utils';
@@ -816,7 +817,7 @@ export const listFiles = () => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
@@ -841,7 +842,7 @@ export const uploadFiles = () => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
@@ -872,7 +873,7 @@ export const updateProperty = (fileName, fileUrl) => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
@@ -903,7 +904,7 @@ export const updateLatLng = () => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
@@ -930,7 +931,7 @@ export const propertyBinding = (data) => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
@@ -957,7 +958,7 @@ export const sendPromotionContents = (data) => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
@@ -984,7 +985,7 @@ export const saveBusinessProfile = (data) => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
@@ -1086,7 +1087,7 @@ export const saveMerchantConnection = (data) => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
@@ -1115,7 +1116,7 @@ export const saveShoppingCart = (data) => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
@@ -1168,7 +1169,7 @@ export const disConnectionMerchant = (data) => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
@@ -1194,7 +1195,34 @@ export const unSubscribeMerchant = (data) => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const loadConnectedTotal = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_TOTAL_CONNECTED,
+            payload: fetch(`${SERVICE_URL}/residents/total-connected`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
                     }
                 }),
         });

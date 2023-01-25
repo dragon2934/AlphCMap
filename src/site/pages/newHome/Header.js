@@ -19,6 +19,7 @@ import { deleteAccount } from '../../../redux/actionCreators/appActionCreators';
 import { logoutUser } from '../../../redux/actionCreators/authActionCreators';
 import { toastr } from 'react-redux-toastr';
 import { getLoginType, clearLoginType } from '../../../utils/utils';
+import { loadConnectedTotal } from '../../../redux/actionCreators/adminActionCreators';
 
 const Header = () => {
     const user = useSelector((state) => state.auth.me);
@@ -29,6 +30,7 @@ const Header = () => {
     const [dropDownOpen, setDropDownOpen] = useState(false);
     const utilsData = useSelector((state) => state.utilsData);
     const [editSwitch, setEditSwitch] = useState(false);
+    const [totalConnected, setTotalConnected] = useState(null);
 
     const dispatch = useDispatch();
 
@@ -57,6 +59,18 @@ const Header = () => {
         }
         if (user.noDelivery === 1) {
             userEmail = '';
+        }
+        if (parseInt(loginType) === 2) {
+            const jsonData = {
+                id_type: 0,
+                id: user.id
+            }
+            dispatch(loadConnectedTotal(jsonData)).then(resp => {
+                console.log('..get total ..' + JSON.stringify(resp));
+                setTotalConnected(resp.value.value[0].iCount);
+            }).catch(error => {
+
+            });
         }
 
     } else {
@@ -128,7 +142,7 @@ const Header = () => {
                 <i className="fa fa-bars" />
             </NavbarToggler>
             <Collapse isOpen={isOpen} navbar>
-                <div style={{ width: "64%", textAlign: "center", fontSize: "20px", fontWeight: "bold" }}> {userEmail} </div>
+                <div style={{ width: "64%", textAlign: "center", fontSize: "20px", fontWeight: "bold" }}> {userEmail}  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {totalConnected ? 'Connected:' + totalConnected : ''} </div>
                 <Nav className="ml-auto" navbar>
                     <NavItem>
                         {user && parseInt(loginType) === 2 ? <Toggle

@@ -10,7 +10,7 @@ import {
     Label,
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { getBusinessProfile, saveMerchantConnection, disConnectionMerchant } from '../../../redux/actionCreators/adminActionCreators';
+import { getBusinessProfile, saveMerchantConnection, disConnectionMerchant, loadConnectedTotal } from '../../../redux/actionCreators/adminActionCreators';
 import { changePropertyColor, cancelShowBusinessInfo } from '../../../redux/actionCreators/appActionCreators';
 import { useHistory } from 'react-router';
 import { setPropertyRegistrationForm } from '../../../redux/actionCreators/registrationActionCreators';
@@ -68,6 +68,7 @@ const BusinessInfo = ({ }) => {
     // console.log('. show business info.property.. ' + JSON.stringify(property));
     const user = useSelector((state) => state.auth.me);
     const [companyProfile, setCompanyProfile] = useState(null);
+    const [totalConnected, setTotalConnected] = useState(null);
     // console.log('. show business info.user.. ' + JSON.stringify(user));
     const getWorkingHourValue = (hours, dayOfWeek, index) => {
         const item = hours.filter((hour) => {
@@ -96,6 +97,16 @@ const BusinessInfo = ({ }) => {
         }
 
         );
+        const jsonData = {
+            id_type: 1,
+            id: property.id
+        }
+        dispatch(loadConnectedTotal(jsonData)).then(resp => {
+            console.log('..get total ..' + JSON.stringify(resp));
+            setTotalConnected(resp.value.value[0].iCount);
+        }).catch(error => {
+
+        });
         return () => { };
     }, [dispatch, property]);
 
@@ -181,6 +192,7 @@ const BusinessInfo = ({ }) => {
                                 <Row>   <Col><i className="fa-solid fa-address"></i> {property.street_number + ' ' + property.route + ' ' + property.locality + ',' + property.city + ',' + property.postal_code} </Col> </Row>
                                 <Row>   <Col><i className="fa-solid fa-phone"></i> {companyProfile.phone} </Col> </Row>
                                 <Row>   <Col><i className="fa-solid fa-globe"></i> {companyProfile.website} </Col> </Row>
+                                {totalConnected ? <Row>   <Col>Connected: {totalConnected} </Col> </Row> : null}
                                 {property.binding_email && property.binding_email !== null && property.binding_email !== 'null' ? <Row>   <Col><i className="fa-solid fa-envelope"></i> {property.binding_email} </Col> </Row> : null}
                                 <Row>
                                     <Col>Working Hours <hr /></Col>
