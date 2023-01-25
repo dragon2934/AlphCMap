@@ -99,11 +99,7 @@ class Showcase extends Component {
         }
     }
 
-    // renderResidentsTooltip = ({id, email}) => {
-    //     const {history} = this.props;
 
-    //     return <ResidentTooltip email={email} id={id} history={history} />;
-    // };
 
     renderPropertiesTooltip = ({ id, email, property }) => {
         const { utilsData } = this.props;
@@ -160,21 +156,37 @@ class Showcase extends Component {
         const { auth } = this.props;
         utilsData.selectedProperty = property;
         utilsData.showBusinessInfo = true;
+        utilsData.fncCallback = this.cbBusinessInfoCallBack;
 
         this.setState({
             showBusinessInfo: true,
         });
     }
+    cbBusinessInfoCallBack = () => {
+        console.log('...call back function works...');
+        this.redrawMap();
+    }
     bindingProperty = async (email, property) => {
         const { utilsData } = this.props;
-        // const { properties } = this.state;
-        utilsData.bindingProperty = true;
-        utilsData.emailForChangeColor = email;
-        utilsData.selectedProperty = property;
-        console.log('....setting utilsData.bindingProperty.....' + email);
-        this.setState({
-            bindingProperty: true
-        });
+        if (property.is_business === 1 || property.is_business === true) {
+            //show business profile
+            utilsData.selectedProperty = property;
+            utilsData.showBusinessInfo = true;
+            utilsData.fncCallback = this.cbBusinessInfoCallBack;
+
+            this.setState({
+                showBusinessInfo: true,
+            });
+        } else {
+            console.log('..binding property..' + JSON.stringify(property));
+            utilsData.bindingProperty = true;
+            utilsData.emailForChangeColor = email;
+            utilsData.selectedProperty = property;
+            console.log('....setting utilsData.bindingProperty.....' + email);
+            this.setState({
+                bindingProperty: true
+            });
+        }
     }
     bindingBusiness = (email) => {
 
@@ -201,7 +213,7 @@ class Showcase extends Component {
         });
         const { loadConnected, } = this.props;
         const { value: properties } = await loadConnected();
-        const convertedProperties = convertAttributes(properties, true);
+        const convertedProperties = convertLocation(properties.value);
 
         try {
             //remove all the markers
@@ -246,10 +258,10 @@ class Showcase extends Component {
             });
 
             const popups = document.getElementsByClassName("mapboxgl-popup");
-            console.log('...remove popup box...popups.length ..' + popups.length);
+
             if (popups.length) {
                 let popupTotal = popups.length;
-                for (let i = 0; i < popupTotal; i++) {
+                for (let i = popupTotal - 1; i >= 0; i--) {
                     console.log('...remove popup box i= ..' + i);
                     try {
                         if (popups[i]) {
@@ -265,7 +277,7 @@ class Showcase extends Component {
 
             if (user !== null && user !== undefined) {
                 showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, false, user);
-                showPrimaryDistancesOnMap(map, convertedProperties);
+                showPrimaryDistancesOnMap(map, convertedProperties, user);
             } else {
                 showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, false, user);
                 // showPrimaryDistancesOnMap(map, convertedProperties);
@@ -406,7 +418,7 @@ class Showcase extends Component {
 
             const popups = document.getElementsByClassName("mapboxgl-popup");
 
-            console.log('...remove popup box...popups.length ..' + popups.length);
+
             if (popups.length) {
                 let popupTotal = popups.length;
                 for (let i = popupTotal - 1; i >= 0; i--) {
@@ -1100,7 +1112,7 @@ class Showcase extends Component {
         return <>
             <div className={'showcase-map-top-actions'}>
                 <div className={'search-actions'}>
-                    {parseInt(loginType) === 1 ? null : <Form onSubmit={this.onSubmitSearch}>
+                    {user !== null && user !== undefined && parseInt(loginType) === 1 ? null : <Form onSubmit={this.onSubmitSearch}>
                         <Input
                             bsSize={'lg'}
                             disabled={!utilsData.editMode && user !== null && user !== undefined}

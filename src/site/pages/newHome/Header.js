@@ -55,6 +55,9 @@ const Header = () => {
             userEmail = user.property.email + '@' + user.lastName + '.com';
             localStorage.setItem("current_domain", user.lastName + '.com');
         }
+        if (user.noDelivery === 1) {
+            userEmail = '';
+        }
 
     } else {
         userEmail = 'Enter your address to create your account';

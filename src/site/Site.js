@@ -49,7 +49,7 @@ import CheckoutFailed from './pages/newHome/CheckoutFailed';
 import BusinessProfile from "./pages/newHome/BusinessProfile";
 import Cart from "./pages/cart";
 import BusinessPortal from "./pages/newHome/BusinessPortal";
-
+import UnSubscribe from "./pages/newHome/UnSubscribe";
 const Site = () => {
   return (
     <Switch>
@@ -83,6 +83,7 @@ const Site = () => {
       <Route exact path="/checkout_failed" component={CheckoutFailed} />
       <Route exact path="/business-profile" component={BusinessProfile} />
       <Route exact path="/business-portal/:id" component={BusinessPortal} />
+      <Route exact path="/un-subscribe/:id" component={UnSubscribe} />
 
 
       <Route exact path="/about-us" component={AboutUs} />

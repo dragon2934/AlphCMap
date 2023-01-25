@@ -16,6 +16,7 @@ const initialState = {
     drawing: false,
     showBusinessInfo: false,
     connectToMerchantId: 0,
+    fncCallback: null
 };
 
 function utilsDataReducer(state = initialState, action) {

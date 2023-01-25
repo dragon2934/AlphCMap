@@ -35,9 +35,11 @@ import {
     ADMIN_GET_BUSINESS_ADDRESS,
     ADMIN_SAVE_MERCHANT_CONNECTION,
     ADMIN_SAVE_SHOPPING_CART,
-    ADMIN_LOAD_SHOPPING_CART
+    ADMIN_LOAD_SHOPPING_CART,
+    ADMIN_UNSUBSCRIBE
 } from '../actionTypes';
 
+import { getLoginType } from '../../utils/utils';
 // UI
 
 export const setShowSidebar = (data) => {
@@ -1040,11 +1042,12 @@ export const loadBusinessAddress = (data) => {
 };
 export const loadConnected = (data) => {
 
+    const loginType = getLoginType();
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
         return dispatch({
             type: ADMIN_GET_BUSINESS_ADDRESS,
-            payload: fetch(`${SERVICE_URL}/residents/load-connected`, {
+            payload: fetch(`${SERVICE_URL}/residents/load-connected?loginType=` + loginType, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -1139,6 +1142,59 @@ export const loadShoppingCart = (userId) => {
                         return Promise.reject(responseData);
                     } else {
                         return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const disConnectionMerchant = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_SAVE_MERCHANT_CONNECTION,
+            payload: fetch(`${SERVICE_URL}/residents/disconnect-merchant`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData.roles;
+                    }
+                }),
+        });
+    };
+};
+
+export const unSubscribeMerchant = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_UNSUBSCRIBE,
+            payload: fetch(`${SERVICE_URL}/public/unsubscribe`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData.roles;
                     }
                 }),
         });
