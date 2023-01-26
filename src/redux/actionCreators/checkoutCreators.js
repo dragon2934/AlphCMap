@@ -1,4 +1,4 @@
-import { SERVICE_URL } from '../../constants';
+import { SERVICE_URL, STRIPE_URL } from '../../constants';
 import {
     ADMIN_FETCH_PRODDUCT_DETAIL,
     STRIPE_CHECKOUT_SESSION
@@ -7,7 +7,7 @@ import {
 export const fetchProductDetails = (id) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
-        const stripeUrl = SERVICE_URL.replace('/api', '');
+        const stripeUrl = STRIPE_URL;
 
         return dispatch({
             type: ADMIN_FETCH_PRODDUCT_DETAIL,

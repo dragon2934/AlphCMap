@@ -57,7 +57,7 @@ const Header = () => {
             userEmail = user.property.email + '@' + user.lastName + '.com';
             localStorage.setItem("current_domain", user.lastName + '.com');
         }
-        if (user.noDelivery === 1) {
+        if (user.noDelivery && user.noDelivery === 1) {
             userEmail = '';
         }
         if (parseInt(loginType) === 2) {
