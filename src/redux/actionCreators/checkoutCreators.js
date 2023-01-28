@@ -34,7 +34,7 @@ export const fetchProductDetails = (id) => {
 export const createStripeSession = (productInfo) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
-        const stripeUrl = SERVICE_URL.replace('/api', '');
+        const stripeUrl = STRIPE_URL;
         return dispatch({
             type: STRIPE_CHECKOUT_SESSION,
             payload: fetch(`${stripeUrl}/strapi-stripe/createCheckoutSession/`, {
