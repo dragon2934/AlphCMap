@@ -1208,11 +1208,10 @@ export const loadConnectedTotal = (data) => {
 
         return dispatch({
             type: ADMIN_TOTAL_CONNECTED,
-            payload: fetch(`${SERVICE_URL}/residents/total-connected`, {
+            payload: fetch(`${SERVICE_URL}/public/total-connected`, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
                 },
                 method: 'POST',
                 body: JSON.stringify(data),
