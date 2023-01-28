@@ -168,7 +168,7 @@ class Showcase extends Component {
     }
     bindingProperty = async (email, property) => {
         const { utilsData } = this.props;
-        if (property.is_business === 1 || property.is_business === true) {
+        if (property && property.is_business && (property.is_business === 1 || property.is_business === true)) {
             //show business profile
             utilsData.selectedProperty = property;
             utilsData.showBusinessInfo = true;
@@ -182,6 +182,7 @@ class Showcase extends Component {
             utilsData.bindingProperty = true;
             utilsData.emailForChangeColor = email;
             utilsData.selectedProperty = property;
+            utilsData.fncCallback = this.cbBusinessInfoCallBack;
             console.log('....setting utilsData.bindingProperty.....' + email);
             this.setState({
                 bindingProperty: true
@@ -339,11 +340,6 @@ class Showcase extends Component {
                             <Col className="list-unstyled text-right">
 
                                 <li>
-                                    <Button
-                                        size={'sm'}
-                                        onClick={() => this.bindingBusiness(email)}>
-                                        Business
-                                    </Button> &nbsp;&nbsp;&nbsp;&nbsp;
                                     <Button
                                         size={'sm'}
                                         onClick={() => this.bindingProperty(email)}>
@@ -784,11 +780,6 @@ class Showcase extends Component {
                             <Col className="list-unstyled text-right">
 
                                 <li>
-                                    <Button
-                                        size={'sm'}
-                                        onClick={() => this.bindingBusiness(email)}>
-                                        Business
-                                    </Button> &nbsp;&nbsp;&nbsp;&nbsp;
                                     <Button
                                         size={'sm'}
                                         onClick={() => this.bindingProperty(email)}>

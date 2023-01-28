@@ -48,13 +48,16 @@ const BindingForm = ({ callback }) => {
             setSubmitting(true);
             utilsData.bindingProperty = false;
             const email = utilsData.emailForChangeColor
+            const fncCallback = utilsData.fncCallback;
             const data = {
                 email: email,
                 ownerMobileNumber: user.mobileNumber,
                 ...values
             }
             dispatch(propertyBinding(data)).then(resp => {
-
+                if (fncCallback) {
+                    fncCallback();
+                }
             })
         }
     });

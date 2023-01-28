@@ -4,10 +4,10 @@ import { Button, Col, Row } from 'reactstrap';
 import { useSelector, useDispatch } from 'react-redux';
 
 const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbBinding, cbSendEmail, cbBusiness, user, cbBusinessInfo }) => {
-    console.log('..property..' + JSON.stringify(property))
+    console.log('....render property..' + JSON.stringify(property))
     // const utilsData = useSelector((state) => state.utilsData);
 
-    // console.log('..me..' + JSON.stringify(user));
+    console.log('..me..' + JSON.stringify(user));
     return (
         <>
             <h4>{email}</h4>
@@ -25,7 +25,7 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
                     <Row className="justify-content-end">
                         <Col className="list-unstyled text-right">
                             <li>
-                                {user !== null && user !== undefined && property.ownerMobileNumber === user.mobileNumber ? <>  <Button
+                                {user !== null && user !== undefined && property.id === user.property.id ? <>  <Button
                                     size={'sm'}
                                     onClick={() => cbBusiness(email, property)}>
                                     Business
