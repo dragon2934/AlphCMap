@@ -170,6 +170,7 @@ const BusinessInfo = ({ }) => {
 
     const shareUrl = "https://alphcmap.com/business-portal/" + property.id;
     const title = "";
+    const domain = localStorage.getItem("current_domain");
     return (
         <Col md={3} sm={12} xs={12} className="overlay-form-container">
             <Link to={'/'}>
@@ -188,9 +189,9 @@ const BusinessInfo = ({ }) => {
                             <>
 
                                 <Row>
-                                    <Col><h1>{companyProfile.companyName}</h1></Col> </Row>
+                                    <Col><h3>{companyProfile.companyName}</h3></Col> </Row>
                                 <Row>   <Col><i className="fa-solid fa-address"></i> {property.street_number + ' ' + property.route + ' ' + property.locality + ',' + property.city + ',' + property.postal_code} </Col> </Row>
-                                <Row>   <Col><i className="fa-solid fa-phone"></i> {companyProfile.phone} </Col> </Row>
+                                {/* <Row>   <Col><i className="fa-solid fa-envelope"></i> {property.email + '@' + domain} </Col> </Row> */}
                                 <Row>   <Col><i className="fa-solid fa-globe"></i> {companyProfile.website} </Col> </Row>
                                 {totalConnected ? <Row>   <Col>Connected: {totalConnected} </Col> </Row> : null}
                                 {property.binding_email && property.binding_email !== null && property.binding_email !== 'null' ? <Row>   <Col><i className="fa-solid fa-envelope"></i> {property.binding_email} </Col> </Row> : null}
@@ -327,7 +328,7 @@ const BusinessInfo = ({ }) => {
 
             <Row>
                 {
-                    user !== null && user !== undefined && (property.ownerMobileNumber === user.mobileNumber || property.owner_mobile_number === user.mobileNumber) ? null :
+                    user && user.property && property.id === user.property.id ? null :
                         <Col>
 
                             {property.connected === "1" ?
@@ -370,7 +371,7 @@ const BusinessInfo = ({ }) => {
 
 
             {
-                user !== null && user !== undefined && (property.ownerMobileNumber === user.mobileNumber || property.owner_mobile_number === user.mobileNumber) ?
+                user && user.property && property.id === user.property.id ?
                     <>
                         <Col  >
                             Share your business <br />
