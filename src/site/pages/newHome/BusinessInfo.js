@@ -328,7 +328,7 @@ const BusinessInfo = ({ }) => {
 
             <Row>
                 {
-                    user && user.property && property.id === user.property.id ? null :
+                    user !== undefined && user.property !== undefined && property.id === user.property.id ? null :
                         <Col>
 
                             {property.connected === "1" ?
@@ -371,7 +371,7 @@ const BusinessInfo = ({ }) => {
 
 
             {
-                user && user.property && property.id === user.property.id ?
+                user !== undefined && user.property !== undefined && property.id === user.property.id ?
                     <>
                         <Col  >
                             Share your business <br />
