@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { NavLink as ReactRouterLink, useHistory } from "react-router-dom";
 import {
@@ -60,6 +60,12 @@ const Header = () => {
         if (user.noDelivery && user.noDelivery === 1) {
             userEmail = '';
         }
+
+
+    } else {
+        userEmail = 'Enter your address to create your account';
+    }
+    useEffect(() => {
         if (parseInt(loginType) === 2) {
             const jsonData = {
                 id_type: 0,
@@ -72,10 +78,7 @@ const Header = () => {
 
             });
         }
-
-    } else {
-        userEmail = 'Enter your address to create your account';
-    }
+    }, [dispatch, loginType]);
     const toggleDropDownMenu = useCallback(() => {
         setDropDownOpen(!dropDownOpen)
     });
