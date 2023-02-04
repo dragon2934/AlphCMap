@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkproperty_manage_system_web=self.webpackChunkproperty_manage_system_web||[]).push([[359],{86359:function(e,n,t){t.r(n);var o=t(72791),a=t(60364),r=t(11027);n.default=function(e){var n=e.history,t=(0,a.useDispatch)();return(0,o.useEffect)((function(){t((0,r.TX)()).finally((function(){localStorage.removeItem("current_domain"),window.location=window.location.origin}))}),[t,n]),null}}}]);
-//# sourceMappingURL=359.2e458b9c.chunk.js.map

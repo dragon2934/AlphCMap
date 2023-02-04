@@ -536,7 +536,7 @@ export const showPrimaryDistancesOnMap = (map, properties, user) => {
     );
     const primaryAddress = properties.filter(
         (i) =>
-            i.primaryAddress == 1 && i.ownerMobileNumber === user.mobileNumber
+            i.id === user.property.id
     );
 
     showLineLayer(
