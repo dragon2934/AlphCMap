@@ -82,6 +82,7 @@ const BusinessProfile = () => {
             companyName: '',
             phone: '',
             website: '',
+            email: ''
         },
         isInitialValid: false,
         validationSchema: bindingSchema,
@@ -102,7 +103,7 @@ const BusinessProfile = () => {
 
                 }
 
-                addProductToCard(proudct);
+                // addProductToCard(proudct);
 
             });
         }
@@ -137,6 +138,7 @@ const BusinessProfile = () => {
                     companyName: profile.companyName,
                     phone: profile.phone,
                     website: profile.website,
+                    email: profile.email,
                     openHour0: getWorkingHourValue(hours, 0, 1),
                     closeHour0: getWorkingHourValue(hours, 0, 2),
                     close0: getWorkingHourValue(hours, 0, 2) === true ? true : false,
@@ -228,6 +230,23 @@ const BusinessProfile = () => {
                                                     invalid={touched.website && errors.website}
                                                 />
                                                 <FormFeedback>{errors.website}</FormFeedback>
+                                            </FormGroup>
+                                        </Col>
+
+                                    </Row>
+                                    <Row>
+                                        <Col md={12}>
+                                            <FormGroup>
+                                                <Label>E-mail:</Label>
+                                                <Input
+                                                    type="text"
+                                                    name="email"
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                    value={values.email}
+                                                    invalid={touched.email && errors.email}
+                                                />
+                                                <FormFeedback>{errors.email}</FormFeedback>
                                             </FormGroup>
                                         </Col>
 

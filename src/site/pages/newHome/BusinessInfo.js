@@ -191,7 +191,7 @@ const BusinessInfo = ({ }) => {
                                 <Row>
                                     <Col><h3>{companyProfile.companyName}</h3></Col> </Row>
                                 <Row>   <Col><i className="fa-solid fa-address"></i> {property.street_number + ' ' + property.route + ' ' + property.locality + ',' + property.city + ',' + property.postal_code} </Col> </Row>
-                                {/* <Row>   <Col><i className="fa-solid fa-envelope"></i> {property.email + '@' + domain} </Col> </Row> */}
+                                <Row>   <Col><i className="fa-solid fa-envelope"></i> {companyProfile.email} </Col> </Row>
                                 <Row>   <Col><i className="fa-solid fa-globe"></i> {companyProfile.website} </Col> </Row>
                                 {totalConnected ? <Row>   <Col>Connected: {totalConnected} </Col> </Row> : null}
                                 {property.binding_email && property.binding_email !== null && property.binding_email !== 'null' ? <Row>   <Col><i className="fa-solid fa-envelope"></i> {property.binding_email} </Col> </Row> : null}
