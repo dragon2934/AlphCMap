@@ -31,11 +31,12 @@ const bindingSchema = Yup.object().shape({
 const FlyerForm = ({ callback }) => {
 
     const utilsData = useSelector((state) => state.utilsData);
-    // console.log('...utilsData..' + JSON.stringify(utilsData));
+    console.log('...utilsData..' + JSON.stringify(utilsData));
     const dispatch = useDispatch();
     const history = useHistory();
     const [color, setColor] = useState('default');
     const properties = utilsData.selectedProperty;
+    const user = useSelector((state) => state.auth.me);
 
     let domain = localStorage.getItem('current_domain');
     if (domain === undefined || domain === null) {
@@ -58,6 +59,7 @@ const FlyerForm = ({ callback }) => {
                     bindingEmails.push(p.properties.bindingEmail);
                 }
             });
+            bindingEmails.push(user.email);
             const postData = {
                 emails: bindingEmails.join(','),
                 promotionTitle: values.promotionTitle,

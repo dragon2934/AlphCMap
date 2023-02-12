@@ -77,7 +77,8 @@ const MobileAccountVerification = () => {
                             }
                             dispatch(resetRegistrationForm());
                             setTimeout(() => {
-                                history.push("/");
+                                // history.push("/");
+                                history.push('/logout');
                             }, 500);
 
 

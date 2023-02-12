@@ -1162,7 +1162,26 @@ class Showcase extends Component {
 
                     <b>Address Markers</b>
 
-                    <table> <tr>
+                    <table>
+                        <tr><td colSpan={2}> Business </td>
+                            <td>
+                                <img
+                                    alt={this.PropertyMarkerDescriptions[1].description}
+                                    src={this.PropertyMarkerDescriptions[1].marker}
+                                    height={40}
+                                /> &nbsp;&nbsp;
+                            </td>
+                        </tr>
+                        <tr><td colSpan={2}> Clients </td>
+                            <td>
+                                <img
+                                    alt={this.PropertyMarkerDescriptions[0].description}
+                                    src={this.PropertyMarkerDescriptions[0].marker}
+                                    height={40}
+                                /> &nbsp;&nbsp;
+                            </td>
+                        </tr>
+                        {/* <tr>
                         {this.PropertyMarkerDescriptions.map(
                             ({ marker, description }) => (
 
@@ -1178,8 +1197,9 @@ class Showcase extends Component {
                             ),
                         )}
                     </tr>
-                        <tr><td colSpan={this.PropertyMarkerDescriptions.length}><hr />{this.PropertyMarkerDescriptions[0].description}<hr /></td></tr>
+                    <tr><td colSpan={this.PropertyMarkerDescriptions.length}><hr />{this.PropertyMarkerDescriptions[0].description}<hr /></td></tr> */}
                     </table>
+                    <hr />
                     <b>Tools Bar</b>
                     <table>
                         <tr><td><i className="fa-2x fa-solid fa-draw-polygon"></i></td><td>Pan, Draw, Connect, Addresses boundary and identify area to Send Email<hr /></td></tr>

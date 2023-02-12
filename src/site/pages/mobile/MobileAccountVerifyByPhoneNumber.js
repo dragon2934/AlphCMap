@@ -347,7 +347,8 @@ const MobileAccountVerifyByPhoneNumber = ({
                                 }
                                 dispatch(toggleVerificationModal());
                                 setTimeout(() => {
-                                    history.push("/");
+                                    // history.push("/");
+                                    history.push('/logout');
                                 }, 500);
 
                             }}>

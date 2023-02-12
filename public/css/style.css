@@ -2490,3 +2490,10 @@ a:hover {
 .about_us_list li {
   color: black !important;
 }
+
+a.business_link:hover,
+a.business_link:link,
+a.business_link:visited {
+  color: white;
+  text-decoration: underline !important;
+}

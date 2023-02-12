@@ -66,7 +66,8 @@ const AccountVerification = () => {
 
                                 dispatch(toggleVerificationModal());
                                 setTimeout(function () {
-                                    location.reload(true);
+                                    // location.reload(true);
+                                    history.push('/logout');
                                 }, 500)
                             }}>
                             Start Using Website

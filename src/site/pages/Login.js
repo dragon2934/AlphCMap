@@ -160,7 +160,7 @@ const Login = ({ history }) => {
                                         {isSubmitting && loginAs === 1 ? (
                                             <Spinner size={'sm'} />
                                         ) : (
-                                            'Login as a Consumer'
+                                            'Login Personal Account'
                                         )}
                                     </Button>
                                 </Col><Col>
@@ -168,7 +168,7 @@ const Login = ({ history }) => {
                                         {isSubmitting && loginAs === 2 ? (
                                             <Spinner size={'sm'} />
                                         ) : (
-                                            'Login as a Business Owner'
+                                            'Login Business Account'
                                         )}
                                     </Button>
                                 </Col>
