@@ -195,7 +195,7 @@ const BusinessInfo = ({ }) => {
                                 <Row>   <Col><i className="fa-solid fa-globe"></i> <a href={companyProfile.website} className='business_link'>Company Website</a>  </Col> </Row>
                                 {totalConnected ? <Row>   <Col>Connected: {totalConnected} </Col> </Row> : null}
                                 <Row>   <Col><i className="fa-solid fa-globe"></i> <a className='business_link' href={shareUrl} target="_blank"> Business Link </a> </Col> </Row>
-                                {property.binding_email && property.binding_email !== null && property.binding_email !== 'null' ? <Row>   <Col><i className="fa-solid fa-envelope"></i> {property.binding_email} </Col> </Row> : null}
+                                {/* {property.binding_email && property.binding_email !== null && property.binding_email !== 'null' ? <Row>   <Col><i className="fa-solid fa-envelope"></i> {property.binding_email} </Col> </Row> : null} */}
                                 <Row>
                                     <Col> <hr /></Col>
 

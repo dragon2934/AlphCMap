@@ -103,7 +103,7 @@ const BusinessProfile = () => {
 
                 }
 
-                addProductToCard(proudct);
+                // addProductToCard(proudct);
 
             });
         }

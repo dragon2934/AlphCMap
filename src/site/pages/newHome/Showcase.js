@@ -1163,21 +1163,20 @@ class Showcase extends Component {
                     <b>Address Markers</b>
 
                     <table>
-                        <tr><td colSpan={2}> Business </td>
+                        <tr><td > Business </td>
                             <td>
                                 <img
                                     alt={this.PropertyMarkerDescriptions[1].description}
                                     src={this.PropertyMarkerDescriptions[1].marker}
-                                    height={40}
+                                    height={20}
                                 /> &nbsp;&nbsp;
                             </td>
-                        </tr>
-                        <tr><td colSpan={2}> Clients </td>
+                            <td > Clients </td>
                             <td>
                                 <img
                                     alt={this.PropertyMarkerDescriptions[0].description}
                                     src={this.PropertyMarkerDescriptions[0].marker}
-                                    height={40}
+                                    height={20}
                                 /> &nbsp;&nbsp;
                             </td>
                         </tr>
@@ -1199,6 +1198,30 @@ class Showcase extends Component {
                     </tr>
                     <tr><td colSpan={this.PropertyMarkerDescriptions.length}><hr />{this.PropertyMarkerDescriptions[0].description}<hr /></td></tr> */}
                     </table>
+                    <hr />
+                    <table>
+                        <tr>
+                            <td>
+                                <img
+                                    alt='Manually add clients'
+                                    src={MapMarkerUrls.extra.edit_mode}
+                                    height={30}
+                                /> &nbsp;&nbsp;
+                            </td>
+                            <td>Manually Add Clients</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <img
+                                    alt='Connect with Clients'
+                                    src={MapMarkerUrls.extra.connect_mode}
+                                    height={30}
+                                /> &nbsp;&nbsp;
+                            </td>
+                            <td>Connect with Clients</td>
+                        </tr>
+                    </table>
+
                     <hr />
                     <b>Tools Bar</b>
                     <table>

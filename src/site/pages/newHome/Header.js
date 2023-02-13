@@ -18,7 +18,7 @@ import { setEditMode } from '../../../redux/actionCreators/registrationActionCre
 import { deleteAccount } from '../../../redux/actionCreators/appActionCreators';
 import { logoutUser } from '../../../redux/actionCreators/authActionCreators';
 import { toastr } from 'react-redux-toastr';
-import { getLoginType, clearLoginType } from '../../../utils/utils';
+import { getLoginType, setLoginType, clearLoginType } from '../../../utils/utils';
 import { loadConnectedTotal } from '../../../redux/actionCreators/adminActionCreators';
 
 const Header = () => {
@@ -30,6 +30,7 @@ const Header = () => {
     const [dropDownOpen, setDropDownOpen] = useState(false);
     const utilsData = useSelector((state) => state.utilsData);
     const [editSwitch, setEditSwitch] = useState(false);
+
     const [totalConnected, setTotalConnected] = useState(null);
 
     const dispatch = useDispatch();
@@ -44,11 +45,12 @@ const Header = () => {
             .join(' ')
             .trim();
     } catch (e) { }
-
-
+    loginType = getLoginType();
+    console.log('...loginType=' + loginType);
+    const [connectionSwitch, setConnectionSwitch] = useState(parseInt(loginType) === 2 ? true : false);
     if (user !== null && user !== undefined && user.property !== null && user.property !== undefined) {
         //  console.log('user.property =' + JSON.stringify(user.property));
-        loginType = getLoginType();
+
         // console.log('..loginType=..' + loginType);
         if (user.companyName) {
             userEmail = user.property.email + '@' + user.companyName + '.com';
@@ -81,6 +83,14 @@ const Header = () => {
     }, [dispatch, loginType]);
     const toggleDropDownMenu = useCallback(() => {
         setDropDownOpen(!dropDownOpen)
+    });
+    const handleConnectionChange = useCallback(() => {
+        if (connectionSwitch) {
+            setLoginType(1);
+        } else {
+            setLoginType(2);
+        }
+        window.location.reload();
     });
     const handleEditModeChange = useCallback(() => {
         // setEditMode(!editMode);
@@ -147,6 +157,17 @@ const Header = () => {
             <Collapse isOpen={isOpen} navbar>
                 <div style={{ width: "64%", textAlign: "center", fontSize: "20px", fontWeight: "bold" }}> {userEmail}  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {totalConnected ? 'Connected:' + totalConnected : ''} </div>
                 <Nav className="ml-auto" navbar>
+                    <NavItem>
+                        {user ? <Toggle
+                            checked={connectionSwitch}
+                            text="Connect Mode"
+                            size="default"
+                            disabled={false}
+                            onChange={handleConnectionChange}
+                            offstyle="btn-danger"
+                            onstyle="btn-success"
+                        /> : null}
+                    </NavItem>
                     <NavItem>
                         {user && parseInt(loginType) === 2 ? <Toggle
                             checked={editSwitch}
