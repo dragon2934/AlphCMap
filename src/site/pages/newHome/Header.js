@@ -68,7 +68,7 @@ const Header = () => {
         userEmail = 'Enter your address to create your account';
     }
     useEffect(() => {
-        if (parseInt(loginType) === 2) {
+        if (user && parseInt(loginType) === 2) {
             const jsonData = {
                 id_type: 0,
                 id: user.id
@@ -158,7 +158,7 @@ const Header = () => {
                 <div style={{ width: "64%", textAlign: "center", fontSize: "20px", fontWeight: "bold" }}> {userEmail}  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {totalConnected ? 'Connected:' + totalConnected : ''} </div>
                 <Nav className="ml-auto" navbar>
                     <NavItem>
-                        {user ? <Toggle
+                        {/* {user ? <Toggle
                             checked={connectionSwitch}
                             text="Connect Mode"
                             size="default"
@@ -166,7 +166,11 @@ const Header = () => {
                             onChange={handleConnectionChange}
                             offstyle="btn-danger"
                             onstyle="btn-success"
-                        /> : null}
+                        /> : null} */}
+                        {
+                            user ? <div style={{ marginTop: "10px", fontSize: "14px" }}>Connect Mode</div> : null
+                        }
+
                     </NavItem>
                     <NavItem>
                         {user && parseInt(loginType) === 2 ? <Toggle

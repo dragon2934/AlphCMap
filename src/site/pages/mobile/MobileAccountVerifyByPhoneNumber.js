@@ -352,7 +352,7 @@ const MobileAccountVerifyByPhoneNumber = ({
                                 }, 500);
 
                             }}>
-                            Start Using Website
+                            Login and Complete Business Profile
                         </Button>
                     </div>
                 </>

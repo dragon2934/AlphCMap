@@ -70,7 +70,7 @@ const AccountVerification = () => {
                                     history.push('/logout');
                                 }, 500)
                             }}>
-                            Start Using Website
+                            Login and Complete Business Profile
                         </Button>
                     </>
                 )}

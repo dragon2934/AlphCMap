@@ -255,24 +255,27 @@ const AddressDetailsStep = ({ wizardInstance }) => {
                     Cancel
                 </Button>
             </Col>
-            <Col>
-                <Label for="route"> ---------------- OR ----------------- </Label>
-            </Col>
-            <Col>
-                <Button
-                    className="mt-1 mb-5"
+            {utilsData.connectToMerchantId > 0 ?
+                <>
+                    <Col>
+                        <Label for="route"> ---------------- OR ----------------- </Label>
+                    </Col>
+                    <Col>
+                        <Button
+                            className="mt-1 mb-5"
 
-                    block
-                    onClick={() => {
-                        address.noDelivery = 1;
-                        address.property = utilsData.selectedProperty;
-                        wizardInstance.goToStep(3);
-                        // utilsData.connectToMerchantId = 0;
-                        // dispatch(resetRegistrationForm())
-                    }}>
-                    No Delivery
-                </Button>
-            </Col>
+                            block
+                            onClick={() => {
+                                address.noDelivery = 1;
+                                address.property = utilsData.selectedProperty;
+                                wizardInstance.goToStep(3);
+                                // utilsData.connectToMerchantId = 0;
+                                // dispatch(resetRegistrationForm())
+                            }}>
+                            No Delivery
+                        </Button>
+                    </Col>
+                </> : null}
         </Form>
     );
 };
