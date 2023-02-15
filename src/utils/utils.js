@@ -90,7 +90,11 @@ export const convertLocation = (items) => {
             ...item,
             primaryAddress: item.primary_address,
             ownerMobileNumber: item.owner_mobile_number,
-            location: JSON.parse(item.location)
+            location: JSON.parse(item.location),
+            bindingName: item.binding_name,
+            bindingEmail: item.binding_email,
+            bindingPhone: item.binding_phone,
+            bindingOthers: item.binding_others
         }
         retItems.push(retItem);
 
