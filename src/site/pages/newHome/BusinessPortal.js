@@ -132,7 +132,7 @@ const BusinessPortal = ({ match }) => {
                                 <Row>   <Col><i className="fa-solid fa-address"></i> {property.streetNumber + ' ' + property.route + ' ' + property.locality + ',' + property.city + ',' + property.postalCode} </Col> </Row>
                                 <Row>   <Col><i className="fa-solid fa-phone"></i> {companyProfile.phone} </Col> </Row>
                                 <Row>   <Col><i className="fa-solid fa-globe"></i> <a href={companyProfile.website} target="_blank" className='business_link'>Company Website</a> </Col> </Row>
-                                {property.binding_email && property.binding_email !== null && property.binding_email !== 'null' ? <Row>   <Col><i className="fa-solid fa-envelope"></i> {property.binding_email} </Col> </Row> : null}
+                                {/* {property.binding_email && property.binding_email !== null && property.binding_email !== 'null' ? <Row>   <Col><i className="fa-solid fa-envelope"></i> {property.binding_email} </Col> </Row> : null} */}
                                 <Row>
                                     <Col> <hr /></Col>
 
