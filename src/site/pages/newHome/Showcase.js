@@ -730,12 +730,13 @@ class Showcase extends Component {
     addAddress = () => {
         const { selectedAddress, email, properties, pins, layerAdded } = this.state;
         const { map } = this.context;
+        const { utilsData } = this.props;
         const currentPin = pins.filter(item => item.email === email);
         const postData = {
             item: {
                 email: email,
                 ...selectedAddress,
-                color: currentPin[0].color
+                color: 'grey' //consumer is pending
             }
         }
         const data = {
@@ -829,16 +830,30 @@ class Showcase extends Component {
                 layerAdded: layerAdded,
                 properties: properties
             });
-            showLineLayer(
-                map,
-                MapMarkerUrls.user.injured,
-                randomString,
-                residentsWithLocation,
-                (i) => [
-                    [primaryAddress[0].properties.location.longitude, primaryAddress[0].properties.location.latitude],
-                    [i.location.longitude, i.location.latitude],
-                ],
-            );
+            if (primaryAddress && primaryAddress.length > 0) {
+                showLineLayer(
+                    map,
+                    MapMarkerUrls.user.injured,
+                    randomString,
+                    residentsWithLocation,
+                    (i) => [
+                        [primaryAddress[0].properties.location.longitude, primaryAddress[0].properties.location.latitude],
+                        [i.location.longitude, i.location.latitude],
+                    ],
+                );
+            }
+
+
+            console.log('..binding property..' + JSON.stringify(selectedAddress));
+            utilsData.bindingProperty = true;
+            utilsData.emailForChangeColor = email;
+            utilsData.selectedProperty = selectedAddress;
+            utilsData.fncCallback = this.cbBusinessInfoCallBack;
+            // console.log('....setting utilsData.bindingProperty.....' + email);
+            this.setState({
+                bindingProperty: true
+            });
+
 
         });
 

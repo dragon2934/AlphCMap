@@ -29,7 +29,7 @@ const Header = () => {
     const collapse = () => setIsOpen(false);
     const [dropDownOpen, setDropDownOpen] = useState(false);
     const utilsData = useSelector((state) => state.utilsData);
-    const [editSwitch, setEditSwitch] = useState(false);
+    const [editSwitch, setEditSwitch] = useState(utilsData.editMode);
 
     const [totalConnected, setTotalConnected] = useState(null);
 
@@ -46,7 +46,7 @@ const Header = () => {
             .trim();
     } catch (e) { }
     loginType = getLoginType();
-    console.log('...loginType=' + loginType);
+    // console.log('...loginType=' + loginType);
     const [connectionSwitch, setConnectionSwitch] = useState(parseInt(loginType) === 2 ? true : false);
     if (user !== null && user !== undefined && user.property !== null && user.property !== undefined) {
         //  console.log('user.property =' + JSON.stringify(user.property));

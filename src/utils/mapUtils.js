@@ -153,8 +153,8 @@ export const showPropertiesOnMapEx = (map, data, renderTooltip, bAddImage) => {
 export const showPropertiesOnMap = (map, data, renderTooltip, bAddImage, user) => {
     const businessProperty = data.filter((i) => i.is_business === 1 || i.is_business);
 
-    const consumerProperty = data.filter((i) => i.is_business === 0 || !i.is_business);
-
+    const confirmedConsumer = data.filter((i) => (i.is_business === 0 || !i.is_business) && i.color === 'default');
+    const pendingConsumer = data.filter((i) => (i.is_business === 0 || !i.is_business) && i.color === 'grey');
 
     /*
     let defaultItems = other.filter(
@@ -204,7 +204,7 @@ export const showPropertiesOnMap = (map, data, renderTooltip, bAddImage, user) =
         map,
         MapMarkerUrls.property.default,
         'other-properties',
-        consumerProperty,
+        confirmedConsumer,
         (i) => [i.location.longitude, i.location.latitude],
     );
 
@@ -231,7 +231,7 @@ export const showPropertiesOnMap = (map, data, renderTooltip, bAddImage, user) =
         map,
         MapMarkerUrls.property.pending,
         'pending-properties',
-        [],
+        pendingConsumer,
         (i) => [i.location.longitude, i.location.latitude],
     );
 

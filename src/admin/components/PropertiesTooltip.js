@@ -14,7 +14,7 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
 
             <Row className="justify-content-end">
                 {property.bindingName && property.bindingName !== null && property.bindingName !== 'null' ? <Col className='bindingInfo'>Name: {property.bindingName}  </Col> : null}
-                {property.bindingEmail && property.bindingEmail !== null && property.bindingEmail !== 'null' ? <Col className='bindingInfo'>Email: {property.bindingEmail} <CButton onClick={(e) => cbSendEmail(e, property)} >Send Email</CButton>  </Col> : null}
+                {property.bindingEmail && property.bindingEmail !== null && property.bindingEmail !== 'null' ? <Col className='bindingInfo'>Email: {property.bindingEmail}   </Col> : null}
             </Row>
             <Row className="justify-content-end">
                 {property.bindingPhone && property.bindingPhone !== null && property.bindingPhone !== 'null' ? <Col className='bindingInfo'>Phone: {property.bindingPhone}  </Col> : null}
@@ -25,6 +25,13 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
                     <Row className="justify-content-end">
                         <Col className="list-unstyled text-right">
                             <li>
+                                {
+                                    property.bindingEmail && property.bindingEmail !== null && property.bindingEmail !== 'null' ?
+                                        <>
+                                            <Button size={'sm'} onClick={(e) => cbSendEmail(e, property)} >Send Email</Button> &nbsp;&nbsp;&nbsp;&nbsp;</> : null
+                                }
+
+
                                 {user !== null && user !== undefined && property.id === user.property.id ? <>  <Button
                                     size={'sm'}
                                     onClick={() => cbBusiness(email, property)}>

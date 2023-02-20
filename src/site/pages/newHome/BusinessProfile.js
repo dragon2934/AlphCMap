@@ -42,6 +42,7 @@ const BusinessProfile = () => {
     // console.log('..queryPage..' + queryPage);
     const propertyId = queryPage[1];
     const user = useSelector((state) => state.auth.me);
+    console.log('..user..' + JSON.stringify(user));
     const [companyProfile, setCompanyProfile] = useState({});
 
     const getWorkingHourValue = (hours, dayOfWeek, index) => {
@@ -79,10 +80,10 @@ const BusinessProfile = () => {
     }
     const formik = useFormik({
         initialValues: {
-            companyName: '',
+            companyName: user.companyName,
             phone: '',
             website: '',
-            email: ''
+            email: user.email
         },
         isInitialValid: false,
         validationSchema: bindingSchema,
@@ -112,6 +113,8 @@ const BusinessProfile = () => {
                 dispatch(saveBusinessProfile(postData)).then(resp => {
                     console.log('..save business profile..' + JSON.stringify(resp));
                     setSubmitting(false);
+                    user.companyName = values.companyName;
+                    user.email = values.email;
                     toastr.success('Success', 'Business profile saved!');
                     const proudct = {
                         membershipId: 1,
@@ -160,7 +163,7 @@ const BusinessProfile = () => {
                     email: profile.email,
                     openHour0: getWorkingHourValue(hours, 0, 1),
                     closeHour0: getWorkingHourValue(hours, 0, 2),
-                    close0: getWorkingHourValue(hours, 0, 2) === true ? true : false,
+                    close0: getWorkingHourValue(hours, 0, 3) === true ? true : false,
 
                     openHour1: getWorkingHourValue(hours, 1, 1),
                     closeHour1: getWorkingHourValue(hours, 1, 2),
@@ -223,7 +226,7 @@ const BusinessProfile = () => {
                                     <Row>
                                         <Col md={12}>
                                             <FormGroup>
-                                                <Label>Contact Phone:</Label>
+                                                <Label>Business Number:</Label>
                                                 <Input
                                                     type="text"
                                                     name="phone"
@@ -239,7 +242,7 @@ const BusinessProfile = () => {
                                     <Row>
                                         <Col md={12}>
                                             <FormGroup>
-                                                <Label>Website:</Label>
+                                                <Label>Website:(Optional)</Label>
                                                 <Input
                                                     type="text"
                                                     name="website"
