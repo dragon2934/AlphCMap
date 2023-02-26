@@ -71,6 +71,7 @@ const BindingForm = ({ callback }) => {
         isValid,
         isSubmitting,
         setFieldValue,
+        setFieldTouched,
         values,
     } = formik;
 
@@ -120,8 +121,8 @@ const BindingForm = ({ callback }) => {
                                 <MobileInput
                                     type="text"
                                     name="bindingPhone"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
+                                    setFieldValue={setFieldValue}
+                                    setFieldTouched={setFieldTouched}
                                     value={values.bindingPhone}
                                     invalid={touched.bindingPhone && errors.bindingPhone}
                                 />
