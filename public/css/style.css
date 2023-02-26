@@ -2497,3 +2497,8 @@ a.business_link:visited {
   color: white;
   text-decoration: underline !important;
 }
+
+.register-form,
+.login-form {
+  padding: 20px;
+}

@@ -37,7 +37,8 @@ import {
     ADMIN_SAVE_SHOPPING_CART,
     ADMIN_LOAD_SHOPPING_CART,
     ADMIN_UNSUBSCRIBE,
-    ADMIN_TOTAL_CONNECTED
+    ADMIN_TOTAL_CONNECTED,
+    ADMIN_CONFIRM_CONNECTION
 } from '../actionTypes';
 
 import { getLoginType } from '../../utils/utils';
@@ -1017,6 +1018,31 @@ export const getBusinessProfile = (data) => {
         });
     };
 };
+export const getBusinessProfileByConnectToken = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_GET_BUSINESS_PROFILE,
+            payload: fetch(`${SERVICE_URL}/public/load-business-profile-by-token`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
 
 export const loadBusinessAddress = (data) => {
 
@@ -1212,6 +1238,33 @@ export const loadConnectedTotal = (data) => {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const confirmConnection = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_CONFIRM_CONNECTION,
+            payload: fetch(`${SERVICE_URL}/public/confirm-connected`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
                 method: 'POST',
                 body: JSON.stringify(data),

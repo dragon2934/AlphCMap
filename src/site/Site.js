@@ -50,6 +50,7 @@ import BusinessProfile from "./pages/newHome/BusinessProfile";
 import Cart from "./pages/cart";
 import BusinessPortal from "./pages/newHome/BusinessPortal";
 import UnSubscribe from "./pages/newHome/UnSubscribe";
+import Connect from "./pages/newHome/Connect";
 const Site = () => {
   return (
     <Switch>
@@ -71,7 +72,7 @@ const Site = () => {
         exact
       />
 
-
+      <Route exact path="/connect" component={Connect} />
       <Route exact path="/cart" component={Cart} />
       <Route exact path="/change-email" component={ChangeEMail} />
       <Route exact path="/pricing" component={MemberShip} />
