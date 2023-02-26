@@ -19,6 +19,7 @@ import { propertyBinding } from '../../../redux/actionCreators/adminActionCreato
 import { useHistory } from 'react-router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import MobileInput from '../../../common/components/MobileInput';
 const bindingSchema = Yup.object().shape({
 
     bindingName: Yup.string().required('This field is required'),
@@ -116,7 +117,7 @@ const BindingForm = ({ callback }) => {
 
                             <FormGroup>
                                 <Label for="lblPropertyName">Phone</Label>
-                                <Input
+                                <MobileInput
                                     type="text"
                                     name="bindingPhone"
                                     onChange={handleChange}
