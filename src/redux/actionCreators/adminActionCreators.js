@@ -1256,7 +1256,6 @@ export const loadConnectedTotal = (data) => {
 
 export const confirmConnection = (data) => {
     return (dispatch, getState) => {
-        const token = getState().auth.jwt;
 
         return dispatch({
             type: ADMIN_CONFIRM_CONNECTION,
@@ -1264,7 +1263,6 @@ export const confirmConnection = (data) => {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
                 },
                 method: 'POST',
                 body: JSON.stringify(data),
