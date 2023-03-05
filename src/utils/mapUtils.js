@@ -151,7 +151,7 @@ export const showPropertiesOnMapEx = (map, data, renderTooltip, bAddImage) => {
     map.on('click', showPropertyTooltip.bind(undefined, map, renderTooltip));
 };
 export const showPropertiesOnMap = (map, data, renderTooltip, bAddImage, user) => {
-    const businessProperty = data.filter((i) => i.is_business === 1 || i.is_business);
+    const businessProperty = data.filter((i) => i.is_business === 1 || i.is_business || i.color === 'red');
 
     const confirmedConsumer = data.filter((i) => (i.is_business === 0 || !i.is_business) && i.color === 'default');
     const pendingConsumer = data.filter((i) => (i.is_business === 0 || !i.is_business) && i.color === 'grey');

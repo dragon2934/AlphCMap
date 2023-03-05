@@ -62,7 +62,8 @@ const Connect = ({ match }) => {
         initialValues: {
             email: 'test@nyzsoft.com',
             password: '123456',
-            passwordConfirmation: '123456'
+            passwordConfirmation: '123456',
+            consent: true
         },
         onSubmit: (values, { setSubmitting }) => {
             // setError(null);
@@ -483,6 +484,27 @@ const Connect = ({ match }) => {
                                             <FormFeedback>
                                                 {errors.passwordConfirmation}
                                             </FormFeedback>
+                                        </InputGroup>
+                                        <InputGroup className='mb-3'>
+                                            <Label check style={{ marginLeft: "20px" }}>
+                                                <Input
+                                                    type="checkbox"
+                                                    name="consent"
+                                                    onChange={(e) => {
+                                                        setFieldTouched('consent');
+                                                        setFieldValue(
+                                                            'consent',
+                                                            e.currentTarget.checked,
+                                                        );
+                                                    }}
+                                                    checked={values.consent}
+                                                    onBlur={handleBlur}
+                                                    invalid={touched.consent && errors.consent}
+                                                />
+                                                I've read{' '}
+                                                <a target={'_blank'} href="/privacy-policy">Privacy Policy</a> and{' '}
+                                                <a target={'_blank'} href="/terms-of-use">Terms of Use</a>.
+                                            </Label>
                                         </InputGroup>
                                         <Row className="contact-us-submit-container">
                                             <Col>

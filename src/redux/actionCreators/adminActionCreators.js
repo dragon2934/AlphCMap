@@ -38,7 +38,8 @@ import {
     ADMIN_LOAD_SHOPPING_CART,
     ADMIN_UNSUBSCRIBE,
     ADMIN_TOTAL_CONNECTED,
-    ADMIN_CONFIRM_CONNECTION
+    ADMIN_CONFIRM_CONNECTION,
+    ADMIN_GET_ADDRESS_BY_TYPE
 } from '../actionTypes';
 
 import { getLoginType } from '../../utils/utils';
@@ -1266,6 +1267,32 @@ export const confirmConnection = (data) => {
                 },
                 method: 'POST',
                 body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const getAddressByType = (loginType) => {
+
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_GET_ADDRESS_BY_TYPE,
+            payload: fetch(`${SERVICE_URL}/residents/get-address-by-type?type=` + loginType, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'GET',
             })
                 .then((r) => r.json())
                 .then((responseData) => {

@@ -42,12 +42,12 @@ const validationSchema = Yup.object().shape({
             [true],
             'Confirm you have read Privacy Policy and Terms of Use.',
         ),
-    liability: Yup.boolean()
-        .required('Confirm you have read above instruction')
-        .oneOf(
-            [true],
-            'Confirm you have read above instruction.',
-        )
+    // liability: Yup.boolean()
+    //     .required('Confirm you have read above instruction')
+    //     .oneOf(
+    //         [true],
+    //         'Confirm you have read above instruction.',
+    //     )
 
 });
 
@@ -68,7 +68,7 @@ const UserInfoStep = ({ wizardInstance }) => {
             password: '',
             passwordConfirmation: '',
             consent: false,
-            liability: false
+            liability: true
         },
         isInitialValid: false,
         validationSchema,
@@ -283,7 +283,7 @@ const UserInfoStep = ({ wizardInstance }) => {
                             <a target={'_blank'} href="/terms-of-use">Terms of Use</a>.
                         </Label>
                         <Label check>
-                            <Input
+                            {/* <Input
                                 type="checkbox"
                                 name="liability"
                                 onChange={(e) => {
@@ -296,8 +296,8 @@ const UserInfoStep = ({ wizardInstance }) => {
                                 checked={values.liability}
                                 onBlur={handleBlur}
                                 invalid={touched.liability && errors.liability}
-                            />
-                            Disclaimer: In an emergency contact your local first responder directly. AlphC E-Alert App is only an aid and is not intended to replace first responders. First responders can license this technology to increase the safety of your community.
+                            /> */}
+                            {/* Disclaimer: In an emergency contact your local first responder directly. AlphC E-Alert App is only an aid and is not intended to replace first responders. First responders can license this technology to increase the safety of your community. */}
                         </Label>
 
                     </FormGroup>
@@ -309,12 +309,12 @@ const UserInfoStep = ({ wizardInstance }) => {
                     <FormFeedback>{errors.consent}</FormFeedback>
                 </FormGroup>
             </Col>
-            <Col>
+            {/* <Col>
                 <FormGroup>
                     <Input type="hidden" invalid={errors.liability} />
                     <FormFeedback>{errors.liability}</FormFeedback>
                 </FormGroup>
-            </Col>
+            </Col> */}
             <Col>
                 <Button
                     block

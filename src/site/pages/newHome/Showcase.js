@@ -8,6 +8,7 @@ import {
     fetchUsers,
     loadBusinessAddress,
     loadConnected,
+    getAddressByType
 } from '../../../redux/actionCreators/adminActionCreators';
 import {
     clearDistancesFromMap,
@@ -45,6 +46,7 @@ import FlyerForm from './FlyerForm';
 import { convertAttributes, convertLocation, convertGeoProperty } from '../../../utils/utils';
 import BusinessInfo from './BusinessInfo';
 import { getLoginType } from '../../../utils/utils';
+import { toastr } from 'react-redux-toastr';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_GL_ACCESS_TOKEN;
 
@@ -69,7 +71,9 @@ class Showcase extends Component {
         selectedPropertyEmail: [],
         satelliteMode: false,
         showMapLegend: false,
-        showBusinessInfo: false
+        showBusinessInfo: false,
+        propertyByTpe: null,
+        has2Address: true
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -463,7 +467,7 @@ class Showcase extends Component {
 
     async initializeLayers() {
         const { map } = this.context;
-        const { loadConnected, loadBusinessAddress } = this.props;
+        const { loadConnected, loadBusinessAddress, getAddressByType } = this.props;
         const draw = new MapboxDraw({
             controls: {
                 point: false,
@@ -485,6 +489,23 @@ class Showcase extends Component {
         } else {
             const { value: properties } = await loadConnected();
             convertedProperties = convertLocation(properties.value);
+            const loginType = getLoginType();
+            const { value: property } = await getAddressByType(loginType);
+            console.log('.. property by type..' + JSON.stringify(property));
+            if (property.value && property.value.length > 0) {
+                //already has business Or Home Address
+            } else {
+                this.setState({
+                    has2Address: false,
+                });
+                // const usuage = parseInt(loginType) === 1 ? ' Home Address' : ' Business Address';
+                let msg = 'Please switch to Edit Mode and add your Business Address';
+                if (parseInt(loginType) === 1) {
+                    msg = 'Please type your home address to search box to add your home address';
+                }
+                toastr.info('Tips', msg);
+            }
+
         }
 
         // console.log('..load business.. ' + JSON.stringify(convertedProperties));
@@ -559,7 +580,13 @@ class Showcase extends Component {
     createMarker = async ({ latitude, longitude }) => {
         // const {domain} = this.state;
         const { map } = this.context;
+        const loginType = getLoginType();
+        const { has2Address } = this.state;
 
+        let addText = 'Add';
+        if (!has2Address) {
+            addText = parseInt(loginType) === 1 ? 'Add Home Address' : 'Add Business Address'
+        }
         const el = document.createElement('div');
         const width = 48;
         const height = 48;
@@ -616,7 +643,7 @@ class Showcase extends Component {
                                 <Button
                                     size={'sm'}
                                     onClick={() => this.addAddress()}>
-                                    Add
+                                    {addText}
                                 </Button> &nbsp;&nbsp;&nbsp;&nbsp;
 
                                 <Button
@@ -728,15 +755,17 @@ class Showcase extends Component {
 
     }
     addAddress = () => {
-        const { selectedAddress, email, properties, pins, layerAdded } = this.state;
+        const { selectedAddress, email, properties, pins, layerAdded, has2Address } = this.state;
         const { map } = this.context;
         const { utilsData } = this.props;
+        const loginType = getLoginType();
         const currentPin = pins.filter(item => item.email === email);
         const postData = {
             item: {
                 email: email,
+                usuage: has2Address ? 0 : loginType,
                 ...selectedAddress,
-                color: 'grey' //consumer is pending
+                color: has2Address ? 'grey' : parseInt(loginType) === 1 ? 'default' : 'red' //consumer is pending
             }
         }
         const data = {
@@ -850,10 +879,14 @@ class Showcase extends Component {
             utilsData.selectedProperty = selectedAddress;
             utilsData.fncCallback = this.cbBusinessInfoCallBack;
             // console.log('....setting utilsData.bindingProperty.....' + email);
-            this.setState({
-                bindingProperty: true
-            });
-
+            if (has2Address) {
+                this.setState({
+                    bindingProperty: true
+                });
+            } else {
+                //reload to refresh data
+                location.reload()
+            }
 
         });
 
@@ -1099,7 +1132,7 @@ class Showcase extends Component {
         },
     ];
     render() {
-        const { pins, searchText, drawing, satelliteMode, showMapLegend } = this.state;
+        const { pins, searchText, drawing, satelliteMode, showMapLegend, has2Address } = this.state;
         const { utilsData, active, editMode, auth } = this.props;
 
         const user = auth.user;
@@ -1114,14 +1147,22 @@ class Showcase extends Component {
         if (utilsData.connectToMerchantId > 0) showIcon = false;
         if (showMapLegend) showIcon = false;
         if (parseInt(loginType) === 1) showIcon = false;
+        let mapDisabled = false;
+        if (!utilsData.editMode && user !== null && user !== undefined) {
+            if (parseInt(loginType) === 1 && !has2Address) {
+                // mapDisabled = true;
+            } else {
+                mapDisabled = true;
+            }
+        }
 
         return <>
             <div className={'showcase-map-top-actions'}>
                 <div className={'search-actions'}>
-                    {user !== null && user !== undefined && parseInt(loginType) === 1 ? null : <Form onSubmit={this.onSubmitSearch}>
+                    {user !== null && user !== undefined && parseInt(loginType) === 1 && has2Address ? null : <Form onSubmit={this.onSubmitSearch}>
                         <Input
                             bsSize={'lg'}
-                            disabled={!utilsData.editMode && user !== null && user !== undefined}
+                            disabled={mapDisabled}
                             className=""
                             value={searchText}
                             onChange={this.onChangeSearchText}
@@ -1273,6 +1314,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
+    getAddressByType: (data) =>
+        dispatch(getAddressByType(data)),
     loadBusinessAddress: () =>
         dispatch(loadBusinessAddress()),
     loadConnected: (data) =>
