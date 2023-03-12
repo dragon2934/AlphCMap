@@ -30,6 +30,7 @@ import { setPropertyRegistrationForm } from '../../../redux/actionCreators/regis
 import MobileInput from '../../../common/components/MobileInput';
 import * as Yup from 'yup';
 import { toastr } from 'react-redux-toastr';
+import { setLoginType } from '../../../utils/utils';
 
 const validationSchema = Yup.object().shape({
     email: Yup.string().required('Mobile number is required'),
@@ -192,17 +193,17 @@ const Connect = ({ match }) => {
             merchantId: merchantId
         }
         console.log('..data..' + JSON.stringify(data));
+
         dispatch(confirmConnection(data))
             .then((response) => {
                 console.log('..response..' + JSON.stringify(response));
                 if (response.value.error && response.value.error.status > 300) {
                     toastr.error('Error', response.value.error.details[0].messages[0].message);
                 } else {
+                    setLoginType(1); //This is Client
                     console.log('..start get me');
                     toastr.success('Success', 'Connect successful!');
                     location.replace('/');
-
-
                 }
             })
             .catch((error) => {
