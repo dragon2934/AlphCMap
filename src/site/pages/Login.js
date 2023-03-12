@@ -111,7 +111,7 @@ const Login = ({ history }) => {
                         </p>
                     </div>
                 </Col>
-                <Col lg={4} md={12} className="main">
+                <Col lg={6} md={12} className="main">
                     <div className="login-form">
                         <Form onSubmit={handleSubmit}>
                             {error && (
@@ -173,7 +173,15 @@ const Login = ({ history }) => {
                                     </Button>
                                 </Col>
                             </Row>
+                            <Row>
+                                <Col>
+                                    <FormGroup> <br /> <br />
+                                        <a href="/reset-password">Forgot Password ?</a>
+                                    </FormGroup>
+                                </Col>
+                            </Row>
                         </Col>
+
 
                     </div>
                 </Col>

@@ -60,20 +60,20 @@ const Root = () => (
 );
 
 window.addEventListener(
-    'message',
-    (messageEvent) => {
-        try {
-            const message = JSON.parse(messageEvent.data);
+  'message',
+  (messageEvent) => {
+    try {
+      const message = JSON.parse(messageEvent.data);
 
-            if (message.type === 'profile') {
-                store.dispatch({
-                    type: SET_AUTH,
-                    payload: message.auth,
-                });
-            }
-        } catch (e) {}
-    },
-    true,
+      if (message.type === 'profile') {
+        store.dispatch({
+          type: SET_AUTH,
+          payload: message.auth,
+        });
+      }
+    } catch (e) { }
+  },
+  true,
 );
 
 ReactDOM.render(<Root />, document.getElementById('root'));

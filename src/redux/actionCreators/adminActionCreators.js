@@ -39,7 +39,8 @@ import {
     ADMIN_UNSUBSCRIBE,
     ADMIN_TOTAL_CONNECTED,
     ADMIN_CONFIRM_CONNECTION,
-    ADMIN_GET_ADDRESS_BY_TYPE
+    ADMIN_GET_ADDRESS_BY_TYPE,
+    ADMIN_CHECK_BUSINESS_PROFILE
 } from '../actionTypes';
 
 import { getLoginType } from '../../utils/utils';
@@ -1287,6 +1288,32 @@ export const getAddressByType = (loginType) => {
         return dispatch({
             type: ADMIN_GET_ADDRESS_BY_TYPE,
             payload: fetch(`${SERVICE_URL}/residents/get-address-by-type?type=` + loginType, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'GET',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const checkBusinessProfile = () => {
+
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_CHECK_BUSINESS_PROFILE,
+            payload: fetch(`${SERVICE_URL}/residents/check-business-profile`, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',

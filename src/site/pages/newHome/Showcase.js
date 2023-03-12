@@ -8,7 +8,8 @@ import {
     fetchUsers,
     loadBusinessAddress,
     loadConnected,
-    getAddressByType
+    getAddressByType,
+    checkBusinessProfile
 } from '../../../redux/actionCreators/adminActionCreators';
 import {
     clearDistancesFromMap,
@@ -47,6 +48,9 @@ import { convertAttributes, convertLocation, convertGeoProperty } from '../../..
 import BusinessInfo from './BusinessInfo';
 import { getLoginType } from '../../../utils/utils';
 import { toastr } from 'react-redux-toastr';
+import { parseInt } from 'lodash-es';
+// import mitt from 'mitt';
+import EventBus from '../../../utils/eventBus';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_GL_ACCESS_TOKEN;
 
@@ -73,7 +77,8 @@ class Showcase extends Component {
         showMapLegend: false,
         showBusinessInfo: false,
         propertyByTpe: null,
-        has2Address: true
+        has2Address: true,
+        hasBusinessProfile: true,
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -404,12 +409,22 @@ class Showcase extends Component {
             history.push("/edit-property");
             return;
         }
-        console.log('..to be remove..' + JSON.stringify(tobeDelete));
+        // console.log('..to be remove..' + JSON.stringify(tobeDelete));
         //clear everything, then reload
         const { deleteUserAdditionalAddressById } = this.props;
+        const { utilsData } = this.props;
 
         if (tobeDelete && tobeDelete.length > 0) {
             const resp = await deleteUserAdditionalAddressById(tobeDelete[0].properties.id);
+            //need to change total connected count
+            // console.log('.. property to be deleted, color is: ' + tobeDelete[0].properties.color);
+            if (tobeDelete[0].properties.color !== "grey") {
+                // console.log('....should change total connected...');
+                // const emitter = mitt();
+                // emitter.emit('onTotalConnectChange', { totalConnected: -1 })
+                EventBus.$dispatch('onTotalConnectChange', { totalConnected: -1 });
+                // console.log('....emitter event onTotalConnectChange ...');
+            }
         }
         const { map } = this.context;
 
@@ -442,7 +457,7 @@ class Showcase extends Component {
             // }
 
 
-            console.log('...remove map...');
+            // console.log('...remove map...');
             if (map) {
                 clearPropertiesFromMap(map);
                 clearResidentsFromMap(map);
@@ -452,7 +467,7 @@ class Showcase extends Component {
             this.setState({
                 properties: tobeRemain
             });
-            console.log('...redraw the map after remove property...');
+            // console.log('...redraw the map after remove property...');
             const properties = convertGeoProperty(tobeRemain);
             const { auth } = this.props;
             const user = auth.user;
@@ -467,7 +482,7 @@ class Showcase extends Component {
 
     async initializeLayers() {
         const { map } = this.context;
-        const { loadConnected, loadBusinessAddress, getAddressByType } = this.props;
+        const { loadConnected, loadBusinessAddress, getAddressByType, checkBusinessProfile } = this.props;
         const draw = new MapboxDraw({
             controls: {
                 point: false,
@@ -491,7 +506,8 @@ class Showcase extends Component {
             convertedProperties = convertLocation(properties.value);
             const loginType = getLoginType();
             const { value: property } = await getAddressByType(loginType);
-            console.log('.. property by type..' + JSON.stringify(property));
+            // console.log('.. property by type..' + JSON.stringify(property));
+
             if (property.value && property.value.length > 0) {
                 //already has business Or Home Address
             } else {
@@ -504,6 +520,18 @@ class Showcase extends Component {
                     msg = 'Please type your home address to search box to add your home address';
                 }
                 toastr.info('Tips', msg);
+            }
+            if (parseInt(loginType) === 2) {
+                const { value: hasBusinessProfile } = await checkBusinessProfile();
+                console.log('..hasBusinessProfile..' + JSON.stringify(hasBusinessProfile));
+                if (parseInt(hasBusinessProfile.value[0].profileTotal) === 0) {
+                    toastr.info('Tips', "Please setup your business profile!");
+                    if (property.value && property.value.length > 0) {
+                        location.href = '/business-profile?id=' + property.value[0].id
+                    } else {
+                        console.log('..me is ..' + JSON.stringify(user));
+                    }
+                }
             }
 
         }
@@ -1009,9 +1037,6 @@ class Showcase extends Component {
         const { searchText } = this.state;
 
         if (!searchText.trim()) return;
-        // const { utilsData } = this.props;
-        // if(!utilsData.editMode) return;
-
         geocodeAddress({ address: searchText }).then((data) => {
             const { map } = this.context;
 
@@ -1132,7 +1157,7 @@ class Showcase extends Component {
         },
     ];
     render() {
-        const { pins, searchText, drawing, satelliteMode, showMapLegend, has2Address } = this.state;
+        const { pins, searchText, drawing, satelliteMode, showMapLegend, has2Address, } = this.state;
         const { utilsData, active, editMode, auth } = this.props;
 
         const user = auth.user;
@@ -1299,6 +1324,7 @@ class Showcase extends Component {
             {utilsData.drawFinished && <FlyerForm />}
             {utilsData.showBusinessInfo && <BusinessInfo />}
             {utilsData.connectToMerchantId > 0 && <PropertyForm />}
+
         </>
 
             ;
@@ -1323,7 +1349,8 @@ const mapDispatchToProps = (dispatch) => ({
     fetchUsers: () => dispatch(fetchUsers({ page: 1, pageSize: 100000 })),
     setPropertyRegistrationForm: (data) => dispatch(setPropertyRegistrationForm(data)),
     saveBatchProperties: (data) => dispatch(saveBatchProperties(data)),
-    deleteUserAdditionalAddressById: (propertyId) => dispatch(deleteUserAdditionalAddressById(propertyId))
+    deleteUserAdditionalAddressById: (propertyId) => dispatch(deleteUserAdditionalAddressById(propertyId)),
+    checkBusinessProfile: () => dispatch(checkBusinessProfile()),
 });
 
 export default connect(

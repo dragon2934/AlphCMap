@@ -20,6 +20,8 @@ import { logoutUser } from '../../../redux/actionCreators/authActionCreators';
 import { toastr } from 'react-redux-toastr';
 import { getLoginType, setLoginType, clearLoginType } from '../../../utils/utils';
 import { loadConnectedTotal } from '../../../redux/actionCreators/adminActionCreators';
+// import { useMitt } from 'react-mitt'
+import EventBus from '../../../utils/eventBus';
 
 const Header = () => {
     const user = useSelector((state) => state.auth.me);
@@ -30,14 +32,29 @@ const Header = () => {
     const [dropDownOpen, setDropDownOpen] = useState(false);
     const utilsData = useSelector((state) => state.utilsData);
     const [editSwitch, setEditSwitch] = useState(utilsData.editMode);
-
-    const [totalConnected, setTotalConnected] = useState(null);
-
+    // const { emitter } = useMitt();
     const dispatch = useDispatch();
 
     let userName = '';
     let userEmail = '';
     let loginType = 0;
+    const [totalConnected, setTotalConnected] = useState(null);
+
+    useEffect(() => {
+
+        EventBus.$on('onTotalConnectChange', (data) => {
+            console.log(data);
+            const data1 = totalConnected;
+            if (totalConnected) {
+                const data2 = data.totalConnected;
+                console.log(' .. data1..' + data1 + ' ..data2.. ' + data2);
+                setTotalConnected(parseInt(data1) + parseInt(data2));
+            }
+        })
+        return () => {
+
+        };
+    }, [totalConnected]);
 
     try {
         userName = [user.firstName, user.lastName]
@@ -47,7 +64,7 @@ const Header = () => {
     } catch (e) { }
     loginType = getLoginType();
     // console.log('...loginType=' + loginType);
-    const [connectionSwitch, setConnectionSwitch] = useState(parseInt(loginType) === 2 ? true : false);
+    // const [connectionSwitch, setConnectionSwitch] = useState(parseInt(loginType) === 2 ? true : false);
     if (user !== null && user !== undefined && user.property !== null && user.property !== undefined) {
         //  console.log('user.property =' + JSON.stringify(user.property));
 
@@ -84,14 +101,14 @@ const Header = () => {
     const toggleDropDownMenu = useCallback(() => {
         setDropDownOpen(!dropDownOpen)
     });
-    const handleConnectionChange = useCallback(() => {
-        if (connectionSwitch) {
-            setLoginType(1);
-        } else {
-            setLoginType(2);
-        }
-        window.location.reload();
-    });
+    // const handleConnectionChange = useCallback(() => {
+    //     if (connectionSwitch) {
+    //         setLoginType(1);
+    //     } else {
+    //         setLoginType(2);
+    //     }
+    //     window.location.reload();
+    // });
     const handleEditModeChange = useCallback(() => {
         // setEditMode(!editMode);
         if (utilsData.drawing) {

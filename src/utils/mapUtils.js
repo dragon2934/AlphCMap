@@ -48,8 +48,7 @@ const showPropertyTooltip = (map, renderTooltip, e) => {
     }
     if (feature.properties.companyName) {
         domain = feature.properties.companyName + ".com";
-    }
-    if (feature.properties.lastName) {
+    } else if (feature.properties.lastName) {
         domain = feature.properties.lastName + ".com";
     }
     if (feature.properties.email.includes("@")) {

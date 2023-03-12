@@ -42,7 +42,7 @@ const BusinessProfile = () => {
     // console.log('..queryPage..' + queryPage);
     const propertyId = queryPage[1];
     const user = useSelector((state) => state.auth.me);
-    console.log('..user..' + JSON.stringify(user));
+    // console.log('..user..' + JSON.stringify(user));
     const [companyProfile, setCompanyProfile] = useState({});
 
     const getWorkingHourValue = (hours, dayOfWeek, index) => {

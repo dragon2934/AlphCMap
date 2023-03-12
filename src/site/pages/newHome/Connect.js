@@ -24,7 +24,7 @@ import {
 } from '@coreui/react';
 import { Link } from 'react-router-dom';
 import { getBusinessProfileByConnectToken, confirmConnection } from '../../../redux/actionCreators/adminActionCreators';
-import { changePropertyColor, cancelShowBusinessInfo } from '../../../redux/actionCreators/appActionCreators';
+import { changePropertyColor, cancelShowBusinessInfo, sendVerificationCodeByMobileNumber } from '../../../redux/actionCreators/appActionCreators';
 import { useHistory } from 'react-router';
 import { setPropertyRegistrationForm } from '../../../redux/actionCreators/registrationActionCreators';
 import MobileInput from '../../../common/components/MobileInput';
@@ -58,6 +58,7 @@ const Connect = ({ match }) => {
     const [property, setProperty] = useState(null);
     const [bindingProperty, setBindingProperty] = useState(null);
     const [merchantId, setMerchantId] = useState(null);
+    const [verifyCode, setVerifyCode] = useState(null);
     const formik = useFormik({
         initialValues: {
             email: 'test@nyzsoft.com',
@@ -147,7 +148,20 @@ const Connect = ({ match }) => {
         );
         return () => { };
     }, [dispatch]);
+    const getVerifyCode = (e) => {
+        console.log('.. send verify code to:' + bindingProperty.bindingPhone);
+        const code = Math.floor(100000 + Math.random() * 900000);
+        setVerifyCode(code);
+        dispatch(sendVerificationCodeByMobileNumber(code, bindingProperty.bindingPhone)).then(response => {
+            if (response.value.error && response.value.error.status > 300) {
+                toastr.error('Error', response.value.error.details[0].messages[0].message);
+            } else {
+                toastr.success('Success', 'Verify Code has been sent!');
+            }
+        })
+    }
     const confirmConnect = (e) => {
+
 
         // setSubmitting(true);
         if (values.password === null || values.password === undefined || values.length < 6) {
@@ -155,6 +169,11 @@ const Connect = ({ match }) => {
             return;
         }
         if (activeKey === 2) {
+            //check verify code
+            if (verifyCode === null || verifyCode === undefined || parseInt(values.verifyCode) !== verifyCode) {
+                toastr.error('Error', 'Verify Code Error!');
+                return;
+            }
             if (values.passwordConfirmation === null || values.passwordConfirmation === undefined || values.passwordConfirmation.length < 6) {
                 toastr.error('Error', 'Please enter a valid confirm password, minimun 6 char');
                 return;
@@ -436,6 +455,13 @@ const Connect = ({ match }) => {
                                                 </Col>
                                             </Row>
                                         </Col>
+                                        <Col>
+                                            <Row>
+                                                <Col>
+                                                    <a target={"_blank"} href="/reset-password">Forgot Password ?</a>
+                                                </Col>
+                                            </Row>
+                                        </Col>
                                     </Form>
                                 </div>
                             </CTabPane>
@@ -455,7 +481,33 @@ const Connect = ({ match }) => {
                                             />
                                             <FormFeedback>{errors.email}</FormFeedback>
                                         </FormGroup>
+                                        <FormGroup>
+                                            <Row>
+                                                <Col md={8}>
+                                                    <Input
+                                                        setFieldValue={setFieldValue}
+                                                        setFieldTouched={setFieldTouched}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        placeholder="Verify Code"
+                                                        name={'verifyCode'}
+                                                        value={values.verifyCode}
+                                                        invalid={touched.verifyCode && errors.verifyCode}
+                                                    />
+                                                    <FormFeedback>{errors.verifyCode}</FormFeedback>
+                                                </Col><Col md={4}>
+                                                    <Button
+                                                        onClick={(e) => getVerifyCode(e)}
 
+                                                        outline
+                                                    >
+                                                        Get Code
+                                                    </Button>
+                                                </Col>
+                                            </Row>
+
+
+                                        </FormGroup>
                                         <InputGroup className="mb-3">
                                             <Input
                                                 type="password"

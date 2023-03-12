@@ -8,13 +8,6 @@ import HomeLayout from '../layouts/HomeLayout';
 import Showcase from './newHome/Showcase';
 import Splash from './newHome/Splash';
 
-// const Users = React.lazy(() => import('../../admin/views/users/Users'));
-// const Properties = React.lazy(() => import('../../admin/views/properties/Properties'));
-
-
-
-
-
 const Home = () => {
     const { pathname: location } = useLocation();
 
@@ -43,6 +36,7 @@ const Home = () => {
         // return;
     }
     return (
+
         <HomeLayout>
             <TabContent activeTab={activeTab} className="home-tab-content">
                 <TabPane tabId="_showcase" className="">
@@ -65,6 +59,7 @@ const Home = () => {
 
             </TabContent>
         </HomeLayout>
+
     );
 };
 

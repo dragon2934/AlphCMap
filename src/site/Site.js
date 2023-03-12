@@ -51,6 +51,10 @@ import Cart from "./pages/cart";
 import BusinessPortal from "./pages/newHome/BusinessPortal";
 import UnSubscribe from "./pages/newHome/UnSubscribe";
 import Connect from "./pages/newHome/Connect";
+import ResetPassword from "./pages/newHome/ResetPassword";
+import VerifyResetPassword from './pages/newHome/VerifyResetPassword';
+import ResetPassword3 from './pages/newHome/ResetPassword3';
+
 const Site = () => {
   return (
     <Switch>
@@ -79,6 +83,9 @@ const Site = () => {
       <Route exact path="/checkout/:id" component={Checkout} />
       <Route exact path="/change-mobile" component={ChangeMobile} />
       <Route exact path="/change-password" component={ChangePassword} />
+      <Route exact path="/reset-password" component={ResetPassword} />
+      <Route exact path="/verify-reset-password/:mobileNumber" component={VerifyResetPassword} />
+      <Route exact path="/reset-password-change-password/:mobileNumber" component={ResetPassword3} />
 
       <Route exact path="/checkout_success" component={CheckoutSuccess} />
       <Route exact path="/checkout_failed" component={CheckoutFailed} />

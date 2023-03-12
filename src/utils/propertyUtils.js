@@ -59,7 +59,7 @@ export const generateEmail = ({
         components = [unitNo, ...components];
     }
 
-    console.log('..components..' + JSON.stringify(components));
+    // console.log('..components..' + JSON.stringify(components));
 
     if (components.some((value) => !value)) {
         return `Lati${latitude}_Long${longitude}`;
