@@ -2502,3 +2502,9 @@ a.business_link:visited {
 .login-form {
   padding: 20px;
 }
+
+.wrapperClassName {
+  min-height: 300px;
+  background-color: white;
+  color: black;
+}

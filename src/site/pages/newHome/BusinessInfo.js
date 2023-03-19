@@ -376,7 +376,7 @@ const BusinessInfo = ({ }) => {
                     <>
                         <Col  >
                             Share your business <br />
-                            <FacebookShareButton url={shareUrl}
+                            {/* <FacebookShareButton url={shareUrl}
                                 quote={title}> <FacebookIcon size={32} round /></FacebookShareButton>     <TwitterShareButton
                                     url={shareUrl}
                                     title={title}
@@ -408,7 +408,7 @@ const BusinessInfo = ({ }) => {
 
                             >
                                 <RedditIcon size={32} round />
-                            </RedditShareButton>
+                            </RedditShareButton> */}
                             <EmailShareButton
                                 url={shareUrl}
                                 subject={title}
@@ -417,7 +417,7 @@ const BusinessInfo = ({ }) => {
                             >
                                 <EmailIcon size={32} round />
                             </EmailShareButton>
-                            <LineShareButton
+                            {/* <LineShareButton
                                 url={shareUrl}
                                 title={title}
 
@@ -431,7 +431,7 @@ const BusinessInfo = ({ }) => {
 
                             >
                                 <WeiboIcon size={32} round />
-                            </WeiboShareButton>
+                            </WeiboShareButton> */}
                         </Col>
                     </> : null
             }

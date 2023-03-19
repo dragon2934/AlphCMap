@@ -450,7 +450,7 @@ const Connect = ({ match }) => {
                                                         {isSubmitting ? (
                                                             <Spinner size={'sm'} />
                                                         ) : (
-                                                            'Login and Connect'
+                                                            'Enter Password to Connect'
                                                         )}
                                                     </Button>
                                                 </Col>

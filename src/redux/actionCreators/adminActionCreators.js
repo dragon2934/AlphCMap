@@ -827,10 +827,12 @@ export const listFiles = () => {
     };
 };
 
-export const uploadFiles = () => {
+export const uploadFiles = (fileData) => {
     return (dispatch, getState) => {
         // const token = getState().auth.jwt;
+        let formData = new FormData();
 
+        formData.append("files", fileData);
         return dispatch({
             type: ADMIN_UPLOAD_FILE,
             payload: fetch(`${SERVICE_URL}/upload`, {
@@ -838,6 +840,7 @@ export const uploadFiles = () => {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                 },
+                body: formData,
                 method: 'POST',
             })
                 .then((r) => r.json())
