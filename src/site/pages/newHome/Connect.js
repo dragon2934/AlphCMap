@@ -35,7 +35,7 @@ import { setLoginType } from '../../../utils/utils';
 const validationSchema = Yup.object().shape({
     email: Yup.string().required('Mobile number is required'),
     password: Yup.string()
-        .min(6, 'Password is  too Short!')
+        .min(6, 'Create password minimum 6 characters!')
         .max(16, 'Password is too Long!')
         .required('Password is required'),
 });
@@ -62,10 +62,10 @@ const Connect = ({ match }) => {
     const [verifyCode, setVerifyCode] = useState(null);
     const formik = useFormik({
         initialValues: {
-            email: 'test@nyzsoft.com',
-            password: '123456',
-            passwordConfirmation: '123456',
-            consent: true
+            email: '',
+            password: '',
+            passwordConfirmation: '',
+            consent: false
         },
         onSubmit: (values, { setSubmitting }) => {
             // setError(null);
@@ -170,6 +170,10 @@ const Connect = ({ match }) => {
             return;
         }
         if (activeKey === 2) {
+            if (!values.consent) {
+                toastr.error('Error', 'You must agree our Privacy Policy and Terms of Use!');
+                return;
+            }
             //check verify code
             if (verifyCode === null || verifyCode === undefined || parseInt(values.verifyCode) !== verifyCode) {
                 toastr.error('Error', 'Verify Code Error!');
