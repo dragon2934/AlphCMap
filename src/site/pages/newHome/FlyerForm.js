@@ -123,7 +123,7 @@ const FlyerForm = ({ callback }) => {
         console.log('..imgData..' + JSON.stringify(imgData));
         return Promise.resolve({
             data: {
-                link: `${uploadUrl}${imgData.data[0].url}`
+                link: `https://rest.alphcmap.com${imgData.data[0].url}`
             }
         });
         // dispatch( uploadFiles(file)).then(imgData => {
