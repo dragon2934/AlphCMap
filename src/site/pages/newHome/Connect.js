@@ -194,7 +194,8 @@ const Connect = ({ match }) => {
             action: activeKey,
             propertyId: bindingProperty.id,
             bindingName: bindingProperty.bindingName,
-            merchantId: merchantId
+            merchantId: merchantId,
+            token: token
         }
         console.log('..data..' + JSON.stringify(data));
 
@@ -205,7 +206,7 @@ const Connect = ({ match }) => {
                     toastr.error('Error', response.value.error.details[0].messages[0].message);
                 } else {
                     setLoginType(1); //This is Client
-                    console.log('..start get me');
+                    // console.log('..start get me');
                     toastr.success('Success', 'Connect successful!');
                     location.replace('/');
                 }
