@@ -579,6 +579,11 @@ class Showcase extends Component {
                 showPrimaryDistancesOnMap(map, convertedProperties, user);
             }
             // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
+            const showLoginTips = localStorage.getItem('show_login_tips');
+            if (showLoginTips && parseInt(showLoginTips) === 1) {
+                localStorage.removeItem('show_login_tips');
+                toastr.info('Tips', 'Please login to access account');
+            }
 
         } catch (e) {
             console.log('init map layer error:' + JSON.stringify(e));

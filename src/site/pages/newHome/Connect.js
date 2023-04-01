@@ -208,7 +208,7 @@ const Connect = ({ match }) => {
                     setLoginType(1); //This is Client
                     // console.log('..start get me');
                     toastr.success('Success', 'Connect successful!');
-                    location.replace('/');
+                    location.replace('/logout');
                 }
             })
             .catch((error) => {
