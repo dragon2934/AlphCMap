@@ -16,6 +16,7 @@ import {
     clearPropertiesFromMap,
     clearResidentsFromMap,
     showPrimaryDistancesOnMap,
+    showHomeAndBusinessOnMap,
     showPropertiesOnMap,
     showLineLayer,
     clearLayer,
@@ -34,7 +35,7 @@ import ReactDOM from 'react-dom';
 import { setPropertyRegistrationForm } from '../../../redux/actionCreators/registrationActionCreators';
 
 import { saveBatchProperties, deleteUserAdditionalAddressById } from '../../../redux/actionCreators/appActionCreators';
-
+import { getMe } from '../../../redux/actionCreators/authActionCreators';
 import {
     MapMarkerUrls,
 } from '../../../constants';
@@ -114,7 +115,7 @@ class Showcase extends Component {
         const { utilsData } = this.props;
         const { auth } = this.props;
         const user = auth.user;
-        if (property.is_business && property.is_business === true) {
+        if (property.usuage && parseInt(property.usuage) === 2) {
             utilsData.selectedProperty = property;
             utilsData.showBusinessInfo = true;
 
@@ -362,7 +363,7 @@ class Showcase extends Component {
                                     {/* &nbsp;&nbsp;&nbsp;&nbsp; */}
                                     <Button
                                         size={'sm'}
-                                        onClick={() => this.addAddress()}>
+                                        onClick={() => this.addAddress(3)}>
                                         Add
                                     </Button> &nbsp;&nbsp;&nbsp;&nbsp;
 
@@ -577,6 +578,7 @@ class Showcase extends Component {
             } else {
                 showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true, user);
                 showPrimaryDistancesOnMap(map, convertedProperties, user);
+                showHomeAndBusinessOnMap(map, convertedProperties, user);
             }
             // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
             const showLoginTips = localStorage.getItem('show_login_tips');
@@ -617,8 +619,16 @@ class Showcase extends Component {
         const { has2Address } = this.state;
 
         let addText = 'Add';
+        let usuage = 3;
         if (!has2Address) {
-            addText = parseInt(loginType) === 1 ? 'Add Home Address' : 'Add Business Address'
+            if (parseInt(loginType) === 1) {
+                addText = 'Add Home Address'
+                usuage = 1;
+            } else {
+                addText = 'Add Business Address'
+                usuage = 2;
+            }
+
         }
         const el = document.createElement('div');
         const width = 48;
@@ -675,7 +685,7 @@ class Showcase extends Component {
                                 &nbsp;&nbsp;&nbsp;&nbsp; */}
                                 <Button
                                     size={'sm'}
-                                    onClick={() => this.addAddress()}>
+                                    onClick={() => this.addAddress(usuage)}>
                                     {addText}
                                 </Button> &nbsp;&nbsp;&nbsp;&nbsp;
 
@@ -787,7 +797,7 @@ class Showcase extends Component {
         }
 
     }
-    addAddress = () => {
+    addAddress = (usuage) => {
         const { selectedAddress, email, properties, pins, layerAdded, has2Address } = this.state;
         const { map } = this.context;
         const { utilsData } = this.props;
@@ -796,7 +806,7 @@ class Showcase extends Component {
         const postData = {
             item: {
                 email: email,
-                usuage: has2Address ? 0 : loginType,
+                usuage: usuage,
                 ...selectedAddress,
                 color: has2Address ? 'grey' : parseInt(loginType) === 1 ? 'default' : 'red' //consumer is pending
             }
@@ -816,10 +826,10 @@ class Showcase extends Component {
                 ],
             },
         }
-        const { saveBatchProperties } = this.props;
+        const { saveBatchProperties, getMe } = this.props;
         properties.push(data);
         saveBatchProperties(postData).then(async (resp) => {
-            console.log('..saveBatchProperties..' + JSON.stringify(resp));
+            // console.log('..saveBatchProperties..' + JSON.stringify(resp));
             //remove the popup and show line
 
             // console.log('..pins..' + JSON.stringify(pins));
@@ -917,8 +927,14 @@ class Showcase extends Component {
                     bindingProperty: true
                 });
             } else {
-                //reload to refresh data
-                location.reload()
+                // get me and reload to refresh data
+                getMe().then(resp => {
+                    location.reload()
+                }).catch(error => {
+                    toastr.error('Error', "Get information error!");
+                });
+
+
             }
 
         });
@@ -990,7 +1006,7 @@ class Showcase extends Component {
                                 </Button> &nbsp;&nbsp;&nbsp;&nbsp;
                                 <Button
                                     size={'sm'}
-                                    onClick={() => this.addAddress()}>
+                                    onClick={() => this.addAddress(3)}>
                                     Add
                                 </Button>
                             </li>
@@ -1356,6 +1372,7 @@ const mapDispatchToProps = (dispatch) => ({
     saveBatchProperties: (data) => dispatch(saveBatchProperties(data)),
     deleteUserAdditionalAddressById: (propertyId) => dispatch(deleteUserAdditionalAddressById(propertyId)),
     checkBusinessProfile: () => dispatch(checkBusinessProfile()),
+    getMe: () => dispatch(getMe()),
 });
 
 export default connect(

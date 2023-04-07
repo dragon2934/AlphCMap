@@ -75,6 +75,9 @@ const Header = () => {
         } else if (user.lastName) {
             userEmail = user.property.email + '@' + user.lastName + '.com';
             localStorage.setItem("current_domain", user.lastName + '.com');
+        } else {
+            userEmail = user.property.email + '@alphcmap.com';
+            localStorage.setItem("current_domain", 'alphcmap.com');
         }
         if (user.noDelivery && user.noDelivery === 1) {
             userEmail = '';

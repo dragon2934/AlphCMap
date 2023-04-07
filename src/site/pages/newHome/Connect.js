@@ -60,6 +60,7 @@ const Connect = ({ match }) => {
     const [bindingProperty, setBindingProperty] = useState(null);
     const [merchantId, setMerchantId] = useState(null);
     const [verifyCode, setVerifyCode] = useState(null);
+    const [connectToken, setConnectToken] = useState(null);
     const formik = useFormik({
         initialValues: {
             email: '',
@@ -139,9 +140,9 @@ const Connect = ({ match }) => {
             setBindingProperty(resp.value.bindingProperty);
             setLoading(false);
             setMerchantId(resp.value.merchantId);
+            setConnectToken(resp.value.connectToken);
             setValues({
-                email: resp.value.bindingProperty.bindingPhone
-
+                email: resp.value.connectToken.bindingPhone
             });
 
         }
