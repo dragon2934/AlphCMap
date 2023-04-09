@@ -151,10 +151,10 @@ const Connect = ({ match }) => {
         return () => { };
     }, [dispatch]);
     const getVerifyCode = (e) => {
-        console.log('.. send verify code to:' + bindingProperty.bindingPhone);
+        console.log('.. send verify code to:' + resp.value.connectToken.bindingPhone);
         const code = Math.floor(100000 + Math.random() * 900000);
         setVerifyCode(code);
-        dispatch(sendVerificationCodeByMobileNumber(code, bindingProperty.bindingPhone)).then(response => {
+        dispatch(sendVerificationCodeByMobileNumber(code, resp.value.connectToken.bindingPhone)).then(response => {
             if (response.value.error && response.value.error.status > 300) {
                 toastr.error('Error', response.value.error.details[0].messages[0].message);
             } else {
