@@ -103,7 +103,7 @@ const BusinessInfo = ({ }) => {
         }
         dispatch(loadConnectedTotal(jsonData)).then(resp => {
             console.log('..get total ..' + JSON.stringify(resp));
-            setTotalConnected(resp.value.value[0].iCount);
+            setTotalConnected(parseInt(resp.value.value[0].iCount) + parseInt(resp.value.value2[0].iCount));
         }).catch(error => {
 
         });

@@ -62,7 +62,7 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
                                         cb(email, true)
                                     }>
                                     Change Location
-                                </Button> : <Button
+                                </Button> : property.usuage === 1 ? null : <Button
                                     color={'primary'}
                                     size={'sm'}
                                     onClick={() =>

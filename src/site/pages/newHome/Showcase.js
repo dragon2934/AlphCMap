@@ -118,7 +118,7 @@ class Showcase extends Component {
         if (property.usuage && parseInt(property.usuage) === 2) {
             utilsData.selectedProperty = property;
             utilsData.showBusinessInfo = true;
-
+            utilsData.fncCallback = this.cbBusinessInfoCallBack;
             this.setState({
                 showBusinessInfo: true,
             });
@@ -289,9 +289,10 @@ class Showcase extends Component {
             if (user !== null && user !== undefined) {
                 showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, false, user);
                 showPrimaryDistancesOnMap(map, convertedProperties, user);
+                showHomeAndBusinessOnMap(map, convertedProperties, user);
             } else {
                 showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, false, user);
-                // showPrimaryDistancesOnMap(map, convertedProperties);
+
             }
 
         } catch (e) {
@@ -473,8 +474,9 @@ class Showcase extends Component {
             const { auth } = this.props;
             const user = auth.user;
             showPropertiesOnMap(map, properties, this.renderPropertiesTooltip, false, user);
-            // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
+
             showPrimaryDistancesOnMap(map, properties, user);
+            showHomeAndBusinessOnMap(map, properties, user);
         } catch (e) {
 
             console.log('...remove property error...' + JSON.stringify(e));
@@ -928,7 +930,7 @@ class Showcase extends Component {
                 });
             } else {
                 // get me and reload to refresh data
-                getMe().then(resp => {
+                getMe(loginType).then(resp => {
                     location.reload()
                 }).catch(error => {
                     toastr.error('Error', "Get information error!");
@@ -1372,7 +1374,7 @@ const mapDispatchToProps = (dispatch) => ({
     saveBatchProperties: (data) => dispatch(saveBatchProperties(data)),
     deleteUserAdditionalAddressById: (propertyId) => dispatch(deleteUserAdditionalAddressById(propertyId)),
     checkBusinessProfile: () => dispatch(checkBusinessProfile()),
-    getMe: () => dispatch(getMe()),
+    getMe: (loginType) => dispatch(getMe(loginType)),
 });
 
 export default connect(

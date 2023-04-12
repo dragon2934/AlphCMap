@@ -24,6 +24,7 @@ import MapContext from '../../../common/contexts/MapContext/MapContext';
 import { additionalPropertySchema } from '../../../common/validation/propertySchema';
 import {
     getUserProperty,
+    getUserPropertyById,
     saveUserProperty,
 } from '../../../redux/actionCreators/appActionCreators';
 import {
@@ -33,18 +34,20 @@ import {
 } from '../../../utils/propertyUtils';
 import Footer from '../newHome/Footer';
 import Header from '../newHome/Header';
+import { getLoginType } from '../../../utils/utils';
+import { getMe } from '../../../redux/actionCreators/authActionCreators';
 
 const EditProperty = () => {
     const [searchText, setSearchText] = useState('');
     const [searching, setSearching] = useState(false);
 
-    const currentUser = useSelector((state) => state.auth.me);
+    const currentUser = useSelector((state) => state.auth.user);
     if (!currentUser.primaryHolder) {
         toastr.warning('Warning', 'Only Primary Holder can edit this address');
     }
 
 
-    const { id: propertyId } = useSelector((state) => state.auth.me.property);
+    const { id: propertyId } = useSelector((state) => state.auth.user.property);
     const dispatch = useDispatch();
 
     const { map } = useContext(MapContext);
@@ -90,6 +93,7 @@ const EditProperty = () => {
             }
 
             const property = {
+                propertyId: propertyId,
                 ...values,
             };
 
@@ -108,9 +112,15 @@ const EditProperty = () => {
                         'Successful!',
                         'New location is successfully.',
                     );
-                    setTimeout(() => {
-                        history.push('/');
-                    }, 1000);
+                    //update address
+                    const loginType = getLoginType();
+                    dispatch(getMe(loginType)).then(resp => {
+                        setTimeout(() => {
+                            history.push('/');
+                        }, 1000);
+                    });
+
+
                 }
             });
         },
@@ -189,7 +199,8 @@ const EditProperty = () => {
     );
 
     useEffect(() => {
-        dispatch(getUserProperty()).then(({ value: property }) => {
+        // const loginType = getLoginType();
+        dispatch(getUserPropertyById(propertyId)).then(({ value: property }) => {
             setValues({
                 ...property,
                 ...property.location,

@@ -9,13 +9,14 @@ import {
     AUTH_GET_ME
 } from '../actionTypes';
 import md5 from 'md5';
-export const loginUser = (identifier, password) => {
+export const loginUser = (identifier, password, loginAs) => {
     return {
         type: AUTH_LOGIN,
         payload: fetch(`${SERVICE_URL}/public/login?tenant=${PARTNER_TOKEN}`, {
             body: JSON.stringify({
                 identifier,
                 password,
+                loginAs
             }),
             headers: {
                 Accept: 'application/json',
@@ -153,13 +154,13 @@ export const verifyResetPassword = (mobileNumber, mobileVerificationCode) => {
         });
     };
 };
-export const getMe = () => {
+export const getMe = (loginType) => {
     return (dispatch, getState) => {
         let token = getState().auth.jwt;
         console.log('..get me..token..' + token);
         return dispatch({
             type: AUTH_GET_ME,
-            payload: fetch(`${SERVICE_URL}/users/me?populate=*`, {
+            payload: fetch(`${SERVICE_URL}/residents/get-me?loginType=` + loginType, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',

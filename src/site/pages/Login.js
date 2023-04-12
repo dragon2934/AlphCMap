@@ -44,13 +44,13 @@ const Login = ({ history }) => {
         onSubmit: (values, { setSubmitting }) => {
             setError(null);
             setSubmitting(true);
-            dispatch(loginUser(values.email, values.password))
+            dispatch(loginUser(values.email, values.password, loginAs))
                 .then((response) => {
                     if (response.value.error && response.value.error.status > 300) {
                         toastr.error('Error', response.value.error.details[0].messages[0].message);
                     } else {
                         console.log('..start get me');
-                        dispatch(getMe()).then(resp => {
+                        dispatch(getMe(loginAs)).then(resp => {
                             history.push('/');
                         }).catch(error => {
                             toastr.error('Error', "Mobile Or Password doesn't match, Please verify!");

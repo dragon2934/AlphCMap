@@ -343,13 +343,13 @@ export const getUserPropertyById = (id) => {
         });
     };
 };
-export const getUserProperty = () => {
+export const getUserProperty = (loginType) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
 
         return dispatch({
             type: GET_USER_PROPERTY,
-            payload: fetch(`${SERVICE_URL}/residents/property/get`, {
+            payload: fetch(`${SERVICE_URL}/residents/property/get?loginType=` + loginType, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
