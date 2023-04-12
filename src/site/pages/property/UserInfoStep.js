@@ -105,7 +105,7 @@ const UserInfoStep = ({ wizardInstance }) => {
 
             dispatch(registerUser(newUser))
                 .then(() => {
-                    dispatch(getMe()).then(resp => {
+                    dispatch(getMe(2)).then(resp => {
                         console.log('.get me.resp..' + JSON.stringify(resp));
                         dispatch(
                             setPropertyRegistrationForm({
