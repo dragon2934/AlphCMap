@@ -40,7 +40,7 @@ const EmailVerification = ({ currentUser }) => {
         setPendingVerify(true);
         dispatch(
             verifyAccount({
-                userId: user.mobileNumber,
+                userId: user.id,
                 emailVerificationCode: verificationCode,
             }),
         )
