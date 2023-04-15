@@ -1,5 +1,5 @@
 import { useFormik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     Button,
@@ -154,7 +154,21 @@ const UserInfoStep = ({ wizardInstance }) => {
         setFieldValue,
         setFieldTouched,
     } = formik;
-
+    const [eye, seteye] = useState(true);
+    const [password, setpassword] = useState("password");
+    const [type, settype] = useState(false);
+    const Eye = () => {
+        if (password == "password") {
+            setpassword("text");
+            seteye(false);
+            settype(true);
+        }
+        else {
+            setpassword("password");
+            seteye(true);
+            settype(false);
+        }
+    }
     return (
         <Form onSubmit={handleSubmit}>
             <Col>
@@ -218,10 +232,10 @@ const UserInfoStep = ({ wizardInstance }) => {
                 </FormGroup>
             </Col>
             <Col>
-                <FormGroup>
+                <FormGroup className='passwordFormGroup'>
                     <Label for="password">Password</Label>
                     <Input
-                        type="password"
+                        type={password}
                         name="password"
                         id="password"
                         value={values.password}
@@ -229,17 +243,17 @@ const UserInfoStep = ({ wizardInstance }) => {
                         onBlur={handleBlur}
                         invalid={touched.password && errors.password}
                         placeholder="********"
-                    />
+                    /><i onClick={Eye} className={`fa ${eye ? "fa-eye-slash" : "fa-eye"}`}></i>
                     <FormFeedback>{errors.password}</FormFeedback>
                 </FormGroup>
             </Col>
             <Col>
-                <FormGroup>
+                <FormGroup className='passwordFormGroup'>
                     <Label for="passwordConfirmation">
                         Password Confirmation
                     </Label>
                     <Input
-                        type="password"
+                        type={password}
                         name="passwordConfirmation"
                         id="passwordConfirmation"
                         value={values.passwordConfirmation}
@@ -250,7 +264,7 @@ const UserInfoStep = ({ wizardInstance }) => {
                             errors.passwordConfirmation
                         }
                         placeholder="********"
-                    />
+                    /><i onClick={Eye} className={`fa ${eye ? "fa-eye-slash" : "fa-eye"}`}></i>
                     <FormFeedback>{errors.passwordConfirmation}</FormFeedback>
                 </FormGroup>
             </Col>

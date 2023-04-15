@@ -103,7 +103,7 @@ const BusinessInfo = ({ }) => {
         }
         dispatch(loadConnectedTotal(jsonData)).then(resp => {
             console.log('..get total ..' + JSON.stringify(resp));
-            setTotalConnected(parseInt(resp.value.value[0].iCount) + parseInt(resp.value.value2[0].iCount));
+            setTotalConnected(parseInt(resp.value.value[0].iCount) + parseInt(resp.value.value2.iCount));
         }).catch(error => {
 
         });
@@ -195,7 +195,7 @@ const BusinessInfo = ({ }) => {
                                 <Row>   <Col><i className="fa-solid fa-globe"></i> <a href={companyProfile.website} className='business_link'>Company Website</a>  </Col> </Row>
                                 {totalConnected ? <Row>   <Col>Connected: {totalConnected} </Col> </Row> : null}
                                 <Row>   <Col><i className="fa-solid fa-globe"></i> <a className='business_link' href={shareUrl} target="_blank"> Business Link </a> </Col> </Row>
-                                {/* {property.binding_email && property.binding_email !== null && property.binding_email !== 'null' ? <Row>   <Col><i className="fa-solid fa-envelope"></i> {property.binding_email} </Col> </Row> : null} */}
+                                {property.email && property.email !== null && property.email !== 'null' ? <Row>   <Col><i className="fa-solid fa-envelope"></i> {property.email + '@' + companyProfile.companyName + '.com'} </Col> </Row> : null}
                                 <Row>
                                     <Col> <hr /></Col>
 

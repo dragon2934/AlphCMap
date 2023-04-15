@@ -2508,3 +2508,23 @@ a.business_link:visited {
   background-color: white;
   color: black;
 }
+
+.fa-eye-slash,
+.fa-eye {
+  position: absolute;
+  right: 30px;
+  top: 40px;
+  font-size: 20px !important;
+  cursor: pointer;
+  z-index: 99999;
+  color: black;
+}
+
+.fa {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

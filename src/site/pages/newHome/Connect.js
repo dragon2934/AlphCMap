@@ -220,6 +220,21 @@ const Connect = ({ match }) => {
                 // setSubmitting(false);
             });
     }
+    const [eye, seteye] = useState(true);
+    const [password, setpassword] = useState("password");
+    const [type, settype] = useState(false);
+    const Eye = () => {
+        if (password == "password") {
+            setpassword("text");
+            seteye(false);
+            settype(true);
+        }
+        else {
+            setpassword("password");
+            seteye(true);
+            settype(false);
+        }
+    }
     return !loading && (
         <Col md={12} sm={12} xs={12} className="overlay-form-container">
             <Link to={'/'}>
@@ -421,14 +436,15 @@ const Connect = ({ match }) => {
                                                     value={values.email}
                                                     invalid={touched.email && errors.email}
                                                 />
+
                                                 <FormFeedback>{errors.email}</FormFeedback>
                                             </FormGroup>
                                         </Col>
                                         <Col>
-                                            <FormGroup>
+                                            <FormGroup className='passwordFormGroup'>
                                                 <Label for="password">Password</Label>
                                                 <Input
-                                                    type="password"
+                                                    type={password}
                                                     name="password"
                                                     id="password"
                                                     onChange={handleChange}
@@ -437,7 +453,7 @@ const Connect = ({ match }) => {
                                                         touched.password && errors.password
                                                     }
                                                     placeholder="********"
-                                                />
+                                                /> <i onClick={Eye} className={`fa ${eye ? "fa-eye-slash" : "fa-eye"}`}></i>
                                                 <FormFeedback>
                                                     {errors.password}
                                                 </FormFeedback>
@@ -475,112 +491,128 @@ const Connect = ({ match }) => {
                             <CTabPane role="tabpanel" data-tab="register" aria-labelledby="home-tab" visible={activeKey === 2} >
                                 <div className='register-form'>
                                     <Form onSubmit={handleSubmit}>
+                                        <Col>
+                                            <FormGroup>
+                                                <Label for="email">Mobile Number</Label>
+                                                <Input
+                                                    setFieldValue={setFieldValue}
+                                                    setFieldTouched={setFieldTouched}
+                                                    placeholder="Mobile Number"
+                                                    name={'email'}
+                                                    value={values.email}
+                                                    invalid={touched.email && errors.email}
+                                                />
+                                                <FormFeedback>{errors.email}</FormFeedback>
+                                            </FormGroup>
+                                        </Col>
+                                        <Col>
+                                            <FormGroup>
+                                                <Row>
+                                                    <Col md={8}>
+                                                        <FormGroup className="passwordFormGroup">
+                                                            <Label for="password">Verify Code</Label>
+                                                            <Input
+                                                                setFieldValue={setFieldValue}
+                                                                setFieldTouched={setFieldTouched}
+                                                                onChange={handleChange}
+                                                                onBlur={handleBlur}
+                                                                placeholder="Verify Code"
+                                                                name={'verifyCode'}
+                                                                value={values.verifyCode}
+                                                                invalid={touched.verifyCode && errors.verifyCode}
+                                                            />
+                                                            <FormFeedback>{errors.verifyCode}</FormFeedback>
+                                                        </FormGroup>
+                                                    </Col><Col md={4} className='mt-4' style={{ paddingTop: "6px" }}>
+                                                        <Button
+                                                            onClick={(e) => getVerifyCode(e)}
+                                                            className='active'
+                                                            outline
+                                                        >
+                                                            Get Code
+                                                        </Button>
+                                                    </Col>
+                                                </Row>
 
-                                        <FormGroup>
-                                            <Label for="email">Mobile Number</Label>
-                                            <Input
-                                                setFieldValue={setFieldValue}
-                                                setFieldTouched={setFieldTouched}
-                                                placeholder="Mobile Number"
-                                                name={'email'}
-                                                value={values.email}
-                                                invalid={touched.email && errors.email}
-                                            />
-                                            <FormFeedback>{errors.email}</FormFeedback>
-                                        </FormGroup>
-                                        <FormGroup>
-                                            <Row>
-                                                <Col md={8}>
+
+                                            </FormGroup>
+                                        </Col>
+                                        <Col>
+                                            <FormGroup className="passwordFormGroup">
+                                                <Label for="password">Password</Label>
+                                                <Input
+                                                    type={password}
+                                                    placeholder="Password"
+                                                    name={'password'}
+                                                    value={values.password}
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                    invalid={touched.password && errors.password}
+                                                /> <i onClick={Eye} className={`fa ${eye ? "fa-eye-slash" : "fa-eye"}`}></i>
+                                                <FormFeedback>{errors.password}</FormFeedback>
+                                            </FormGroup>
+                                        </Col>
+                                        <Col>
+                                            <FormGroup className="passwordFormGroup">
+                                                <Label for="password">Confirm Password</Label>
+                                                <Input
+                                                    type={password}
+                                                    placeholder="Password Confirmation"
+                                                    name={'passwordConfirmation'}
+                                                    value={values.passwordConfirmation}
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                    invalid={
+                                                        touched.passwordConfirmation &&
+                                                        errors.passwordConfirmation
+                                                    }
+                                                /> <i onClick={Eye} className={`fa ${eye ? "fa-eye-slash" : "fa-eye"}`}></i>
+                                                <FormFeedback>
+                                                    {errors.passwordConfirmation}
+                                                </FormFeedback>
+                                            </FormGroup>
+                                        </Col>
+                                        <Col>
+                                            <InputGroup className='mb-3'>
+                                                <Label check style={{ marginLeft: "20px" }}>
                                                     <Input
-                                                        setFieldValue={setFieldValue}
-                                                        setFieldTouched={setFieldTouched}
-                                                        onChange={handleChange}
+                                                        type="checkbox"
+                                                        name="consent"
+                                                        onChange={(e) => {
+                                                            setFieldTouched('consent');
+                                                            setFieldValue(
+                                                                'consent',
+                                                                e.currentTarget.checked,
+                                                            );
+                                                        }}
+                                                        checked={values.consent}
                                                         onBlur={handleBlur}
-                                                        placeholder="Verify Code"
-                                                        name={'verifyCode'}
-                                                        value={values.verifyCode}
-                                                        invalid={touched.verifyCode && errors.verifyCode}
+                                                        invalid={touched.consent && errors.consent}
                                                     />
-                                                    <FormFeedback>{errors.verifyCode}</FormFeedback>
-                                                </Col><Col md={4}>
+                                                    I've read{' '}
+                                                    <a target={'_blank'} href="/privacy-policy">Privacy Policy</a> and{' '}
+                                                    <a target={'_blank'} href="/terms-of-use">Terms of Use</a>.
+                                                </Label>
+                                            </InputGroup>
+                                        </Col>
+                                        <Col>
+                                            <Row className="contact-us-submit-container">
+                                                <Col>
                                                     <Button
-                                                        onClick={(e) => getVerifyCode(e)}
-
+                                                        onClick={(e) => confirmConnect(e)}
+                                                        block
+                                                        disabled={isSubmitting}
                                                         outline
-                                                    >
-                                                        Get Code
+                                                        className="float-right my-3">
+                                                        {isSubmitting ? (
+                                                            <Spinner size="sm" />
+                                                        ) : (
+                                                            'Register and Connect'
+                                                        )}
                                                     </Button>
                                                 </Col>
                                             </Row>
-
-
-                                        </FormGroup>
-                                        <InputGroup className="mb-3">
-                                            <Input
-                                                type="password"
-                                                placeholder="Password"
-                                                name={'password'}
-                                                value={values.password}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                invalid={touched.password && errors.password}
-                                            />
-                                            <FormFeedback>{errors.password}</FormFeedback>
-                                        </InputGroup>
-                                        <InputGroup className="mb-3">
-                                            <Input
-                                                type="password"
-                                                placeholder="Password Confirmation"
-                                                name={'passwordConfirmation'}
-                                                value={values.passwordConfirmation}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                invalid={
-                                                    touched.passwordConfirmation &&
-                                                    errors.passwordConfirmation
-                                                }
-                                            />
-                                            <FormFeedback>
-                                                {errors.passwordConfirmation}
-                                            </FormFeedback>
-                                        </InputGroup>
-                                        <InputGroup className='mb-3'>
-                                            <Label check style={{ marginLeft: "20px" }}>
-                                                <Input
-                                                    type="checkbox"
-                                                    name="consent"
-                                                    onChange={(e) => {
-                                                        setFieldTouched('consent');
-                                                        setFieldValue(
-                                                            'consent',
-                                                            e.currentTarget.checked,
-                                                        );
-                                                    }}
-                                                    checked={values.consent}
-                                                    onBlur={handleBlur}
-                                                    invalid={touched.consent && errors.consent}
-                                                />
-                                                I've read{' '}
-                                                <a target={'_blank'} href="/privacy-policy">Privacy Policy</a> and{' '}
-                                                <a target={'_blank'} href="/terms-of-use">Terms of Use</a>.
-                                            </Label>
-                                        </InputGroup>
-                                        <Row className="contact-us-submit-container">
-                                            <Col>
-                                                <Button
-                                                    onClick={(e) => confirmConnect(e)}
-                                                    block
-                                                    disabled={isSubmitting}
-                                                    outline
-                                                    className="float-right my-3">
-                                                    {isSubmitting ? (
-                                                        <Spinner size="sm" />
-                                                    ) : (
-                                                        'Register and Connect'
-                                                    )}
-                                                </Button>
-                                            </Col>
-                                        </Row>
+                                        </Col>
                                     </Form>
                                 </div>
                             </CTabPane>

@@ -35,6 +35,23 @@ const Login = ({ history }) => {
     const [error, setError] = useState(null);
     const [loginAs, setLoginAs] = useState(1);
 
+    const [txtPassword, setTxtPassword] = React.useState({
+        password: "",
+        showPassword: false,
+    });
+
+    const handleClickShowPassword = () => {
+        setValues({ ...valutxtPasswordes, showPassword: !txtPassword.showPassword });
+    };
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+
+    const handlePasswordChange = (prop) => (event) => {
+        setValues({ ...values, [prop]: event.target.value });
+    };
+
     const formik = useFormik({
         initialValues: {
             email: 'test@nyzsoft.com',
@@ -92,6 +109,21 @@ const Login = ({ history }) => {
         setLoginAs(2);
         handleSubmit();
     }
+    const Eye = () => {
+        if (password == "password") {
+            setpassword("text");
+            seteye(false);
+            settype(true);
+        }
+        else {
+            setpassword("password");
+            seteye(true);
+            settype(false);
+        }
+    }
+    const [eye, seteye] = useState(true);
+    const [password, setpassword] = useState("password");
+    const [type, settype] = useState(false);
     return (
         <HomeLayout>
             <Row noGutters className="login-container">
@@ -134,10 +166,11 @@ const Login = ({ history }) => {
                                 </FormGroup>
                             </Col>
                             <Col>
-                                <FormGroup>
+                                <FormGroup className='passwordFormGroup'>
                                     <Label for="password">Password</Label>
+
                                     <Input
-                                        type="password"
+                                        type={password}
                                         name="password"
                                         id="password"
                                         onChange={handleChange}
@@ -146,7 +179,10 @@ const Login = ({ history }) => {
                                             touched.password && errors.password
                                         }
                                         placeholder="********"
+
                                     />
+                                    <i onClick={Eye} className={`fa ${eye ? "fa-eye-slash" : "fa-eye"}`}></i>
+
                                     <FormFeedback>
                                         {errors.password}
                                     </FormFeedback>

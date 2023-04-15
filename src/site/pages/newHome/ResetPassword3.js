@@ -1,5 +1,5 @@
 import { useFormik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { toastr } from 'react-redux-toastr';
 import {
@@ -9,9 +9,10 @@ import {
     Form,
     FormFeedback,
     Input,
-    InputGroup,
+    FormGroup,
     Row,
     Spinner,
+    Label
 } from 'reactstrap';
 import * as Yup from 'yup';
 import { iOSChangePassword } from '../../../redux/actionCreators/authActionCreators';
@@ -72,7 +73,21 @@ const ResetPassword3 = ({
         isValid,
         isSubmitting,
     } = formik;
-
+    const [eye, seteye] = useState(true);
+    const [password, setpassword] = useState("password");
+    const [type, settype] = useState(false);
+    const Eye = () => {
+        if (password == "password") {
+            setpassword("text");
+            seteye(false);
+            settype(true);
+        }
+        else {
+            setpassword("password");
+            seteye(true);
+            settype(false);
+        }
+    }
     return (
         <main>
             <Header />
@@ -82,51 +97,61 @@ const ResetPassword3 = ({
                         <Col>Change Password</Col>
                     </Row>
                     <Form onSubmit={handleSubmit}>
-                        <InputGroup className="mb-3">
-                            <Input
-                                type="password"
-                                placeholder="Password"
-                                name={'password'}
-                                value={values.password}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                invalid={touched.password && errors.password}
-                            />
-                            <FormFeedback>{errors.password}</FormFeedback>
-                        </InputGroup>
-                        <InputGroup className="mb-3">
-                            <Input
-                                type="password"
-                                placeholder="Password Confirmation"
-                                name={'passwordConfirmation'}
-                                value={values.passwordConfirmation}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                invalid={
-                                    touched.passwordConfirmation &&
-                                    errors.passwordConfirmation
-                                }
-                            />
-                            <FormFeedback>
-                                {errors.passwordConfirmation}
-                            </FormFeedback>
-                        </InputGroup>
-                        <Row className="contact-us-submit-container">
-                            <Col>
-                                <Button
-                                    type={'submit'}
-                                    block
-                                    disabled={isSubmitting}
-                                    outline
-                                    className="float-right my-3">
-                                    {isSubmitting ? (
-                                        <Spinner size="sm" />
-                                    ) : (
-                                        'Submit'
-                                    )}
-                                </Button>
-                            </Col>
-                        </Row>
+                        <Col>
+                            <FormGroup className='passwordFormGroup'>
+                                <Label for="password">Password</Label>
+
+                                <Input
+                                    type={password}
+                                    placeholder="Password"
+                                    name={'password'}
+                                    value={values.password}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    invalid={touched.password && errors.password}
+                                /><i onClick={Eye} className={`fa ${eye ? "fa-eye-slash" : "fa-eye"}`}></i>
+                                <FormFeedback>{errors.password}</FormFeedback>
+                            </FormGroup>
+                        </Col>
+                        <Col>
+                            <FormGroup className='passwordFormGroup'>
+                                <Label for="password">Password</Label>
+
+                                <Input
+                                    type={password}
+                                    placeholder="Password Confirmation"
+                                    name={'passwordConfirmation'}
+                                    value={values.passwordConfirmation}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    invalid={
+                                        touched.passwordConfirmation &&
+                                        errors.passwordConfirmation
+                                    }
+                                /><i onClick={Eye} className={`fa ${eye ? "fa-eye-slash" : "fa-eye"}`}></i>
+                                <FormFeedback>
+                                    {errors.passwordConfirmation}
+                                </FormFeedback>
+                            </FormGroup>
+                        </Col>
+                        <Col>
+                            <Row className="contact-us-submit-container">
+                                <Col>
+                                    <Button
+                                        type={'submit'}
+                                        block
+                                        disabled={isSubmitting}
+                                        outline
+                                        className="float-right my-3">
+                                        {isSubmitting ? (
+                                            <Spinner size="sm" />
+                                        ) : (
+                                            'Submit'
+                                        )}
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Col>
                     </Form>
                 </Container>
             </div>
