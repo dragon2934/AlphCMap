@@ -55,7 +55,7 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
                                     }>
                                     Color
                                 </Button> &nbsp;&nbsp;&nbsp;&nbsp; */}
-                                {property.ownerMobileNumber === user.mobileNumber ? property.primaryAddress ? <Button
+                                {property.primaryAddress ? <Button
                                     color={'primary'}
                                     size={'sm'}
                                     onClick={() =>
@@ -69,7 +69,7 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
                                         cb(email, false)
                                     }>
                                     Remove
-                                </Button> : null
+                                </Button>
                                 }
                             </li>
                         </Col>
