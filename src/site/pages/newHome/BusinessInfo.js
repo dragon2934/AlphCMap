@@ -172,6 +172,22 @@ const BusinessInfo = ({ }) => {
     const shareUrl = "https://alphcmap.com/business-portal/" + property.id;
     const title = "";
     const domain = localStorage.getItem("current_domain");
+    const cbSendEmail = (e, property) => {
+        // const { utilsData } = this.props;
+        utilsData.drawFinished = true;
+        const data = [];
+        data.push({
+            properties: property
+        });
+        utilsData.selectedProperty = data;
+        utilsData.showBusinessInfo = false;
+        dispatch(cancelShowBusinessInfo());
+        // dispatch()
+
+        // this.setState({
+        //     selectedProperties: data,
+        // });
+    }
     return (
         <Col md={3} sm={12} xs={12} className="overlay-form-container">
             <Link to={'/'}>
@@ -196,7 +212,11 @@ const BusinessInfo = ({ }) => {
                                 <Row>   <Col><i className="fa-solid fa-globe"></i> <a href={companyProfile.website} className='business_link'>Company Website</a>  </Col> </Row>
                                 {totalConnected ? <Row>   <Col>Connected: {totalConnected} </Col> </Row> : null}
                                 <Row>   <Col><i className="fa-solid fa-globe"></i> <a className='business_link' href={shareUrl} target="_blank"> Business Link </a> </Col> </Row>
-                                {property.email && property.email !== null && property.email !== 'null' ? <Row>   <Col><i className="fa-solid fa-envelope"></i> {property.email + '@' + companyProfile.companyName + '.com'} </Col> </Row> : null}
+                                {property.email && property.email !== null && property.email !== 'null' ? <Row>
+                                    <Col><i className="fa-solid fa-envelope"></i> {property.email + '@' + companyProfile.companyName + '.com'}
+                                        {property.connected === "1" ? <Button size={'sm'} onClick={(e) => cbSendEmail(e, property)} >Send Email</Button> : null}
+                                    </Col>
+                                </Row> : null}
                                 <Row>
                                     <Col> <hr /></Col>
 

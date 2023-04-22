@@ -1335,3 +1335,30 @@ export const checkBusinessProfile = () => {
         });
     };
 };
+export const sendPasswordBeforeDeleteAccount = () => {
+
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_CHECK_BUSINESS_PROFILE,
+            payload: fetch(`${SERVICE_URL}/residents/send-password-before-delete-account`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+                body: JSON.stringify({})
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+

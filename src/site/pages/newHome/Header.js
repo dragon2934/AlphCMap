@@ -19,7 +19,7 @@ import { deleteAccount } from '../../../redux/actionCreators/appActionCreators';
 import { logoutUser } from '../../../redux/actionCreators/authActionCreators';
 import { toastr } from 'react-redux-toastr';
 import { getLoginType, setLoginType, clearLoginType } from '../../../utils/utils';
-import { loadConnectedTotal } from '../../../redux/actionCreators/adminActionCreators';
+import { loadConnectedTotal, sendPasswordBeforeDeleteAccount } from '../../../redux/actionCreators/adminActionCreators';
 // import { useMitt } from 'react-mitt'
 import EventBus from '../../../utils/eventBus';
 
@@ -136,21 +136,28 @@ const Header = () => {
 
     });
     const onClickDeleteAccount = useCallback(() => {
-        dispatch(deleteAccount()).then(({ value: retObj }) => {
-            console.log('....delete acount return...' + JSON.stringify(retObj));
-            clearLoginType();
-            if (retObj.status === 'successed') {
-                dispatch(logoutUser()).then(() => {
-                    // history.push('/');
-                    localStorage.removeItem("current_domain");
-                    setTimeout(() => {
-                        location.reload(true);
-                    }, 500);
 
+        dispatch(sendPasswordBeforeDeleteAccount()).then(({ value: retObj }) => {
+            console.log('..retObj..' + JSON.stringify(retObj));
+            const token = prompt('Please enter the verify code from your e-mail');
+            if (token) {
+                dispatch(deleteAccount(token)).then(({ value: retObj }) => {
+                    console.log('....delete acount return...' + JSON.stringify(retObj));
+                    clearLoginType();
+                    if (retObj.status === 'successed') {
+                        dispatch(logoutUser()).then(() => {
+                            // history.push('/');
+                            localStorage.removeItem("current_domain");
+                            setTimeout(() => {
+                                location.reload(true);
+                            }, 500);
+
+                        });
+                    } else {
+                        console.log('error message:' + retObj.message);
+                        toastr.error('Error !', retObj.error.details[0].messages[0].message);
+                    }
                 });
-            } else {
-                console.log('error message:' + retObj.message);
-                toastr.error('Error !', retObj.message);
             }
         });
     }, [dispatch, history]);

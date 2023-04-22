@@ -614,6 +614,7 @@ class Showcase extends Component {
     };
 
 
+
     createMarker = async ({ latitude, longitude }) => {
         // const {domain} = this.state;
         const { map } = this.context;
@@ -681,8 +682,8 @@ class Showcase extends Component {
                             <li>
                                 {/* <Button
                                     size={'sm'}
-                                    onClick={() => this.changeColor(email)}>
-                                    Color
+                                    onClick={() => this.addUnitNumber(email)}>
+                                    Add Unit #
                                 </Button>
                                 &nbsp;&nbsp;&nbsp;&nbsp; */}
                                 <Button
@@ -798,6 +799,26 @@ class Showcase extends Component {
             clearLayer(map, tobeDelete[0].layerId);
         }
 
+    }
+    addUnitNumber = (email) => {
+        const unitNumber = prompt("Please enter unit number", "");
+        if (unitNumber) {
+            //change property address
+            const { selectedAddress, properties, pins, } = this.state;
+            const currentPin = pins.filter(item => item.email === email);
+            console.log('..selectedAddress..' + JSON.stringify(selectedAddress));
+            selectedAddress.unitNo = unitNumber;
+            const emailDisplay = generateEmail(selectedAddress);
+            console.log('..emailDisplay..' + emailDisplay);
+            selectedAddress.email = emailDisplay;
+            currentPin[0].email = emailDisplay;
+            this.setState({
+                selectedAddress: selectedAddress,
+                pins: pins
+            });
+
+
+        }
     }
     addAddress = (usuage) => {
         const { selectedAddress, email, properties, pins, layerAdded, has2Address } = this.state;

@@ -97,7 +97,7 @@ export const cancelShowBusinessInfo = () => {
     };
 }
 
-export const deleteAccount = () => {
+export const deleteAccount = (verifyCode) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
 
@@ -109,7 +109,10 @@ export const deleteAccount = () => {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-                method: 'DELETE',
+                body: JSON.stringify({
+                    verifyCode: verifyCode
+                }),
+                method: 'POST',
             })
                 .then((r) => r.json())
                 .then((responseData) => {
