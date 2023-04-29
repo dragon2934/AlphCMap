@@ -96,7 +96,7 @@ const BindingForm = ({ callback }) => {
 
                     <Col style={{ textAlign: "left" }}>
                         <FormGroup tag="fieldset">
-                            {/* <FormGroup>
+                            <FormGroup>
                                 <Label for="lblPropertyName">Unit # &nbsp;&nbsp;</Label>
                                 <Input
                                     type="text"
@@ -107,7 +107,7 @@ const BindingForm = ({ callback }) => {
                                     invalid={touched.bindingUnitNum && errors.bindinbindingUnitNumgName}
                                 />
                                 <FormFeedback>{errors.bindingUnitNum}</FormFeedback>
-                            </FormGroup> */}
+                            </FormGroup>
                             <FormGroup>
                                 <Label for="lblPropertyName">Name &nbsp;&nbsp;<span className="item_required">*</span></Label>
                                 <Input

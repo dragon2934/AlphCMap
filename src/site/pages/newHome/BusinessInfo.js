@@ -202,7 +202,7 @@ const BusinessInfo = ({ }) => {
 
                 <Col style={{ textAlign: "left" }}>
                     {
-                        companyProfile && (
+                        companyProfile ?
                             <>
 
                                 <Row>
@@ -214,7 +214,7 @@ const BusinessInfo = ({ }) => {
                                 <Row>   <Col><i className="fa-solid fa-globe"></i> <a className='business_link' href={shareUrl} target="_blank"> Business Link </a> </Col> </Row>
                                 {property.email && property.email !== null && property.email !== 'null' ? <Row>
                                     <Col><i className="fa-solid fa-envelope"></i> {property.email + '@' + companyProfile.companyName + '.com'}
-                                        {property.connected === "1" ? <Button size={'sm'} onClick={(e) => cbSendEmail(e, property)} >Send Email</Button> : null}
+                                        {property.connected !== "1" || (user !== undefined && user.property !== undefined && property.id === user.property.id) ? null : <Button size={'sm'} onClick={(e) => cbSendEmail(e, property)} >Send Email</Button>}
                                     </Col>
                                 </Row> : null}
                                 <Row>
@@ -341,7 +341,12 @@ const BusinessInfo = ({ }) => {
 
                                 </Row>
                             </>
-                        )
+                            : <>
+                                <Row>
+                                    <Col> Profile not setup yet! </Col>
+                                </Row>
+
+                            </>
                     }
 
                 </Col>
@@ -351,7 +356,7 @@ const BusinessInfo = ({ }) => {
             <Row>
                 {
                     user !== undefined && user.property !== undefined && property.id === user.property.id ? null :
-                        <Col>
+                        companyProfile ? <Col>
 
                             {property.connected === "1" ?
                                 <Button
@@ -369,7 +374,7 @@ const BusinessInfo = ({ }) => {
                                     Connect
                                 </Button>
                             }
-                        </Col>
+                        </Col> : null
                 }
                 <Col>
                     <Button
