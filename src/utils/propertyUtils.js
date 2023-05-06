@@ -38,7 +38,7 @@ export const generateEmail = ({
     region,
     province,
 }) => {
-    let components = [streetNumber, route, locality, city, country];
+    let components = [streetNumber, route, locality, city, postalCode];
 
     if (lotNo && plotNo) {
         components = [

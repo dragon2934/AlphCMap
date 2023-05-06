@@ -211,7 +211,7 @@ const BusinessInfo = ({ }) => {
                                 <Row>   <Col><i className="fa-solid fa-phone"></i> {companyProfile.phone} </Col> </Row>
                                 <Row>   <Col><i className="fa-solid fa-globe"></i> <a href={companyProfile.website} className='business_link'>Company Website</a>  </Col> </Row>
                                 {totalConnected ? <Row>   <Col>Connected: {totalConnected} </Col> </Row> : null}
-                                <Row>   <Col><i className="fa-solid fa-globe"></i> <a className='business_link' href={shareUrl} target="_blank"> Business Link </a> </Col> </Row>
+                                <Row>   <Col><i className="fa-solid fa-globe"></i> <a className='business_link' href={shareUrl} target="_blank"> {shareUrl}</a> </Col> </Row>
                                 {property.email && property.email !== null && property.email !== 'null' ? <Row>
                                     <Col><i className="fa-solid fa-envelope"></i> {property.email + '@' + companyProfile.companyName + '.com'}
                                         {property.connected !== "1" || (user !== undefined && user.property !== undefined && property.id === user.property.id) ? null : <Button size={'sm'} onClick={(e) => cbSendEmail(e, property)} >Send Email</Button>}

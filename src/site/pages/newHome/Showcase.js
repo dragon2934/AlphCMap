@@ -52,6 +52,7 @@ import { toastr } from 'react-redux-toastr';
 import { parseInt } from 'lodash-es';
 // import mitt from 'mitt';
 import EventBus from '../../../utils/eventBus';
+import ShowHighRiseInfo from './ShowHighRiseInfo';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_GL_ACCESS_TOKEN;
 
@@ -115,6 +116,7 @@ class Showcase extends Component {
         const { utilsData } = this.props;
         const { auth } = this.props;
         const user = auth.user;
+        console.log('...renderPropertiesTooltip..', property);
         if (property.usuage && parseInt(property.usuage) === 2) {
             utilsData.selectedProperty = property;
             utilsData.showBusinessInfo = true;
@@ -122,6 +124,14 @@ class Showcase extends Component {
             this.setState({
                 showBusinessInfo: true,
             });
+        } else if (parseInt(property.usuage) === 3 && property.settlement_type === 'highRise' && property.unit_no) {
+            utilsData.selectedProperty = property;
+            utilsData.showHighRiseInfo = true;
+            utilsData.fncCallback = this.cbBusinessInfoCallBack;
+            this.setState({
+                showBusinessInfo: true,
+            });
+
         } else {
             return <PropertiesTooltip email={email} id={id}
                 property={property} cb={this.removeProperty}
@@ -1296,11 +1306,19 @@ class Showcase extends Component {
                                     height={20}
                                 /> &nbsp;&nbsp;
                             </td>
-                            <td > Clients </td>
+                            <td > Connected Customer </td>
                             <td>
                                 <img
                                     alt={this.PropertyMarkerDescriptions[0].description}
                                     src={this.PropertyMarkerDescriptions[0].marker}
+                                    height={20}
+                                /> &nbsp;&nbsp;
+                            </td>
+                            <td > Unactivated </td>
+                            <td>
+                                <img
+                                    alt={this.PropertyMarkerDescriptions[2].description}
+                                    src={this.PropertyMarkerDescriptions[2].marker}
                                     height={20}
                                 /> &nbsp;&nbsp;
                             </td>
@@ -1368,6 +1386,7 @@ class Showcase extends Component {
             {utilsData.drawFinished && <FlyerForm />}
             {utilsData.showBusinessInfo && <BusinessInfo />}
             {utilsData.connectToMerchantId > 0 && <PropertyForm />}
+            {utilsData.showHighRiseInfo && <ShowHighRiseInfo />}
 
         </>
 

@@ -40,7 +40,8 @@ import {
     ADMIN_TOTAL_CONNECTED,
     ADMIN_CONFIRM_CONNECTION,
     ADMIN_GET_ADDRESS_BY_TYPE,
-    ADMIN_CHECK_BUSINESS_PROFILE
+    ADMIN_CHECK_BUSINESS_PROFILE,
+    ADMIN_GET_HIGHRISE_INFO
 } from '../actionTypes';
 
 import { getLoginType } from '../../utils/utils';
@@ -1361,4 +1362,28 @@ export const sendPasswordBeforeDeleteAccount = () => {
         });
     };
 };
+export const getHighRiseInfo = (email) => {
 
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_GET_HIGHRISE_INFO,
+            payload: fetch(`${SERVICE_URL}/residents/get-highrise-binding?email=` + email, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'GET',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
