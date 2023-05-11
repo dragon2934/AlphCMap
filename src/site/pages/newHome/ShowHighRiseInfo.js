@@ -52,7 +52,7 @@ const ShowHighRiseInfo = () => {
 
             <Row >
                 <Col style={{ textAlign: "left" }}>
-                    <h4> {property.street_number + property.route + ',' + property.locality} </h4>
+                    <h5> {property.street_number + ' ' + property.route + ' , ' + property.locality} </h5>
                     <CDataTable
                         items={bindingInfo}
                         loading={loading}
