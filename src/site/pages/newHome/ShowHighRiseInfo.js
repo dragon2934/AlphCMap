@@ -56,7 +56,8 @@ const ShowHighRiseInfo = () => {
                         items={bindingInfo}
                         loading={loading}
                         fields={[
-                            { key: 'binding_name', _classes: 'font-weight-bold', label: 'Name' },
+                            { key: 'binding_unit_num', _classes: 'font-weight-bold', label: 'Unit #' },
+                            { key: 'binding_name', label: 'Name' },
                             { key: 'binding_email', label: 'Email' },
                             { key: 'binding_phone', label: 'Phone' },
                             { key: 'binding_others', label: 'Others' },
