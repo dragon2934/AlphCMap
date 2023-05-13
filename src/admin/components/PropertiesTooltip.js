@@ -2,11 +2,13 @@ import { CButton } from '@coreui/react';
 import React from 'react';
 import { Button, Col, Row } from 'reactstrap';
 import { useSelector, useDispatch } from 'react-redux';
+import { getLoginType } from '../../utils/utils';
 
 const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbBinding, cbSendEmail, cbBusiness, user, cbBusinessInfo }) => {
     console.log('....render property..' + JSON.stringify(property))
     // const utilsData = useSelector((state) => state.utilsData);
 
+    const loginType = getLoginType();
     // console.log('..me..' + JSON.stringify(user));
     return (
         <>
@@ -47,7 +49,7 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
                                     }}>
                                     Info
                                 </Button> &nbsp;&nbsp;&nbsp;&nbsp;
-                                {property.usuage === 1 ? <Button
+                                {property.usuage === 1 && !property.primary ? <Button
                                     color={'danger'}
                                     size={'sm'}
                                     onClick={() =>
@@ -64,22 +66,15 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
                                     }>
                                     Color
                                 </Button> &nbsp;&nbsp;&nbsp;&nbsp; */}
-                                {property.primaryAddress ? <Button
+                                {/* {property.primary && loginType ? <Button
                                     color={'primary'}
                                     size={'sm'}
                                     onClick={() =>
                                         cb(email, true)
                                     }>
                                     Change Location
-                                </Button> : property.usuage === 1 ? null : <Button
-                                    color={'primary'}
-                                    size={'sm'}
-                                    onClick={() =>
-                                        cb(email, false)
-                                    }>
-                                    Remove
-                                </Button>
-                                }
+                                </Button> : null
+                                } */}
                             </li>
                         </Col>
                     </Row>
@@ -99,14 +94,7 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
                                 cbBusinessInfo(email, property);
                             }}>
                             Info
-                        </Button>  </> : property.usuage === 1 ? <Button
-                            size={'sm'}
-                            color={'danger'}
-                            onClick={() => {
-                                cb(email, false);
-                            }}>
-                            Remove
-                        </Button> : null}
+                        </Button>  </> : null}
         </>
     );
 };
