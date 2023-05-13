@@ -7,7 +7,7 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
     console.log('....render property..' + JSON.stringify(property))
     // const utilsData = useSelector((state) => state.utilsData);
 
-    console.log('..me..' + JSON.stringify(user));
+    // console.log('..me..' + JSON.stringify(user));
     return (
         <>
             <h4>{email}</h4>
@@ -47,6 +47,15 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
                                     }}>
                                     Info
                                 </Button> &nbsp;&nbsp;&nbsp;&nbsp;
+                                {property.usuage === 1 ? <Button
+                                    color={'danger'}
+                                    size={'sm'}
+                                    onClick={() =>
+                                        cb(email, false)
+                                    }>
+                                    Remove
+                                </Button> : null
+                                }
                                 {/* <Button
                                     color={'primary'}
                                     size={'sm'}
@@ -90,7 +99,14 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
                                 cbBusinessInfo(email, property);
                             }}>
                             Info
-                        </Button>  </> : null}
+                        </Button>  </> : property.usuage === 1 ? <Button
+                            size={'sm'}
+                            color={'danger'}
+                            onClick={() => {
+                                cb(email, false);
+                            }}>
+                            Remove
+                        </Button> : null}
         </>
     );
 };

@@ -353,6 +353,7 @@ export const showDistancesOnMap = (map, residents) => {
 
 export const clearDistancesFromMap = (map) => {
     clearLayer(map, 'resident-property-distances');
+    clearLayer(map, 'home-business-distances');
 };
 export const showSolidLineLayer = (
     map,

@@ -21,6 +21,8 @@ const ShowHighRiseInfo = () => {
     // const history = useHistory();
     // const [color, setColor] = useState('default');
     const property = utilsData.selectedProperty;
+    const user = useSelector((state) => state.auth.me);
+    // console.log('..current user..', user);
     const [bindingInfo, setBindingInfo] = useState([])
     const [loading, setLoading] = useState(true);
     useEffect(() => {
@@ -30,8 +32,21 @@ const ShowHighRiseInfo = () => {
         console.log('..email is..' + email)
 
         dispatch(getHighRiseInfo(email)).then(resp => {
-            console.log('.. get high rise info..', resp.value.value);
-            setBindingInfo(resp.value.value);
+            // console.log('.. get high rise info..', resp.value.value);
+            const unitsInfo = resp.value.value;
+            // let itemData = []
+            // unitsInfo.map(item => {
+            //     // console.log('..item..', item);
+            //     if (parseInt(item.property_id) === property.id) {
+            //         if (item.binding_unit_num === "") item.binding_unit_num = property.unit_no;
+            //         if (item.binding_email === "") item.binding_email = user.email;
+            //         // if (item.bindingName === "") item.bindingName = user.email;
+            //         if (item.binding_phone === "") item.binding_phone = user.username;
+            //     }
+            //     itemData.push(item);
+            // })
+            // console.log('..itemData..', itemData);
+            setBindingInfo(unitsInfo);
             setLoading(false);
         })
 

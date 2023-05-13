@@ -124,7 +124,7 @@ class Showcase extends Component {
             this.setState({
                 showBusinessInfo: true,
             });
-        } else if (parseInt(property.usuage) === 3 && property.settlement_type === 'highRise' && property.unit_no) {
+        } else if ((parseInt(property.usuage) === 3 || parseInt(property.usuage) === 1) && property.settlement_type === 'highRise' && property.unit_no) {
             utilsData.selectedProperty = property;
             utilsData.showHighRiseInfo = true;
             utilsData.fncCallback = this.cbBusinessInfoCallBack;

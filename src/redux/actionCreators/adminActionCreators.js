@@ -1362,7 +1362,7 @@ export const sendPasswordBeforeDeleteAccount = () => {
         });
     };
 };
-export const getHighRiseInfo = (email) => {
+export const getHighRiseInfo = (email, type = 'C') => {
 
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
@@ -1374,7 +1374,11 @@ export const getHighRiseInfo = (email) => {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-                method: 'GET',
+                method: 'POST',
+                body: JSON.stringify({
+                    email,
+                    type
+                })
             })
                 .then((r) => r.json())
                 .then((responseData) => {
