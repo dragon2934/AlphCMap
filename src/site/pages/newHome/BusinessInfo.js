@@ -207,7 +207,7 @@ const BusinessInfo = ({ }) => {
 
                                 <Row>
                                     <Col><h3>{companyProfile.companyName}</h3></Col> </Row>
-                                <Row>   <Col><i className="fa-solid fa-address"></i> {property.street_number + ' ' + property.route + ' ' + property.locality + ',' + property.city + ',' + property.postal_code} </Col> </Row>
+                                <Row>   <Col><i className="fa-solid fa-address"></i> {(property.unit_no ? property.unit_no + ' - ' : '') + property.street_number + ' ' + property.route + ' ' + property.locality + ',' + property.city + ',' + property.postal_code} </Col> </Row>
                                 <Row>   <Col><i className="fa-solid fa-phone"></i> {companyProfile.phone} </Col> </Row>
                                 <Row>   <Col><i className="fa-solid fa-globe"></i> <a href={companyProfile.website} className='business_link'>Company Website</a>  </Col> </Row>
                                 {totalConnected ? <Row>   <Col>Connected: {totalConnected} </Col> </Row> : null}
