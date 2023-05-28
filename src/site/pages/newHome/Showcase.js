@@ -53,6 +53,7 @@ import { parseInt } from 'lodash-es';
 // import mitt from 'mitt';
 import EventBus from '../../../utils/eventBus';
 import ShowHighRiseInfo from './ShowHighRiseInfo';
+import ShowNoDelivery from './ShowNoDelivery';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_GL_ACCESS_TOKEN;
 
@@ -113,7 +114,8 @@ class Showcase extends Component {
 
 
     renderPropertiesTooltip = ({ id, email, property }) => {
-        const { utilsData } = this.props;
+        const { utilsData, } = this.props;
+        const { properties } = this.state;
         const { auth } = this.props;
         const user = auth.user;
         console.log('...renderPropertiesTooltip..', property);
@@ -121,9 +123,36 @@ class Showcase extends Component {
             utilsData.selectedProperty = property;
             utilsData.showBusinessInfo = true;
             utilsData.fncCallback = this.cbBusinessInfoCallBack;
-            this.setState({
-                showBusinessInfo: true,
-            });
+
+            // if this is merchant login && this is merchant's property, check whether has no-delivery
+            const loginType = getLoginType();
+            if (parseInt(loginType) === 2) {
+                let noDeliveryCount = 0;
+                properties.map(item => {
+                    if (item.properties.no_delivery === 1) {
+                        noDeliveryCount++;
+                    }
+                })
+                if (noDeliveryCount > 0) {
+                    utilsData.properties = properties;
+                    utilsData.showBusinessInfo = true;
+                    utilsData.showNoDelivery = true;
+                    this.setState({
+                        showBusinessInfo: true,
+
+                    });
+                } else {
+                    this.setState({
+                        showBusinessInfo: true,
+                    });
+                }
+            } else {
+                this.setState({
+                    showBusinessInfo: true,
+                });
+            }
+
+
         } else if ((parseInt(property.usuage) === 3 || parseInt(property.usuage) === 1) && property.settlement_type === 'highRise' && property.unit_no) {
             utilsData.selectedProperty = property;
             utilsData.showHighRiseInfo = true;
@@ -1387,6 +1416,7 @@ class Showcase extends Component {
             {utilsData.showBusinessInfo && <BusinessInfo />}
             {utilsData.connectToMerchantId > 0 && <PropertyForm />}
             {utilsData.showHighRiseInfo && <ShowHighRiseInfo />}
+            {utilsData.showNoDelivery && <ShowNoDelivery />}
 
         </>
 

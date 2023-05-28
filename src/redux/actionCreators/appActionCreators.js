@@ -22,7 +22,8 @@ import {
     CANCEL_CHANGE_PROPERTY_COLOR,
     CANCEL_DISPLAY_BUSINESS,
     CANCEL_DISPLAY_HIGHRISE,
-    SEND_VERIFICATION_CODE
+    SEND_VERIFICATION_CODE,
+    CANCEL_DISPLAY_NODELIVERY
 } from '../actionTypes';
 
 
@@ -102,6 +103,12 @@ export const cancelShowHighRiseInfo = () => {
         type: CANCEL_DISPLAY_HIGHRISE,
     };
 }
+export const cancelShowNoDelivery = () => {
+    return {
+        type: CANCEL_DISPLAY_NODELIVERY,
+    };
+}
+
 export const deleteAccount = (verifyCode) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;

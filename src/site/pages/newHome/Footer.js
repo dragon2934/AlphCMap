@@ -64,7 +64,7 @@ const Footer = () => {
                                 tag={ReactRouterLink}
                                 onClick={collapse}
                                 to="/about-us">
-                                About AlphCMap
+                                About KloserToYou
                             </NavLink>
                         </NavItem>
                     </Nav>

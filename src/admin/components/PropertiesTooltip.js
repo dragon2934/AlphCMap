@@ -49,7 +49,7 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
                                     }}>
                                     Info
                                 </Button> &nbsp;&nbsp;&nbsp;&nbsp;
-                                {property.usuage === 1 && !property.primary ? <Button
+                                {(property.usuage === 1 || property.usuage === 3) && !property.primary ? <Button
                                     color={'danger'}
                                     size={'sm'}
                                     onClick={() =>

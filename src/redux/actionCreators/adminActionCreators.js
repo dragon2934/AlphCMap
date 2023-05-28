@@ -1368,7 +1368,7 @@ export const getHighRiseInfo = (email, type = 'C') => {
         const token = getState().auth.jwt;
         return dispatch({
             type: ADMIN_GET_HIGHRISE_INFO,
-            payload: fetch(`${SERVICE_URL}/residents/get-highrise-binding?email=` + email, {
+            payload: fetch(`${SERVICE_URL}/residents/get-highrise-binding`, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -1391,3 +1391,61 @@ export const getHighRiseInfo = (email, type = 'C') => {
         });
     };
 };
+export const removeHighRiseBinding = (userId, userPropertyId) => {
+
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_GET_HIGHRISE_INFO,
+            payload: fetch(`${SERVICE_URL}/residents/remove-highrise-binding`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+                body: JSON.stringify({
+                    userId, userPropertyId
+                })
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+export const removeNoDelivery = (consumerId, merchantId) => {
+
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_GET_HIGHRISE_INFO,
+            payload: fetch(`${SERVICE_URL}/residents/remove-no-delivery`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+                body: JSON.stringify({
+                    consumerId,
+                    merchantId
+                })
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+

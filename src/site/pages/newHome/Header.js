@@ -95,7 +95,7 @@ const Header = () => {
             }
             dispatch(loadConnectedTotal(jsonData)).then(resp => {
                 console.log('..get total ..' + JSON.stringify(resp));
-                let total1 = parseInt(resp.value.value[0].iCount) + parseInt(resp.value.value2);
+                let total1 = parseInt(resp.value.value[0].iCount) + parseInt(resp.value.value2) + parseInt(resp.value.value3[0].iCount);
                 setTotalConnected(total1 > 0 ? total1 : 0);
             }).catch(error => {
 

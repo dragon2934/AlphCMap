@@ -6,16 +6,17 @@ import {
     Row,
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { getHighRiseInfo, removeHighRiseBinding } from '../../../redux/actionCreators/adminActionCreators';
 import {
     CDataTable,
 } from '@coreui/react';
-import { cancelShowHighRiseInfo } from '../../../redux/actionCreators/appActionCreators';
+import { cancelShowNoDelivery } from '../../../redux/actionCreators/appActionCreators';
+import { removeNoDelivery } from '../../../redux/actionCreators/adminActionCreators';
+
 // import { generateString } from '../../../utils/utils';
 import ReactTable from "react-table-v6";
 import "react-table-v6/react-table.css";
 import { toastr } from 'react-redux-toastr';
-const ShowHighRiseInfo = () => {
+const ShowNoDelivery = () => {
 
     const PAGE_SIZE = 10;
     const utilsData = useSelector((state) => state.utilsData);
@@ -23,42 +24,27 @@ const ShowHighRiseInfo = () => {
     const dispatch = useDispatch();
     // const history = useHistory();
     // const [color, setColor] = useState('default');
-    const property = utilsData.selectedProperty;
+    const properties = utilsData.properties;
     const user = useSelector((state) => state.auth.me);
-    console.log('..current property..', property);
+    // console.log('..current user..', user);
     const [bindingInfo, setBindingInfo] = useState([])
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        setLoading(true);
-        let email = property.email;
-        email = email.replace(property.unit_no + '-', '')
-        console.log('..email is..' + email)
-
-        dispatch(getHighRiseInfo(email)).then(resp => {
-            // console.log('.. get high rise info..', resp.value.value);
-            const unitsInfo = resp.value.value;
-            // let itemData = []
-            // unitsInfo.map(item => {
-            //     // console.log('..item..', item);
-            //     if (parseInt(item.property_id) === property.id) {
-            //         if (item.binding_unit_num === "") item.binding_unit_num = property.unit_no;
-            //         if (item.binding_email === "") item.binding_email = user.email;
-            //         // if (item.bindingName === "") item.bindingName = user.email;
-            //         if (item.binding_phone === "") item.binding_phone = user.username;
-            //     }
-            //     itemData.push(item);
-            // })
-            // console.log('..itemData..', itemData);
-            setBindingInfo(unitsInfo);
-            setLoading(false);
-        })
-
-            ;
+        setLoading(false);
+        // })
+        let itemData = []
+        properties.map(item => {
+            if (item.properties.no_delivery === 1) {
+                itemData.push(item.properties)
+            }
+        });
+        console.log('..', itemData);
+        setBindingInfo(itemData);
         return () => { };
     }, [dispatch,]);
 
     const onClickDelete = (event, id) => {
-        console.log('...onClickDeleteContact...' + id);
+        // console.log('...onClickDeleteContact...' + id);
         // navigate('/edit/contact/' + id);
         toastr.confirm(
             'Are you sure you want to delete your this record? This action is irreversible!',
@@ -69,25 +55,23 @@ const ShowHighRiseInfo = () => {
     };
     const onConfirmDelete = (id) => {
         console.log('..delete..' + id);
-        dispatch(removeHighRiseBinding(user.id, id)).then(resp => {
+        dispatch(removeNoDelivery(id, user.id)).then(resp => {
             console.log('..remove high rise binding..', resp);
             //reload page
-            let email = property.email;
-            email = email.replace(property.unit_no + '-', '')
-            console.log('..email is..' + email)
-
-            dispatch(getHighRiseInfo(email)).then(resp => {
-                const unitsInfo = resp.value.value;
-                setBindingInfo(unitsInfo);
-                setLoading(false);
-            })
+            let itemData = []
+            properties.map(item => {
+                if (item.properties.no_delivery === 1 && item.properties.user_id !== id) {
+                    itemData.push(item.properties)
+                }
+            });
+            console.log('..', itemData);
+            setBindingInfo(itemData);
         })
-
     };
     const columns = [
         {
             Header: "Operate",
-            accessor: "userPropertyId",
+            accessor: "user_id",
             Cell: row => (
                 <>
                     <img src="/images/buttons/delete.png" onClick={(event) => onClickDelete(event, row.value)} />
@@ -95,32 +79,23 @@ const ShowHighRiseInfo = () => {
             ),
         },
         {
-            accessor: 'binding_unit_num',
-            Header: 'Unit #',
-
-        },
-        {
-            accessor: 'binding_name',
+            accessor: 'bindingName',
             Header: 'Name',
 
         },
         {
-            accessor: 'binding_email',
+            accessor: 'bindingEmail',
             Header: 'Email',
 
         },
         {
-            accessor: 'binding_phone',
+            accessor: 'bindingPhone',
             Header: 'Phone',
-        },
-        {
-            accessor: 'binding_others',
-            Header: 'Others',
         }
     ]
 
     return (
-        <Col md={6} sm={12} xs={12} className="overlay-form-container-left">
+        <Col md={4} sm={12} xs={12} className="overlay-form-container-left">
             <Link to={'/'}>
                 <img
                     className={'logo-container'}
@@ -131,16 +106,14 @@ const ShowHighRiseInfo = () => {
 
             <Row >
                 <Col style={{ textAlign: "left" }}>
-                    <h5> {property.street_number + ' ' + property.route + ' , ' + property.locality} </h5>
+                    <h5> No Delivery User Information </h5>
                     {/* <CDataTable
                         items={bindingInfo}
                         loading={loading}
                         fields={[
-                            { key: 'binding_unit_num', _classes: 'font-weight-bold', label: 'Unit #' },
-                            { key: 'binding_name', label: 'Name' },
-                            { key: 'binding_email', label: 'Email' },
-                            { key: 'binding_phone', label: 'Phone' },
-                            { key: 'binding_others', label: 'Others' },
+                            { key: 'bindingName', label: 'Name' },
+                            { key: 'bindingEmail', label: 'Email' },
+                            { key: 'bindingPhone', label: 'Phone' },
                         ]}
                         hover
                         striped
@@ -168,8 +141,8 @@ const ShowHighRiseInfo = () => {
                             //     email: utilsData.emailForChangeColor,
                             //     color: color
                             // };
-                            utilsData.showHighRiseInfo = false;
-                            dispatch(cancelShowHighRiseInfo());
+                            utilsData.showNoDelivery = false;
+                            dispatch(cancelShowNoDelivery());
                             location.reload();
                         }}>
                         Cancel
@@ -180,4 +153,4 @@ const ShowHighRiseInfo = () => {
         </Col>
     );
 };
-export default ShowHighRiseInfo;
+export default ShowNoDelivery;
