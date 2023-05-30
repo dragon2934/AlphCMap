@@ -28,6 +28,7 @@ const ShowHighRiseInfo = () => {
     console.log('..current property..', property);
     const [bindingInfo, setBindingInfo] = useState([])
     const [loading, setLoading] = useState(true);
+    const [needReload, setNeedReload] = useState(false);
     useEffect(() => {
         setLoading(true);
         let email = property.email;
@@ -80,6 +81,7 @@ const ShowHighRiseInfo = () => {
                 const unitsInfo = resp.value.value;
                 setBindingInfo(unitsInfo);
                 setLoading(false);
+                setNeedReload(true);
             })
         })
 
@@ -170,7 +172,9 @@ const ShowHighRiseInfo = () => {
                             // };
                             utilsData.showHighRiseInfo = false;
                             dispatch(cancelShowHighRiseInfo());
-                            location.reload();
+                            if (needReload) {
+                                location.reload();
+                            }
                         }}>
                         Cancel
                     </Button>

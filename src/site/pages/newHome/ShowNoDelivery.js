@@ -29,6 +29,7 @@ const ShowNoDelivery = () => {
     // console.log('..current user..', user);
     const [bindingInfo, setBindingInfo] = useState([])
     const [loading, setLoading] = useState(true);
+    const [needReload, setNeedReload] = useState(false);
     useEffect(() => {
         setLoading(false);
         // })
@@ -66,6 +67,7 @@ const ShowNoDelivery = () => {
             });
             console.log('..', itemData);
             setBindingInfo(itemData);
+            setNeedReload(true);
         })
     };
     const columns = [
@@ -143,7 +145,9 @@ const ShowNoDelivery = () => {
                             // };
                             utilsData.showNoDelivery = false;
                             dispatch(cancelShowNoDelivery());
-                            location.reload();
+                            if (needReload) {
+                                location.reload();
+                            }
                         }}>
                         Cancel
                     </Button>
