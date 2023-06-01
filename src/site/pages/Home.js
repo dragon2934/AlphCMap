@@ -20,7 +20,7 @@ const Home = () => {
             setActiveTab(location);
             const handle = setTimeout(() => {
                 setActiveTab('_showcase');
-            }, 1500);
+            }, 2500);
 
             setTimeoutHandle(handle);
         } else {
