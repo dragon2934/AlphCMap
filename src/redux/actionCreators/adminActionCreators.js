@@ -41,7 +41,8 @@ import {
     ADMIN_CONFIRM_CONNECTION,
     ADMIN_GET_ADDRESS_BY_TYPE,
     ADMIN_CHECK_BUSINESS_PROFILE,
-    ADMIN_GET_HIGHRISE_INFO
+    ADMIN_GET_HIGHRISE_INFO,
+    ADMIN_GET_HIGHRISE_BUSINESS_INFO
 } from '../actionTypes';
 
 import { getLoginType } from '../../utils/utils';
@@ -1449,3 +1450,31 @@ export const removeNoDelivery = (consumerId, merchantId) => {
     };
 };
 
+
+export const getHighRiseBusinessInfo = (email) => {
+
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_GET_HIGHRISE_BUSINESS_INFO,
+            payload: fetch(`${SERVICE_URL}/public/get-business-highrise`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                body: JSON.stringify({
+                    email,
+                })
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};

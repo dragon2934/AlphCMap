@@ -25,7 +25,7 @@ const ShowHighRiseInfo = () => {
     // const [color, setColor] = useState('default');
     const property = utilsData.selectedProperty;
     const user = useSelector((state) => state.auth.me);
-    console.log('..current property..', property);
+    // console.log('..current property..', property);
     const [bindingInfo, setBindingInfo] = useState([])
     const [loading, setLoading] = useState(true);
     const [needReload, setNeedReload] = useState(false);
