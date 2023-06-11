@@ -150,7 +150,7 @@ export const showPropertiesOnMapEx = (map, data, renderTooltip, bAddImage) => {
     map.on('click', showPropertyTooltip.bind(undefined, map, renderTooltip));
 };
 export const showPropertiesOnMap = (map, data, renderTooltip, bAddImage, user) => {
-    const businessProperty = data.filter((i) => i.usuage === 2 || i.is_business || i.color === 'red');
+    const businessProperty = data.filter((i) => i.usuage === 2 || i.color === 'red');
 
     const confirmedConsumer = data.filter((i) => [0, 1, 3].includes(i.usuage) && i.color === 'default');
     const pendingConsumer = data.filter((i) => [0, 1, 3].includes(i.usuage) && i.color === 'grey');
