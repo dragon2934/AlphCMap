@@ -244,8 +244,8 @@ const BusinessInfo = ({ }) => {
                                 loading={loading}
                                 fields={[
                                     { key: 'unit_no', _classes: 'font-weight-bold', label: 'Unit #' },
-                                    { key: 'company_name', label: 'Company Name' },
-                                    'phone',
+                                    { key: 'companyName', label: 'Company Name' },
+                                    'businessPhone',
 
                                 ]}
                                 hover
