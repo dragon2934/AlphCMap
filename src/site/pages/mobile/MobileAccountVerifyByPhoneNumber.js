@@ -346,6 +346,7 @@ const MobileAccountVerifyByPhoneNumber = ({
 
                                 }
                                 dispatch(toggleVerificationModal());
+                                localStorage.setItem("show_login_tips", 2);
                                 setTimeout(() => {
                                     // history.push("/");
                                     history.push('/logout');

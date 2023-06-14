@@ -281,7 +281,7 @@ const BusinessInfo = ({ }) => {
                 </Col>
             </> :
             <>
-                <Col md={3} sm={12} xs={12} className="overlay-form-container">
+                <Col md={6} sm={12} xs={12} className="overlay-form-container">
                     <Link to={'/'}>
                         <img
                             className={'logo-container'}
@@ -435,7 +435,7 @@ const BusinessInfo = ({ }) => {
                                     </>
                                     : <>
                                         <Row>
-                                            <Col> Profile not setup yet! </Col>
+                                            {loading ? null : <Col> Profile not setup yet! </Col>}
                                         </Row>
 
                                     </>

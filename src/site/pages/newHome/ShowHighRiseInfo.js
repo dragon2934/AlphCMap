@@ -88,8 +88,9 @@ const ShowHighRiseInfo = () => {
     };
     const columns = [
         {
-            Header: "Operate",
+            Header: "Del",
             accessor: "userPropertyId",
+            width: 40,
             Cell: row => (
                 <>
                     <img src="/images/buttons/delete.png" onClick={(event) => onClickDelete(event, row.value)} />
@@ -99,21 +100,25 @@ const ShowHighRiseInfo = () => {
         {
             accessor: 'binding_unit_num',
             Header: 'Unit #',
+            width: 60,
 
         },
         {
             accessor: 'binding_name',
             Header: 'Name',
+            minWidth: 160,
 
         },
         {
             accessor: 'binding_email',
             Header: 'Email',
+            minWidth: 200,
 
         },
         {
             accessor: 'binding_phone',
             Header: 'Phone',
+            minWidth: 200,
         },
         {
             accessor: 'binding_others',

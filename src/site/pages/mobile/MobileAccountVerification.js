@@ -76,6 +76,7 @@ const MobileAccountVerification = () => {
 
                             }
                             dispatch(resetRegistrationForm());
+                            localStorage.setItem("show_login_tips", 2);
                             setTimeout(() => {
                                 // history.push("/");
                                 history.push('/logout');

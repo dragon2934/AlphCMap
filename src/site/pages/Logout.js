@@ -8,7 +8,11 @@ const Logout = ({ history }) => {
     useEffect(() => {
         dispatch(logoutUser()).finally(() => {
             localStorage.removeItem("current_domain");
-            localStorage.setItem("show_login_tips", 1);
+            const showLoginTips = localStorage.getItem('show_login_tips');
+            if (showLoginTips && parseInt(showLoginTips) === 2) {
+            } else {
+                localStorage.setItem("show_login_tips", 1);
+            }
             // setTimeout(() => {
             window.location = window.location.origin;
             // }, 2000);

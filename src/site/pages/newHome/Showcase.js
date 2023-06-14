@@ -538,6 +538,7 @@ class Showcase extends Component {
         const { auth } = this.props;
         const user = auth.user;
         let convertedProperties = [];
+        let loginHints = '';
 
         if (user === null || user === undefined) {
             const { value: properties } = await loadBusinessAddress();
@@ -552,10 +553,12 @@ class Showcase extends Component {
 
             if (property.value && property.value.length > 0) {
                 //already has business Or Home Address
+                // loginHints = 'Please login to access account';
             } else {
                 this.setState({
                     has2Address: false,
                 });
+                // loginHints = 'Please login to access account and complete registration';
                 // const usuage = parseInt(loginType) === 1 ? ' Home Address' : ' Business Address';
                 let msg = 'Please switch to Edit Mode and add your Business Address';
                 if (parseInt(loginType) === 1) {
@@ -625,8 +628,15 @@ class Showcase extends Component {
             const showLoginTips = localStorage.getItem('show_login_tips');
             if (showLoginTips && parseInt(showLoginTips) === 1) {
                 localStorage.removeItem('show_login_tips');
+
                 toastr.info('Tips', 'Please login to access account');
             }
+            if (showLoginTips && parseInt(showLoginTips) === 2) {
+                localStorage.removeItem('show_login_tips');
+
+                toastr.info('Tips', 'Please login to access account and complete registration');
+            }
+
 
         } catch (e) {
             console.log('init map layer error:' + JSON.stringify(e));
