@@ -256,7 +256,7 @@ const BusinessInfo = ({ }) => {
                                 pagination
                                 clickableRows
                                 onRowClick={(item) =>
-                                    window.open(item.website ? item.website : `https://klosertoyou.com/business-portal/${item.id}`, "_blank")
+                                    window.open(`https://klosertoyou.com/business-portal/${item.id}`, "_blank")
                                 }
                             /></Col>
                     </Row>
@@ -303,7 +303,26 @@ const BusinessInfo = ({ }) => {
                                         <Row>   <Col><i className="fa-solid fa-phone"></i> {companyProfile.phone} </Col> </Row>
                                         <Row>   <Col><i className="fa-solid fa-globe"></i> <a href={companyProfile.website} className='business_link'>Company Website</a>  </Col> </Row>
                                         {totalConnected ? <Row>   <Col>Connected: {totalConnected} </Col> </Row> : null}
-                                        <Row>   <Col><i className="fa-solid fa-globe"></i> <a className='business_link' href={shareUrl} target="_blank"> {shareUrl}</a> </Col> </Row>
+                                        <Row>   <Col><i className="fa-solid fa-globe"></i> <a className='business_link' href={shareUrl} target="_blank"> {shareUrl}</a>
+                                            {
+                                                user !== undefined && user.property !== undefined && property.id === user.property.id ?
+                                                    <>
+
+                                                        &nbsp;&nbsp;&nbsp; share: &nbsp;
+
+                                                        <EmailShareButton
+                                                            url={shareUrl}
+                                                            subject={title}
+                                                            body="body"
+
+                                                        >
+                                                            <EmailIcon size={32} round />
+                                                        </EmailShareButton>
+
+
+                                                    </> : null
+                                            }
+                                        </Col> </Row>
                                         {property.email && property.email !== null && property.email !== 'null' ? <Row>
                                             <Col><i className="fa-solid fa-envelope"></i> {property.email + '@' + companyProfile.companyName + '.com'}
                                                 {property.connected !== "1" || (user !== undefined && user.property !== undefined && property.id === user.property.id) ? null : <Button size={'sm'} onClick={(e) => cbSendEmail(e, property)} >Send Email</Button>}
@@ -488,45 +507,13 @@ const BusinessInfo = ({ }) => {
 
                     </Row>
 
-
+                    {/* 
                     {
                         user !== undefined && user.property !== undefined && property.id === user.property.id ?
                             <>
                                 <Col  >
                                     Share your business <br />
-                                    {/* <FacebookShareButton url={shareUrl}
-                                quote={title}> <FacebookIcon size={32} round /></FacebookShareButton>     <TwitterShareButton
-                                    url={shareUrl}
-                                    title={title}
-                                >
-                                <TwitterIcon size={32} round />
-                            </TwitterShareButton>
-                            <WhatsappShareButton
-                                url={shareUrl}
-                                title={title}
-                                separator=":: "
-                            >
-                                <WhatsappIcon size={32} round />
-                            </WhatsappShareButton>
-                            <LinkedinShareButton url={shareUrl} >
-                                <LinkedinIcon size={32} round />
-                            </LinkedinShareButton>
-                            <PinterestShareButton
-                                url={String(window.location)}
-
-
-                            >
-                                <PinterestIcon size={32} round />
-                            </PinterestShareButton>
-                            <RedditShareButton
-                                url={shareUrl}
-                                title={title}
-                                windowWidth={660}
-                                windowHeight={460}
-
-                            >
-                                <RedditIcon size={32} round />
-                            </RedditShareButton> */}
+                                   
                                     <EmailShareButton
                                         url={shareUrl}
                                         subject={title}
@@ -535,24 +522,10 @@ const BusinessInfo = ({ }) => {
                                     >
                                         <EmailIcon size={32} round />
                                     </EmailShareButton>
-                                    {/* <LineShareButton
-                                url={shareUrl}
-                                title={title}
-
-                            >
-                                <LineIcon size={32} round />
-                            </LineShareButton>
-                            <WeiboShareButton
-                                url={shareUrl}
-                                title={title}
-
-
-                            >
-                                <WeiboIcon size={32} round />
-                            </WeiboShareButton> */}
+                                  
                                 </Col>
                             </> : null
-                    }
+                    } */}
                 </Col>
             </>
     );

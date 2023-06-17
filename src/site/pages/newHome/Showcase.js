@@ -562,7 +562,7 @@ class Showcase extends Component {
                 // const usuage = parseInt(loginType) === 1 ? ' Home Address' : ' Business Address';
                 let msg = 'Please switch to Edit Mode and add your Business Address';
                 if (parseInt(loginType) === 1) {
-                    msg = 'Please type your home address to search box to add your home address';
+                    msg = 'Please enter and register home address';
                 }
                 toastr.info('Tips', msg);
             }
