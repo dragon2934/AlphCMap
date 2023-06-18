@@ -11,54 +11,66 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
     const loginType = getLoginType();
     // console.log('..me..' + JSON.stringify(user));
     return (
-        <>
-            <h4>{email}</h4>
 
-            <Row className="justify-content-end">
-                {property.bindingName && property.bindingName !== null && property.bindingName !== 'null' ? <Col className='bindingInfo'>Name: {property.bindingName}  </Col> : null}
-                {property.bindingEmail && property.bindingEmail !== null && property.bindingEmail !== 'null' ? <Col className='bindingInfo'>Email: {property.bindingEmail}   </Col> : null}
-            </Row>
-            <Row className="justify-content-end">
-                {property.bindingPhone && property.bindingPhone !== null && property.bindingPhone !== 'null' ? <Col className='bindingInfo'>Phone: {property.bindingPhone}  </Col> : null}
-                {property.bindingOthers && property.bindingOthers !== null && property.bindingOthers !== 'null' ? <Col className='bindingInfo'>Others: {property.bindingOthers}  </Col> : null}
-            </Row>
-            {editMode ?
-                <>
-                    <Row className="justify-content-end">
-                        <Col className="list-unstyled text-right">
-                            <li>
-                                {
-                                    property.bindingEmail && property.bindingEmail !== null && property.bindingEmail !== 'null' ?
-                                        <>
-                                            <Button size={'sm'} onClick={(e) => cbSendEmail(e, property)} >Send Email</Button> &nbsp;&nbsp;&nbsp;&nbsp;</> : null
-                                }
+        property.color === 'grey' ?
+
+            <>
+                <h4>{email}</h4>
+                <Row className="justify-content-end">
+                    <Col className='bindingInfo'> Pending Customer </Col>
+                </Row>
+
+            </> :
+
+            <>
+                <h4>{email}</h4>
 
 
-                                {user !== null && user !== undefined && property.id === user.property.id ? <>  <Button
-                                    size={'sm'}
-                                    onClick={() => cbBusiness(email, property)}>
-                                    Business
-                                </Button> &nbsp;&nbsp;&nbsp;&nbsp;
-                                </> : null
+                <Row className="justify-content-end">
+                    {property.bindingName && property.bindingName !== null && property.bindingName !== 'null' ? <Col className='bindingInfo'>Name: {property.bindingName}  </Col> : null}
+                    {property.bindingEmail && property.bindingEmail !== null && property.bindingEmail !== 'null' ? <Col className='bindingInfo'>Email: {property.bindingEmail}   </Col> : null}
+                </Row>
+                <Row className="justify-content-end">
+                    {property.bindingPhone && property.bindingPhone !== null && property.bindingPhone !== 'null' ? <Col className='bindingInfo'>Phone: {property.bindingPhone}  </Col> : null}
+                    {property.bindingOthers && property.bindingOthers !== null && property.bindingOthers !== 'null' ? <Col className='bindingInfo'>Others: {property.bindingOthers}  </Col> : null}
+                </Row>
+                {editMode ?
+                    <>
+                        <Row className="justify-content-end">
+                            <Col className="list-unstyled text-right">
+                                <li>
+                                    {
+                                        property.bindingEmail && property.bindingEmail !== null && property.bindingEmail !== 'null' ?
+                                            <>
+                                                <Button size={'sm'} onClick={(e) => cbSendEmail(e, property)} >Send Email</Button> &nbsp;&nbsp;&nbsp;&nbsp;</> : null
+                                    }
 
-                                }
-                                <Button
-                                    size={'sm'}
-                                    onClick={() => {
-                                        cbBinding(email, property);
-                                    }}>
-                                    Info
-                                </Button> &nbsp;&nbsp;&nbsp;&nbsp;
-                                {(property.usuage === 1 || property.usuage === 3) && !property.primary ? <Button
-                                    color={'danger'}
-                                    size={'sm'}
-                                    onClick={() =>
-                                        cb(email, false)
-                                    }>
-                                    Remove
-                                </Button> : null
-                                }
-                                {/* <Button
+
+                                    {user !== null && user !== undefined && property.id === user.property.id ? <>  <Button
+                                        size={'sm'}
+                                        onClick={() => cbBusiness(email, property)}>
+                                        Business
+                                    </Button> &nbsp;&nbsp;&nbsp;&nbsp;
+                                    </> : null
+
+                                    }
+                                    <Button
+                                        size={'sm'}
+                                        onClick={() => {
+                                            cbBinding(email, property);
+                                        }}>
+                                        Info
+                                    </Button> &nbsp;&nbsp;&nbsp;&nbsp;
+                                    {(property.usuage === 1 || property.usuage === 3) && !property.primary ? <Button
+                                        color={'danger'}
+                                        size={'sm'}
+                                        onClick={() =>
+                                            cb(email, false)
+                                        }>
+                                        Remove
+                                    </Button> : null
+                                    }
+                                    {/* <Button
                                     color={'primary'}
                                     size={'sm'}
                                     onClick={() =>
@@ -66,7 +78,7 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
                                     }>
                                     Color
                                 </Button> &nbsp;&nbsp;&nbsp;&nbsp; */}
-                                {/* {property.primary && loginType ? <Button
+                                    {/* {property.primary && loginType ? <Button
                                     color={'primary'}
                                     size={'sm'}
                                     onClick={() =>
@@ -75,27 +87,27 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
                                     Change Location
                                 </Button> : null
                                 } */}
-                            </li>
-                        </Col>
-                    </Row>
+                                </li>
+                            </Col>
+                        </Row>
 
-                </>
-                : property.is_business ? property.connected === "0" ? <> <Button
-                    size={'sm'}
-                    onClick={() => {
-                        cbBusinessInfo(email, property);
-                    }}>
-                    Info
-                </Button>  </> :
-                    <>
-                        <Button
-                            size={'sm'}
-                            onClick={() => {
-                                cbBusinessInfo(email, property);
-                            }}>
-                            Info
-                        </Button>  </> : null}
-        </>
+                    </>
+                    : property.is_business ? property.connected === "0" ? <> <Button
+                        size={'sm'}
+                        onClick={() => {
+                            cbBusinessInfo(email, property);
+                        }}>
+                        Info
+                    </Button>  </> :
+                        <>
+                            <Button
+                                size={'sm'}
+                                onClick={() => {
+                                    cbBusinessInfo(email, property);
+                                }}>
+                                Info
+                            </Button>  </> : null}
+            </>
     );
 };
 
