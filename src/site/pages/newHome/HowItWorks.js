@@ -1,11 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ParallaxProvider } from 'react-scroll-parallax';
 import { Col, Container, Row } from 'reactstrap';
 import KeyFeatures from './KeyFeatures';
 import Footer from './Footer';
 import Header from './Header';
-
+import {
+    CButton,
+    CCard,
+    CCardBody,
+    CCardFooter,
+    CCol,
+    CForm,
+    CFormGroup,
+    CInput,
+    CInvalidFeedback,
+    CLabel,
+    CRow,
+    CSpinner,
+    CTabs,
+    CTabContent,
+    CTabPane,
+    CNav,
+    CNavItem,
+    CNavLink,
+} from '@coreui/react';
 const HowItWorks = () => {
+    const [activeTab, setActiveTab] = useState(0);
     return (
         <main>
             <Header />
@@ -14,116 +34,213 @@ const HowItWorks = () => {
                     <Row className="section-title">
                         <Col>How it works</Col>
                     </Row>
-                    <p>
-                        AlphC’s patented technology assigns an email address to
-                        every physical address. Residents of an address are linked
-                        via their mobile device to this unique email. A message sent
-                        to the email associated with the physical address connects
-                        you to all the mobile numbers of the residents for that
-                        address in real-time. AlphC’s messages are geo-coded, so
-                        they cannot be duplicated, adding transparency and security
-                        that does not exist with current systems.
-                    </p>
-                    <p>
-                        In any emergency, such as an earthquake, fire, hurricane or
-                        terrorist attack, an alert can be initiated by individuals
-                        directly to first responders using a simple alert format or
-                        from responders to individuals. First responders can also
-                        create a geo-fenced or targeted alert to a specified panned
-                        area. Based on a simple one-button alert message stating, "I
-                        am safe," "I am away" or "I need help," rescue missions can
-                        be planned, targeted and mapped to the addresses in a way
-                        that maximizes efficiency, speed and crucially, the safety
-                        of first responders. A real-time, color-coded crisis map
-                        further aids response efforts and allows tracking of
-                        progress through an area.
-                    </p>
 
-                    <Row>
-                        <Col className="text-center">
-                            <figure className="figure">
-                                <img
-                                    src="/assets/img/how-it-works/how-it-works-1.png"
-                                    className="figure-img img-fluid rounded"
-                                    alt="Simple one-button alert for residents and first responders"
-                                />
-                                <figcaption className="figure-caption">
-                                    Simple one-button alert for residents and first
-                                    responders
-                                </figcaption>
-                            </figure>
-                        </Col>
-                    </Row>
 
-                    <p>
-                        AlphC technology fills many gaps that current emergency
-                        alerts fail to address and it can be embedded into virtually
-                        any existing emergency communication system. Users can map
-                        areas and grade impact levels using any criteria and
-                        communicate with residents in real time. Our “two-way mapped
-                        alert technology” and “address-based communication” platform
-                        is the first in the world. Everything AlphC does is new
-                        knowledge. There is no cost for citizens to use our
-                        technology.
-                    </p>
+                    <CTabs activeTab="business_account"
+                        onActiveTabChange={(idx) => setActiveTab(idx)}>
+                        <CNav variant="tabs">
+                            <CNavItem>
+                                <CNavLink data-tab="business_account">
+                                    Business Account
+                                </CNavLink>
+                            </CNavItem>
+                            <CNavItem>
+                                <CNavLink data-tab="personal_account">
+                                    Personal Account
+                                </CNavLink>
+                            </CNavItem>
+                        </CNav>
+                        <CTabContent>
+                            <CTabPane data-tab="business_account"  >
+                                <CRow active={activeTab === 0}>
+                                    <br /><br /><br />
+                                    <p>
+                                        <h6>1. Create your KloserToYou business account by entering your business address. A unique geo-coded email is created for each location and business name. Using AlphC three factor authentication verifies the identity of all users by their email, mobile number, and address location for B2C and B2B communication. </h6>
 
-                    <Row>
-                        <Col className="text-center">
-                            <figure className="figure">
-                                <img
-                                    src="/assets/img/how-it-works/how-it-works-2.png"
-                                    className="figure-img img-fluid rounded"
-                                    alt="Current national alert versus AlphC mapped address-based communication"
-                                />
-                                <figcaption className="figure-caption">
-                                    Current national alert versus AlphC mapped
-                                    address-based communication
-                                </figcaption>
-                            </figure>
-                        </Col>
-                    </Row>
+                                        <figure className="figure">
+                                            <img
+                                                src="/assets/img/how-it-works/b1.png"
+                                                className="figure-img img-fluid rounded"
+                                                alt="Simple one-button alert for residents and first responders"
+                                            />
+                                            <figcaption className="figure-caption">
+                                                KloserToYou geo-coded email creates a closed-ended, mapped, secure, authenticated communication network between businesses and their customers
+                                            </figcaption>
+                                        </figure>
 
-                    <Row>
-                        <Col className="text-center">
-                            <figure className="figure">
-                                <img
-                                    src="/assets/img/how-it-works/how-it-works-3.png"
-                                    className="figure-img img-fluid rounded"
-                                    alt="Community alerting system for minor or major emergencies"
-                                />
-                                <figcaption className="figure-caption">
-                                    Community alerting system for minor or major
-                                    emergencies
-                                </figcaption>
-                            </figure>
-                        </Col>
-                    </Row>
+                                    </p>
 
-                    <p>
-                        AlphC’s products and services may be covered by U.S. Patent
-                        Nos.{' '}
-                        <a target='_blank' href="http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO1&Sect2=HITOFF&d=PALL&p=1&u=%2Fnetahtml%2FPTO%2Fsrchnum.htm&r=1&f=G&l=50&s1=9860203.PN.&OS=PN/9860203&RS=PN/9860203">
-                            9,860,203
-                        </a>
-                        ,
-                        <a target='_blank' href="http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO1&Sect2=HITOFF&d=PALL&p=1&u=%2Fnetahtml%2FPTO%2Fsrchnum.htm&r=1&f=G&l=50&s1=10,356,028.PN.&OS=PN/10,356,028&RS=PN/10,356,028">
-                            10,356,028
-                        </a>
-                        , and{' '}
-                        <a target='_blank' href="http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO1&Sect2=HITOFF&d=PALL&p=1&u=%2Fnetahtml%2FPTO%2Fsrchnum.htm&r=1&f=G&l=50&s1=10659414.PN.&OS=PN/10659414&RS=PN/10659414">
-                            10,659,414
-                        </a> and <a target='_blank' href="https://ppubs.uspto.gov/pubwebapp/static/pages/ppubsbasic.html"> 11,444,904</a> {' '}
-                        , European Union (EU) Patent <a target='_blank' href="https://worldwide.espacenet.com/patent/search/family/060411925/publication/EP3466003A1?q=pn%3DEP3466003">EP 3466003</a>,
-                        Australian Patent <a target='_blank' href="http://pericles.ipaustralia.gov.au/ols/auspat/applicationDetails.do?applicationNo=2017269953">2017269953</a>,{' '}
-                        as well as other patents that are pending. For additional
-                        information, please contact{' '}
-                        <a href="mailto:patents@alphc.com">patents@alphc.com</a>.
-                    </p>
+                                    <p>
+
+                                        <h6>2. Switch to “Edit Mode” to add customer and send them notification to connect with the business.</h6>
+
+                                        <figure className="figure">
+                                            <img
+                                                src="/assets/img/how-it-works/b2.png"
+                                                className="figure-img img-fluid rounded"
+                                                alt="Simple one-button alert for residents and first responders"
+                                            />
+                                            <figcaption className="figure-caption">
+                                                Edit mode (green) lets you add customer. Addresses remain grey when pending and turn blue when customer has accepted connection. Grey-dotted line shows your customer
+                                            </figcaption>
+                                        </figure>
+
+
+                                    </p>
+
+                                    <p>
+
+                                        <h6>3. Customer receive an email or text message requesting “Connect with Us.” Technology and IP services provided by Alphabet Communication (AlphC) </h6>
+                                        <figure className="figure">
+                                            <img
+                                                src="/assets/img/how-it-works/b3.png"
+                                                className="figure-img img-fluid rounded"
+                                                alt="Simple one-button alert for residents and first responders"
+                                            />
+                                            <figcaption className="figure-caption">
+                                                Customer can “connect” with business by entering their password or completing their profile, address, email, and mobile No. With KloserToYou customer remains in control and can unsubscribe and “disconnect” or connect with any business. Customer have a mapped location-view of all business they are connected to.
+                                            </figcaption>
+                                        </figure>
+
+
+                                    </p>
+
+                                    <p>
+                                        <h6>4. “Connect with Us” lets you connect to the business.</h6>
+
+                                        <figure className="figure">
+                                            <img
+                                                src="/assets/img/how-it-works/b4.png"
+                                                className="figure-img img-fluid rounded"
+                                                alt="Simple one-button alert for residents and first responders"
+                                            />
+                                            <figcaption className="figure-caption">
+                                                Existing user can connect by entering their password. New users can “GET CODE,” verify, create password, and complete registration and connect to the business.
+                                            </figcaption>
+                                        </figure>
+
+
+                                    </p>
+
+                                    <p>
+
+
+                                        <h6> 5. “Connect Mode” lets you send panned-targeted email and timed communication to your customers.</h6>
+
+                                        <figure className="figure">
+                                            <img
+                                                src="/assets/img/how-it-works/b5.png"
+                                                className="figure-img img-fluid rounded"
+                                                alt="Simple one-button alert for residents and first responders"
+                                            />
+                                            <figcaption className="figure-caption">
+                                                Time sensitive special offers that are targeted increase business revenue. For example, special food offers such a half-price pizza from 3-5pm.  This targeted and address- based communication network has many possibilities for businesses
+                                            </figcaption>
+                                        </figure>
+
+
+
+                                    </p>
+
+                                    <p>
+
+
+                                        <h6> 6.Custom design your targeted-email for maximum effect and increase your business revenue. </h6>
+
+                                        <figure className="figure">
+                                            <img
+                                                src="/assets/img/how-it-works/b6.png"
+                                                className="figure-img img-fluid rounded"
+                                                alt="Simple one-button alert for residents and first responders"
+                                            />
+                                            <figcaption className="figure-caption">
+                                                KloserToYou direct-targeted customer communication network has many possibilities. Upload your weekly or time sensitive flyer. Increase your revenue and increase your visibility. Send special offers and stay connected with your customers!
+                                            </figcaption>
+                                        </figure>
+
+                                        <br />
+                                        There are many other benefits and connection possibilities for both business and customers on the KloserToYou platform, the above is but a brief summary of our infinite possibilities. <b>We can be reach at anything@AlphC.com</b>
+                                        <br /> <br /><br /><br />
+                                    </p>
+
+
+
+                                </CRow>
+                            </CTabPane>
+
+                            <CTabPane data-tab="personal_account"  >
+                                <CRow active={activeTab === 1}>
+                                    <p>
+                                        <br /><br /><br />
+                                        <h6>1. KloserToYou personal account can be created when a connect link is received from the business or via the login-in process. Customers living or working within very close proximity of a business may select “NO DELIVERY” and your address is not required.
+                                        </h6>
+
+                                        <figure className="figure">
+                                            <img
+                                                src="/assets/img/how-it-works/p1.png"
+                                                className="figure-img img-fluid rounded"
+                                                alt="Simple one-button alert for residents and first responders"
+                                            />
+                                            <figcaption className="figure-caption">
+                                                KloserToYou business connect link can be sent via email or text to customers.
+                                            </figcaption>
+                                        </figure>
+
+
+
+
+
+                                    </p>
+
+                                    <p>
+
+                                        <h6>   2. “Connect with Us” link received by a customer via email also lets you connect to the business (See No 3. How it works - Business Account).
+                                        </h6>
+                                        <figure className="figure">
+                                            <img
+                                                src="/assets/img/how-it-works/b4.png"
+                                                className="figure-img img-fluid rounded"
+                                                alt="Simple one-button alert for residents and first responders"
+                                            />
+                                            <figcaption className="figure-caption">
+                                                Existing user can connect by entering their password. New users can “GET CODE,” verify, create password, and complete registration and connect to the business.
+                                            </figcaption>
+                                        </figure>
+
+                                    </p>
+
+                                    <p>
+
+                                        <h6>    3. When you login to “Personal Account” your mapped-address appears and other businesses that are KloserToYou. The solid-line shows connection link to your business.
+                                        </h6>
+                                        <figure className="figure">
+                                            <img
+                                                src="/assets/img/how-it-works/p3.png"
+                                                className="figure-img img-fluid rounded"
+                                                alt="Simple one-button alert for residents and first responders"
+                                            />
+                                            <figcaption className="figure-caption">
+                                                Once connected to a business you can communicate with them. Customers are always in control you can, click on any business location to connect or disconnect.
+                                            </figcaption>
+                                        </figure>
+
+
+                                        <br /> <br />
+                                        KloserToYou marketing platform has created a revolutionary communication network that will benefit business and consumers. A transparent mapped communication network that eliminates unsolicited emails, this will change the marketing landscape keeping customers in control while helping small businesses. After all we all have an address.
+                                        <br /> <br />
+
+                                        <b>Question and inquiries:  anything@AlphC.com <br /> <br />
+                                            Licensing our IP and Technology:  patents@AlphC.com</b>
+                                        <br /> <br /><br /> <br />
+                                    </p>
+
+                                </CRow>
+                            </CTabPane>
+
+                        </CTabContent>
+                    </CTabs>
+
                 </Container>
-
-                <ParallaxProvider>
-                    <KeyFeatures />
-                </ParallaxProvider>
             </div>
             <Footer />
         </main>
