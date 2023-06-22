@@ -90,23 +90,23 @@ const ShowHighRiseInfo = () => {
         {
             Header: "Del",
             accessor: "userPropertyId",
-            width: 40,
+            width: 60,
             Cell: row => (
                 <>
-                    <img src="/images/buttons/delete.png" onClick={(event) => onClickDelete(event, row.value)} />
+                    <img src="/images/buttons/delete.png" style={{ marginLeft: "20px" }} onClick={(event) => onClickDelete(event, row.value)} />
                 </>
             ),
         },
         {
             accessor: 'binding_unit_num',
             Header: 'Unit #',
-            width: 60,
+            width: 80,
 
         },
         {
             accessor: 'binding_name',
             Header: 'Name',
-            minWidth: 160,
+            minWidth: 140,
 
         },
         {
@@ -118,7 +118,7 @@ const ShowHighRiseInfo = () => {
         {
             accessor: 'binding_phone',
             Header: 'Phone',
-            minWidth: 200,
+            minWidth: 120,
         },
         {
             accessor: 'binding_others',
@@ -127,7 +127,7 @@ const ShowHighRiseInfo = () => {
     ]
 
     return (
-        <Col md={6} sm={12} xs={12} className="overlay-form-container-left">
+        <Col md={7} sm={12} xs={12} className="overlay-form-container-left">
             <Link to={'/'}>
                 <img
                     className={'logo-container'}
@@ -137,8 +137,8 @@ const ShowHighRiseInfo = () => {
             </Link>
 
             <Row >
-                <Col style={{ textAlign: "left" }}>
-                    <h5> {property.street_number + ' ' + property.route + ' , ' + property.locality} </h5>
+                <Col style={{ textAlign: "left", paddingLeft: "40px" }}>
+                    <h5> &nbsp;&nbsp;&nbsp; {property.street_number + ' ' + property.route + ' , ' + property.locality} </h5>
                     {/* <CDataTable
                         items={bindingInfo}
                         loading={loading}
