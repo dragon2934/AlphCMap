@@ -59,8 +59,8 @@ const AboutUs = () => {
                             </figure>
                         </Col>
                     </Row>
-                    <p>
-                        <i> KloserToYou maps and shows all business in your area. Allowing customers to connect or disconnect to them based on need</i>
+                    <p className="figure-caption">
+                        KloserToYou maps and shows all business in your area. Allowing customers to connect or disconnect to them based on need
                     </p>
                     <br />
                     <br />

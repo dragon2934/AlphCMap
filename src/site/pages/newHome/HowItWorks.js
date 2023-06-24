@@ -1,22 +1,9 @@
 import React, { useState } from 'react';
-import { ParallaxProvider } from 'react-scroll-parallax';
 import { Col, Container, Row } from 'reactstrap';
-import KeyFeatures from './KeyFeatures';
 import Footer from './Footer';
 import Header from './Header';
 import {
-    CButton,
-    CCard,
-    CCardBody,
-    CCardFooter,
-    CCol,
-    CForm,
-    CFormGroup,
-    CInput,
-    CInvalidFeedback,
-    CLabel,
     CRow,
-    CSpinner,
     CTabs,
     CTabContent,
     CTabPane,
@@ -65,8 +52,8 @@ const HowItWorks = () => {
                                             />
 
                                         </figure>
-                                        <p>
-                                            <i>  KloserToYou geo-coded email creates a closed-ended, mapped, secure, authenticated communication network between businesses and their customers</i>
+                                        <p className="figure-caption">
+                                            KloserToYou geo-coded email creates a closed-ended, mapped, secure, authenticated communication network between businesses and their customers
                                         </p>
                                     </p>
 
@@ -82,9 +69,8 @@ const HowItWorks = () => {
                                             />
 
                                         </figure>
-
-                                        <p>
-                                            <i> Edit mode (green) lets you add customer. Addresses remain grey when pending and turn blue when customer has accepted connection. Grey-dotted line shows your customer</i>
+                                        <p className="figure-caption">
+                                            Edit mode (green) lets you add customer. Addresses remain grey when pending and turn blue when customer has accepted connection. Grey-dotted line shows your customer
                                         </p>
                                     </p>
 
@@ -101,8 +87,8 @@ const HowItWorks = () => {
 
                                         </figure>
 
-                                        <p >
-                                            <i> Customer can “connect” with business by entering their password or completing their profile, address, email, and mobile No. With KloserToYou customer remains in control and can unsubscribe and “disconnect” or connect with any business. Customer have a mapped location-view of all business they are connected to. </i>
+                                        <p className="figure-caption">
+                                            Customer can “connect” with business by entering their password or completing their profile, address, email, and mobile No. With KloserToYou customer remains in control and can unsubscribe and “disconnect” or connect with any business. Customer have a mapped location-view of all business they are connected to.
                                         </p>
                                     </p>
 
