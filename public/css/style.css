@@ -2528,3 +2528,16 @@ a.business_link:visited {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.border_img {
+  width: 100%;
+  border: 1px solid #1b75bc;
+}
+
+.border_img img {
+  width: 100%;
+}
+
+p.figure-caption {
+  font-style: italic;
+}

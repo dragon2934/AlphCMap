@@ -42,6 +42,7 @@ const EditProperty = () => {
     const [searching, setSearching] = useState(false);
 
     const currentUser = useSelector((state) => state.auth.user);
+    const loginType = getLoginType();
     if (!currentUser.primaryHolder) {
         toastr.warning('Warning', 'Only Primary Holder can edit this address');
     }
@@ -91,38 +92,62 @@ const EditProperty = () => {
             if (values.settlementType === 'lowRise') {
                 values.unitNo = '';
             }
-
-            const property = {
-                propertyId: propertyId,
-                ...values,
-            };
-
-            dispatch(saveUserProperty(property)).then((resp) => {
-                setSubmitting(false);
-
-                if (window.ReactNativeWebView) {
-                    window.ReactNativeWebView.postMessage(
-                        JSON.stringify({ result: 'success' }),
+            //need to get it again as someone may input the address
+            geocodeAddress({
+                address: [
+                    values.postalCode,
+                    values.streetNumber,
+                    values.route,
+                    values.locality,
+                    values.city,
+                    values.country,
+                ].join(' '),
+            }).then((response) => {
+                if (response && response.latitude && response.longitude) {
+                    changeMarkerPosition(
+                        response.longitude,
+                        response.latitude,
+                        false,
                     );
-                } else {
-                    console.log('..save property..' + JSON.stringify(resp));
-                    currentUser.property = resp.value;
-                    // history.push('/');
-                    toastr.success(
-                        'Successful!',
-                        'New location is successfully.',
-                    );
-                    //update address
-                    const loginType = getLoginType();
-                    dispatch(getMe(loginType)).then(resp => {
-                        setTimeout(() => {
-                            history.push('/');
-                        }, 1000);
+                    values.location.latitude = response.latitude;
+                    values.location.longitude = response.longitude;
+
+                    const property = {
+                        propertyId: propertyId,
+                        ...values,
+                    };
+                    console.log('..save property..', property);
+
+                    dispatch(saveUserProperty(property)).then((resp) => {
+                        setSubmitting(false);
+
+                        if (window.ReactNativeWebView) {
+                            window.ReactNativeWebView.postMessage(
+                                JSON.stringify({ result: 'success' }),
+                            );
+                        } else {
+                            console.log('..save property..' + JSON.stringify(resp));
+                            currentUser.property = resp.value;
+                            // history.push('/');
+                            toastr.success(
+                                'Successful!',
+                                'New location is successfully.',
+                            );
+                            //update address
+                            const loginType = getLoginType();
+                            dispatch(getMe(loginType)).then(resp => {
+                                setTimeout(() => {
+                                    history.push('/');
+                                }, 1000);
+                            });
+
+
+                        }
                     });
-
-
                 }
+
             });
+
         },
     });
 
@@ -344,7 +369,7 @@ const EditProperty = () => {
                                         <Col xs="12">
                                             <FormGroup tag="fieldset">
                                                 <Label for="postalCode">Address Type</Label>
-                                                <FormGroup check>
+                                                {parseInt(loginType) === 1 ? <FormGroup check>
                                                     <Label check>
                                                         <Input
                                                             type="radio"
@@ -362,26 +387,27 @@ const EditProperty = () => {
                                                         />
                                                         Residential
                                                     </Label>
-                                                </FormGroup>
-                                                <FormGroup check>
-                                                    <Label check>
-                                                        <Input
-                                                            type="radio"
-                                                            name="addressType"
-                                                            onChange={handleChange}
-                                                            onBlur={handleBlur}
-                                                            value={'commercial'}
-                                                            checked={
-                                                                values.addressType === 'commercial'
-                                                            }
-                                                            invalid={
-                                                                touched.addressType &&
-                                                                errors.addressType
-                                                            }
-                                                        />
-                                                        Commercial
-                                                    </Label>
-                                                </FormGroup>
+                                                </FormGroup> :
+                                                    <FormGroup check>
+                                                        <Label check>
+                                                            <Input
+                                                                type="radio"
+                                                                name="addressType"
+                                                                onChange={handleChange}
+                                                                onBlur={handleBlur}
+                                                                value={'commercial'}
+                                                                checked={
+                                                                    values.addressType === 'commercial'
+                                                                }
+                                                                invalid={
+                                                                    touched.addressType &&
+                                                                    errors.addressType
+                                                                }
+                                                            />
+                                                            Commercial
+                                                        </Label>
+                                                    </FormGroup>
+                                                }
                                             </FormGroup>
                                         </Col>
                                         <Col xs="12">
@@ -620,7 +646,7 @@ const EditProperty = () => {
                                                 <FormFeedback>{errors.country}</FormFeedback>
                                             </FormGroup>
                                         </Col>
-                                        <Col>
+                                        {/* <Col>
                                             <FormGroup check>
                                                 <Label check>
                                                     <Input
@@ -642,7 +668,7 @@ const EditProperty = () => {
                                                     This is my primary address
                                                 </Label>
                                             </FormGroup>
-                                        </Col>
+                                        </Col> */}
                                         <Col>
                                             <FormGroup>
                                                 <Input

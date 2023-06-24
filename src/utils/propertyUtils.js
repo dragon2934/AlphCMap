@@ -66,7 +66,7 @@ export const generateEmail = ({
     }
 
     return components
-        .map((c) => (c ? c.replace(/[ ]/g, '-') : c))
+        .map((c) => (c ? c.trim().replace(/[ ]/g, '-') : c))
         .join('-')
         .toLowerCase();
 };
