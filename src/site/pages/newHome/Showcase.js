@@ -1211,7 +1211,7 @@ class Showcase extends Component {
             utilsData.drawFinished = true;
 
             utilsData.selectedProperty = data;
-
+            utilsData.fncCallback = this.cbBusinessInfoCallBack;
             this.setState({
                 drawing: !drawing,
                 selectedProperties: data,

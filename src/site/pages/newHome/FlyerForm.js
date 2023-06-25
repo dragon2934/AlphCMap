@@ -77,6 +77,11 @@ const FlyerForm = ({ callback }) => {
                 promotionContent: values.promotionContent
             }
             dispatch(sendPromotionContents(postData));
+            const fncCallback = utilsData.fncCallback;
+            if (fncCallback !== null) {
+                console.log('..should trigger call back');
+                fncCallback();
+            }
         }
     });
     const {
@@ -267,7 +272,12 @@ const FlyerForm = ({ callback }) => {
                                 //     color: color
                                 // };
                                 utilsData.drawFinished = false;
+                                const fncCallback = utilsData.fncCallback;
                                 dispatch(cancelChangePropertyColor());
+                                if (fncCallback !== null) {
+                                    console.log('..should trigger call back');
+                                    fncCallback();
+                                }
                             }}>
                             Cancel
                         </Button>

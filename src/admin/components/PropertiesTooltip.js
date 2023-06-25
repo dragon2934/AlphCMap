@@ -18,6 +18,14 @@ const PropertiesTooltip = ({ id, email, property, cb, changeColor, editMode, cbB
                 <h4>{email}</h4>
                 <Row className="justify-content-end">
                     <Col className='bindingInfo'> Pending Customer </Col>
+                    <Col><Button
+                        color={'danger'}
+                        size={'sm'}
+                        onClick={() =>
+                            cb(email, false)
+                        }>
+                        Remove
+                    </Button></Col>
                 </Row>
 
             </> :
