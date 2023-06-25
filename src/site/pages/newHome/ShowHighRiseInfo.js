@@ -127,7 +127,7 @@ const ShowHighRiseInfo = () => {
     ]
 
     return (
-        <Col md={7} sm={12} xs={12} className="overlay-form-container-left">
+        <Col md={7} sm={24} xs={12} className="overlay-form-container-left">
             <Link to={'/'}>
                 <img
                     className={'logo-container'}
@@ -136,8 +136,8 @@ const ShowHighRiseInfo = () => {
                 />
             </Link>
 
-            <Row >
-                <Col style={{ textAlign: "left", paddingLeft: "40px" }}>
+            <Row style={{ marginLeft: "15px", marginRight: "15px" }} >
+                <Col className="highRise_table" style={{ textAlign: "left" }}>
                     <h5> &nbsp;&nbsp;&nbsp; {property.street_number + ' ' + property.route + ' , ' + property.locality} </h5>
                     {/* <CDataTable
                         items={bindingInfo}
