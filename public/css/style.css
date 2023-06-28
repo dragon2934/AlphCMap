@@ -2541,4 +2541,5 @@ a.business_link:visited {
 p.figure-caption {
   font-style: italic;
   margin-top: -10px;
+  line-height: 16px;
 }

@@ -132,7 +132,7 @@ const HowItWorks = () => {
                                     <p>
 
                                         <br /><br />
-                                        6.Custom design your targeted-email for maximum effect and increase your business revenue.
+                                        6. Custom design your targeted-email for maximum effect and increase your business revenue.
                                         <br /><br />
                                         <figure className="figure border_img">
                                             <img
