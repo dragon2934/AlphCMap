@@ -149,6 +149,7 @@ const Header = () => {
                             // history.push('/');
                             localStorage.removeItem("current_domain");
                             setTimeout(() => {
+                                window.location.href = '/';
                                 location.reload(true);
                             }, 500);
 

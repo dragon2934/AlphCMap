@@ -14,13 +14,14 @@ import { getBusinessProfile, saveMerchantConnection, disConnectionMerchant } fro
 import { changePropertyColor, cancelShowBusinessInfo } from '../../../redux/actionCreators/appActionCreators';
 import { useHistory } from 'react-router';
 import { setPropertyRegistrationForm } from '../../../redux/actionCreators/registrationActionCreators';
+import QRCode from "react-qr-code";
 const BusinessPortal = ({ match }) => {
 
     // console.log('..match..' + JSON.stringify(match));
     const propertyId = match.params.id;
     const utilsData = useSelector((state) => state.utilsData);
     const history = useHistory();
-
+    const shareUrl = "https://klosertoyou.com/business-portal/" + propertyId;
     const dispatch = useDispatch();
     // const property = utilsData.selectedProperty;
     // console.log('..property.. ' + JSON.stringify(property));
@@ -262,6 +263,15 @@ const BusinessPortal = ({ match }) => {
                         )
                     }
 
+                </Col>
+                <Col>
+                    <QRCode
+                        size={256}
+                        className={'logo-container'}
+                        style={{ marginTop: "20px", height: "100px", maxWidth: "100%", width: "100%" }}
+                        value={shareUrl}
+                        viewBox={`0 0 256 256`}
+                    />
                 </Col>
             </Row>
             <Row>

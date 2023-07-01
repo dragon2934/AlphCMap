@@ -120,7 +120,7 @@ const BusinessProfile = () => {
                         membershipId: 1,
 
                     }
-
+                    history.push('/');
                     // addProductToCard(proudct);
 
                 });

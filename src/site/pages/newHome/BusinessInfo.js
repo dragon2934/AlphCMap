@@ -69,6 +69,7 @@ import {
     WhatsappIcon,
     WorkplaceIcon
 } from "react-share";
+import QRCode from "react-qr-code";
 const PAGE_SIZE = 10;
 const BusinessInfo = ({ }) => {
 
@@ -203,7 +204,7 @@ const BusinessInfo = ({ }) => {
         }
     }
 
-    const shareUrl = "https://alphcmap.com/business-portal/" + property.id;
+    const shareUrl = "https://klosertoyou.com/business-portal/" + property.id;
     const title = "";
     const domain = localStorage.getItem("current_domain");
     const cbSendEmail = (e, property) => {
@@ -282,13 +283,13 @@ const BusinessInfo = ({ }) => {
             </> :
             <>
                 <Col md={6} sm={12} xs={12} className="overlay-form-container">
-                    <Link to={'/'}>
-                        <img
-                            className={'logo-container'}
-                            src={'/assets/img/logo-white.png'}
-                            alt={'logo'}
-                        />
-                    </Link>
+                    <QRCode
+                        size={256}
+                        className={'logo-container'}
+                        style={{ marginTop: "20px", height: "100px", maxWidth: "100%", width: "100%" }}
+                        value={shareUrl}
+                        viewBox={`0 0 256 256`}
+                    />
 
                     <Row style={{ width: "100%" }}>
 
