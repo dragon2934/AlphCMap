@@ -175,3 +175,7 @@
 .redux-toastr .top-right {
     top: 50px !important;
 }
+
+.unSubscribe-form label {
+    color: white;
+}

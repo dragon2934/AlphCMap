@@ -64,15 +64,24 @@ const FlyerForm = ({ callback }) => {
             setSubmitting(true);
             utilsData.drawFinished = false;
             let bindingEmails = [];
+            let bindingPhones = [];
+            let userPropertiesIds = [];
             properties.map((p) => {
                 console.log('....flyer form, property..' + JSON.stringify(p));
                 if (p.properties.bindingEmail) {
                     bindingEmails.push(p.properties.bindingEmail);
+                    bindingPhones.push(p.properties.bindingPhone);
+                    userPropertiesIds.push(p.properties.userPropertiesId);
                 }
             });
+            console.log('.. user..', user);
             bindingEmails.push(user.email);
+            bindingPhones.push(user.mobileNumber);
+            userPropertiesIds.push(0);
             const postData = {
                 emails: bindingEmails.join(','),
+                phones: bindingPhones.join(','),
+                properties: userPropertiesIds.join(','),
                 promotionTitle: values.promotionTitle,
                 promotionContent: values.promotionContent
             }

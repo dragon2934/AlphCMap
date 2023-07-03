@@ -11,11 +11,12 @@ import {
     Spinner
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { getBusinessProfile, unSubscribeMerchant } from '../../../redux/actionCreators/adminActionCreators';
+import { getBusinessProfile, unSubscribeMerchant, loadConnectedTotal } from '../../../redux/actionCreators/adminActionCreators';
 import { useHistory } from 'react-router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import TextArea from "antd/lib/input/TextArea";
+import { toastr } from 'react-redux-toastr';
 const bindingSchema = Yup.object().shape({
     content: Yup.string().required('This field is required'),
 });
@@ -25,11 +26,12 @@ const UnSubscribe = ({ match }) => {
     // console.log('..match..' + JSON.stringify(match));
     const history = useHistory();
     const queryPage = history.location.search;
-    const email = queryPage.split('=')[1]
+    const mobileNumber = queryPage.split('&')[0].split('=')[1];
+    const bindingProperty = queryPage.split('&')[1].split('=')[1];
     // console.log('..queryPage..' + queryPage);
     const propertyId = match.params.id;
     const utilsData = useSelector((state) => state.utilsData);
-
+    const [totalConnected, setTotalConnected] = useState(null);
     const dispatch = useDispatch();
     // const property = utilsData.selectedProperty;
     // console.log('..property.. ' + JSON.stringify(property));
@@ -68,6 +70,17 @@ const UnSubscribe = ({ match }) => {
         }
 
         );
+        const jsonData = {
+            id_type: 1,
+            id: propertyId
+        }
+        dispatch(loadConnectedTotal(jsonData)).then(resp => {
+            console.log('..get total ..' + JSON.stringify(resp));
+            let total1 = parseInt(resp.value.value[0].iCount) + parseInt(resp.value.value2);
+            setTotalConnected(total1 > 0 ? total1 : 0);
+        }).catch(error => {
+
+        });
         return () => { };
     }, [dispatch]);
 
@@ -82,12 +95,18 @@ const UnSubscribe = ({ match }) => {
             setSubmitting(true);
             const jsonData = {
                 propertyId: propertyId,
-                email: email,
-                message: values.content
+                mobileNumber: mobileNumber,
+                message: values.content,
+                bindingProperty: bindingProperty
             }
             dispatch(unSubscribeMerchant(jsonData)).then(resp => {
                 console.log('..unsubscribe return..' + JSON.stringify(resp));
-                setUnscribed(true);
+                if (resp.value.status === 'failed') {
+                    toastr.error('Error', resp.value.message);
+                    setSubmitting(false);
+                } else {
+                    setUnscribed(true);
+                }
             }).catch(error => {
                 console.log('..unscribe error..' + JSON.stringify(error));
             })
@@ -106,6 +125,7 @@ const UnSubscribe = ({ match }) => {
         values,
     } = formik;
 
+    const shareUrl = "https://klosertoyou.com/business-portal/" + propertyId;
     const [current, setCurrent] = useState(0);
     const limitWords = (e) => {
         const currentLength = e.target.value.length;
@@ -125,7 +145,7 @@ const UnSubscribe = ({ match }) => {
                 </Col>
             </Row> :
                 <Form onSubmit={handleSubmit} style={{ width: "80%" }}>
-                    <Row md={12} sm={12} xs={12} style={{ width: "100%" }}>
+                    <Row md={12} sm={12} xs={12} style={{ width: "100%" }} >
 
                         <Col style={{ textAlign: "left" }}>
                             {
@@ -133,27 +153,39 @@ const UnSubscribe = ({ match }) => {
                                     <>
 
                                         <Row>
-                                            <Col><h1>{companyProfile.companyName}</h1></Col> </Row>
-                                        <Row>   <Col><i className="fa-solid fa-address"></i> {property.streetNumber + ' ' + property.route + ' ' + property.locality + ',' + property.city + ',' + property.postalCode} </Col> </Row>
+                                            <Col><h3>{companyProfile.companyName}</h3></Col> </Row>
+                                        <Row>   <Col><i className="fa-solid fa-address"></i> {(property.unit_no ? property.unitNo + ' - ' : '') + property.streetNumber + ' ' + property.route + ' ' + property.locality + ',' + property.city + ',' + property.postalCode} </Col> </Row>
                                         <Row>   <Col><i className="fa-solid fa-phone"></i> {companyProfile.phone} </Col> </Row>
-                                        <Row>   <Col><i className="fa-solid fa-globe"></i> {companyProfile.website} </Col> </Row>
-                                        {property.binding_email && property.binding_email !== null && property.binding_email !== 'null' ? <Row>   <Col><i className="fa-solid fa-envelope"></i> {property.binding_email} </Col> </Row> : null}
+                                        {companyProfile.website ? <Row>   <Col><i className="fa-solid fa-globe"></i> <a href={companyProfile.website} className='business_link'>Company Website</a>  </Col> </Row> : null}
+                                        {totalConnected ? <Row>   <Col>Connected: {totalConnected} </Col> </Row> : null}
+                                        <Row>   <Col><i className="fa-solid fa-globe"></i> <a className='business_link' href={shareUrl} target="_blank"> {shareUrl}</a>
+
+                                        </Col> </Row>
+                                        {property.email && property.email !== null && property.email !== 'null' ? <Row>
+                                            <Col><i className="fa-solid fa-envelope"></i> {property.email + '@' + companyProfile.companyName + '.com'}
+                                                {property.connected !== "1" || (user !== undefined && user.property !== undefined && property.id === user.property.id) ? null : <Button size={'sm'} onClick={(e) => cbSendEmail(e, property)} >Send Email</Button>}
+                                            </Col>
+                                        </Row> : null}
+                                        <Row>
+                                            <Col> <hr /></Col>
+
+                                        </Row>
                                         <Row>
                                             <Col>Working Hours <hr /></Col>
 
                                         </Row>
-                                        <Row>
+                                        <Row className="unSubscribe-form">
                                             <Col md={3}>
-                                                <Label style={{ textAlign: "right" }} for="lblPropertyName">Monday:</Label>
+                                                <Label style={{ textAlign: "right", color: "white" }} for="lblPropertyName">Monday:</Label>
                                             </Col>
                                             {getWorkingHourValue(workingHour, 0, 3) === true ?
                                                 <>       <Col md={6}>
-                                                    <Label for="lblPropertyName">We're Closed </Label>
+                                                    <Label for="lblPropertyName" style={{ color: "white" }} >We're Closed </Label>
                                                 </Col>
                                                 </> :
                                                 <>
                                                     <Col md={6}>
-                                                        <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 0, 1)} - {getWorkingHourValue(workingHour, 0, 2)} </Label>
+                                                        <Label for="lblPropertyName" style={{ color: "white" }}> {getWorkingHourValue(workingHour, 0, 1)} - {getWorkingHourValue(workingHour, 0, 2)} </Label>
                                                     </Col>
                                                 </>
                                             }
@@ -161,16 +193,16 @@ const UnSubscribe = ({ match }) => {
                                         </Row>
                                         <Row>
                                             <Col md={3}>
-                                                <Label style={{ textAlign: "right" }} for="lblPropertyName">Tuesday:</Label>
+                                                <Label style={{ textAlign: "right", color: "white" }} for="lblPropertyName">Tuesday:</Label>
                                             </Col>
                                             {getWorkingHourValue(workingHour, 1, 3) === true ?
                                                 <>       <Col md={6}>
-                                                    <Label for="lblPropertyName">We're Closed </Label>
+                                                    <Label for="lblPropertyName" style={{ color: "white" }}>We're Closed </Label>
                                                 </Col>
                                                 </> :
                                                 <>
                                                     <Col md={6}>
-                                                        <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 1, 1)} - {getWorkingHourValue(workingHour, 1, 2)} </Label>
+                                                        <Label for="lblPropertyName" style={{ color: "white" }}> {getWorkingHourValue(workingHour, 1, 1)} - {getWorkingHourValue(workingHour, 1, 2)} </Label>
                                                     </Col>
                                                 </>
                                             }
@@ -178,16 +210,16 @@ const UnSubscribe = ({ match }) => {
                                         </Row>
                                         <Row>
                                             <Col md={3}>
-                                                <Label style={{ textAlign: "right" }} for="lblPropertyName">Wednesday:</Label>
+                                                <Label style={{ textAlign: "right", color: "white" }} for="lblPropertyName">Wednesday:</Label>
                                             </Col>
                                             {getWorkingHourValue(workingHour, 2, 3) === true ?
                                                 <>       <Col md={6}>
-                                                    <Label for="lblPropertyName">We're Closed </Label>
+                                                    <Label for="lblPropertyName" style={{ color: "white" }}>We're Closed </Label>
                                                 </Col>
                                                 </> :
                                                 <>
                                                     <Col md={6}>
-                                                        <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 2, 1)} - {getWorkingHourValue(workingHour, 2, 2)} </Label>
+                                                        <Label for="lblPropertyName" style={{ color: "white" }}> {getWorkingHourValue(workingHour, 2, 1)} - {getWorkingHourValue(workingHour, 2, 2)} </Label>
                                                     </Col>
                                                 </>
                                             }
@@ -195,16 +227,16 @@ const UnSubscribe = ({ match }) => {
                                         </Row>
                                         <Row>
                                             <Col md={3}>
-                                                <Label style={{ textAlign: "right" }} for="lblPropertyName">Thursday:</Label>
+                                                <Label style={{ textAlign: "right", color: "white" }} for="lblPropertyName">Thursday:</Label>
                                             </Col>
                                             {getWorkingHourValue(workingHour, 3, 3) === true ?
                                                 <>       <Col md={6}>
-                                                    <Label for="lblPropertyName">We're Closed </Label>
+                                                    <Label for="lblPropertyName" style={{ color: "white" }}>We're Closed </Label>
                                                 </Col>
                                                 </> :
                                                 <>
                                                     <Col md={6}>
-                                                        <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 3, 1)} - {getWorkingHourValue(workingHour, 3, 2)} </Label>
+                                                        <Label for="lblPropertyName" style={{ color: "white" }}> {getWorkingHourValue(workingHour, 3, 1)} - {getWorkingHourValue(workingHour, 3, 2)} </Label>
                                                     </Col>
                                                 </>
                                             }
@@ -212,16 +244,16 @@ const UnSubscribe = ({ match }) => {
                                         </Row>
                                         <Row>
                                             <Col md={3}>
-                                                <Label style={{ textAlign: "right" }} for="lblPropertyName">Friday:</Label>
+                                                <Label style={{ textAlign: "right", color: "white" }} for="lblPropertyName">Friday:</Label>
                                             </Col>
                                             {getWorkingHourValue(workingHour, 4, 3) === true ?
                                                 <>       <Col md={6}>
-                                                    <Label for="lblPropertyName">We're Closed </Label>
+                                                    <Label for="lblPropertyName" style={{ color: "white" }}>We're Closed </Label>
                                                 </Col>
                                                 </> :
                                                 <>
                                                     <Col md={6}>
-                                                        <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 4, 1)} - {getWorkingHourValue(workingHour, 4, 2)} </Label>
+                                                        <Label for="lblPropertyName" style={{ color: "white" }}> {getWorkingHourValue(workingHour, 4, 1)} - {getWorkingHourValue(workingHour, 4, 2)} </Label>
                                                     </Col>
                                                 </>
                                             }
@@ -229,16 +261,16 @@ const UnSubscribe = ({ match }) => {
                                         </Row>
                                         <Row>
                                             <Col md={3}>
-                                                <Label style={{ textAlign: "right" }} for="lblPropertyName">Saturday:</Label>
+                                                <Label style={{ textAlign: "right", color: "white" }} for="lblPropertyName">Saturday:</Label>
                                             </Col>
                                             {getWorkingHourValue(workingHour, 5, 3) === true ?
                                                 <>       <Col md={6}>
-                                                    <Label for="lblPropertyName">We're Closed </Label>
+                                                    <Label for="lblPropertyName" style={{ color: "white" }}>We're Closed </Label>
                                                 </Col>
                                                 </> :
                                                 <>
                                                     <Col md={6}>
-                                                        <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 5, 1)} - {getWorkingHourValue(workingHour, 5, 2)} </Label>
+                                                        <Label for="lblPropertyName" style={{ color: "white" }}> {getWorkingHourValue(workingHour, 5, 1)} - {getWorkingHourValue(workingHour, 5, 2)} </Label>
                                                     </Col>
                                                 </>
                                             }
@@ -246,16 +278,16 @@ const UnSubscribe = ({ match }) => {
                                         </Row>
                                         <Row>
                                             <Col md={3}>
-                                                <Label style={{ textAlign: "right" }} for="lblPropertyName">Sunday:</Label>
+                                                <Label style={{ textAlign: "right", color: "white" }} for="lblPropertyName">Sunday:</Label>
                                             </Col>
                                             {getWorkingHourValue(workingHour, 6, 3) == true ?
                                                 <>       <Col md={6}>
-                                                    <Label for="lblPropertyName">We're Closed </Label>
+                                                    <Label for="lblPropertyName" style={{ color: "white" }}>We're Closed </Label>
                                                 </Col>
                                                 </> :
                                                 <>
                                                     <Col md={6}>
-                                                        <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 6, 1)} - {getWorkingHourValue(workingHour, 6, 2)} </Label>
+                                                        <Label for="lblPropertyName" style={{ color: "white" }}> {getWorkingHourValue(workingHour, 6, 1)} - {getWorkingHourValue(workingHour, 6, 2)} </Label>
                                                     </Col>
                                                 </>
                                             }
