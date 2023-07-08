@@ -44,7 +44,7 @@ const validationSchema = Yup.object().shape({
     role: Yup.string().required('Role is required'),
 });
 
-const UserEdit = ({ match }) => {
+const TemplateEdit = ({ match }) => {
     const dispatch = useDispatch();
     const history = useHistory();
 
@@ -334,4 +334,4 @@ const UserEdit = ({ match }) => {
     );
 };
 
-export default UserEdit;
+export default TemplateEdit;

@@ -12,7 +12,7 @@ import AdminRoute from "./site/components/AdminRoute";
 
 import "./styles/common/styles.scss";
 
-const Admin = lazy(() => import("./admin/Admin"));
+// const Admin = lazy(() => import("./admin/Admin"));
 const Site = lazy(() => import("./site/Site"));
 // import {isAdmin} from './utils/authUtils';
 

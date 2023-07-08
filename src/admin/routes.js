@@ -9,12 +9,12 @@ const PropertyEdit = React.lazy(() =>
     import('./views/properties/PropertyEdit'),
 );
 
-const PropertyFileUpload = React.lazy(()=>import('./views/properties/file-upload'));
+const PropertyFileUpload = React.lazy(() => import('./views/properties/file-upload'));
 
 const routes = [
-    {path: '/admin/', exact: true, name: 'Home'},
+    { path: '/admin/', exact: true, name: 'Home' },
     // User Routes
-    {path: '/admin/users', exact: true, name: 'Users', component: Users},
+    { path: '/admin/users', exact: true, name: 'Users', component: Users },
     {
         path: '/admin/users/new',
         exact: true,
@@ -33,7 +33,7 @@ const routes = [
         name: 'Edit User',
         component: UserEdit,
     },
-   
+
     {
         path: '/admin/file-upload',
         exact: true,
@@ -64,30 +64,6 @@ const routes = [
         name: 'Edit Property',
         component: PropertyEdit,
     },
-    // {
-    //     path: '/admin/locations',
-    //     exact: true,
-    //     name: 'Locations',
-    //     component: PropertiesMap,
-    // },
-    // {
-    //     path: '/admin/alerts',
-    //     exact: true,
-    //     name: 'Alerts',
-    //     component: Alerts,
-    // },
-    // {
-    //     path: '/admin/alerts/new',
-    //     exact: true,
-    //     name: 'Create Alert',
-    //     component: CreateAlert,
-    // },
-    // {
-    //     path: '/admin/alerts/:id',
-    //     exact: true,
-    //     name: 'View Alert',
-    //     component: ViewAlert,
-    // },
     {
         path: '/admin/properties/:id',
         exact: true,

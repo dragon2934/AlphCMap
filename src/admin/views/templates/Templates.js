@@ -26,7 +26,7 @@ import { icons } from "../../assets/icons"
 
 React.icons = icons;
 
-const Users = () => {
+const Templates = () => {
     const history = useHistory();
     const queryPage = useLocation().search.match(/page=([0-9]+)/, '');
     const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1);
@@ -147,4 +147,4 @@ const Users = () => {
     );
 };
 
-export default Users;
+export default Templates;

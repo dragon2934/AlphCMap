@@ -18,6 +18,11 @@ import Header from '../../../site/pages/newHome/Header';
 // import utilsTools from '../../../utils/utils';
 const PAGE_SIZE = 20;
 
+import { TheContent, TheSidebar, TheFooter, TheHeader } from '../../containers/index';
+import { CContainer, CFade } from '@coreui/react';
+import '../../../styles/admin/style.scss';
+import { icons } from "../../assets/icons"
+
 const Properties = () => {
     const history = useHistory();
     const queryPage = useLocation().search.match(/page=([0-9]+)/, '');
@@ -52,81 +57,102 @@ const Properties = () => {
     console.log('properties: ', properties);
 
     return (
-        <main>
-            <Header />
-            <div className="content">
-                <CRow>
-                    <CCol>
-                        <CCard>
-                            <CCardHeader>
-                                Properties
-                                <small className="text-muted"> Properties</small>
-                                <div className="card-header-actions">
-                                    <CButton
-                                        tag={Link}
-                                        to={'/admin/file-upload'}
-                                        className="btn-ghost-primary h-auto"
-                                        size={'sm'}
-                                        color="primary">
-                                        File Upload
-                                    </CButton> &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <CButton
-                                        tag={Link}
-                                        to={'/admin/properties/new'}
-                                        className="btn-ghost-primary h-auto"
-                                        size={'sm'}
-                                        color="primary">
-                                        New Property
-                                    </CButton>
-                                </div>
-                            </CCardHeader>
-                            <CCardBody>
-                                <CDataTable
-                                    items={properties.map((p) => ({
-                                        ...p,
-                                        createdAt: p.createdAt.toString().split('T')[0],
-                                        serial_no: parseInt(p.serial_no),
-                                        location: '[' + p.location.latitude + ',' + p.location.longitude + ']'
-                                    }))}
-                                    loading={loading}
-                                    fields={[
-                                        { key: 'address', _classes: 'font-weight-bold' },
-                                        'area',
-                                        'serial_no',
-                                        'acreage',
-                                        'location',
-                                        'createdAt'
-                                    ]}
-                                    hover
-                                    striped
-                                    sorter
-                                    // columnFilter
-                                    tableFilter={{ 'placeholder': 'Keywords...' }}
-                                    itemsPerPage={PAGE_SIZE}
-                                    pagination
-                                    clickableRows
-                                    onRowClick={(item) =>
-                                        history.push(`/admin/properties/${item.id}`)
-                                    }
-                                />
-                                {
-                                    // parseInt(count / PAGE_SIZE) ? (
-                                    //     <CPagination
-                                    //         activePage={page}
-                                    //         size={'sm'}
-                                    //         onActivePageChange={pageChange}
-                                    //         doubleArrows={false}
-                                    //         pages={parseInt(Math.ceil(count / PAGE_SIZE))}
-                                    //         align="end"
-                                    //     />
-                                    // ) : null
-                                }
-                            </CCardBody>
-                        </CCard>
-                    </CCol>
-                </CRow>
+        <div className="c-app c-default-layout">
+            <TheSidebar />
+            <div className="c-wrapper">
+
+                <TheHeader />
+                <div className="c-body">
+                    <main className="c-main">
+                        <CContainer fluid className={'h-100'}>
+                            <div className="content">
+                                <CRow>
+                                    <CCol>
+                                        <CCard>
+                                            <CCardHeader>
+                                                Properties
+                                                <small className="text-muted"> Properties</small>
+                                                {/* <div className="card-header-actions">
+                                                    <CButton
+                                                        tag={Link}
+                                                        to={'/admin/file-upload'}
+                                                        className="btn-ghost-primary h-auto"
+                                                        size={'sm'}
+                                                        color="primary">
+                                                        File Upload
+                                                    </CButton> &nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <CButton
+                                                        tag={Link}
+                                                        to={'/admin/properties/new'}
+                                                        className="btn-ghost-primary h-auto"
+                                                        size={'sm'}
+                                                        color="primary">
+                                                        New Property
+                                                    </CButton>
+                                                </div> */}
+                                            </CCardHeader>
+                                            <CCardBody>
+                                                <CDataTable
+                                                    items={properties.map((p) => ({
+                                                        email: p.attributes.email,
+                                                        unitNo: p.attributes.unitNo,
+                                                        postalCode: p.attributes.postalCode,
+                                                        streetNumber: p.attributes.streetNumber,
+                                                        route: p.attributes.route,
+                                                        locality: p.attributes.locality,
+                                                        city: p.attributes.city,
+                                                        country: p.attributes.country,
+                                                        createdAt: p.attributes.createdAt.toString().split('T')[0],
+                                                        // serial_no: parseInt(p.serial_no),
+                                                        location: '[' + p.attributes.location.latitude + ',' + p.attributes.location.longitude + ']'
+                                                    }))}
+                                                    loading={loading}
+                                                    fields={[
+                                                        { key: 'email', _classes: 'font-weight-bold' },
+                                                        'unitNo',
+                                                        'postalCode',
+                                                        'streetNumber',
+                                                        'route',
+                                                        'locality',
+                                                        'city',
+                                                        'country',
+                                                        'createdAt'
+                                                    ]}
+                                                    hover
+                                                    striped
+                                                    sorter
+                                                    // columnFilter
+                                                    tableFilter={{ 'placeholder': 'Keywords...' }}
+                                                    itemsPerPage={PAGE_SIZE}
+                                                    pagination
+                                                    clickableRows
+                                                    onRowClick={(item) =>
+                                                        history.push(`/admin/properties/${item.id}`)
+                                                    }
+                                                />
+                                                {
+                                                    // parseInt(count / PAGE_SIZE) ? (
+                                                    //     <CPagination
+                                                    //         activePage={page}
+                                                    //         size={'sm'}
+                                                    //         onActivePageChange={pageChange}
+                                                    //         doubleArrows={false}
+                                                    //         pages={parseInt(Math.ceil(count / PAGE_SIZE))}
+                                                    //         align="end"
+                                                    //     />
+                                                    // ) : null
+                                                }
+                                            </CCardBody>
+                                        </CCard>
+                                    </CCol>
+                                </CRow>
+                            </div>
+                        </CContainer>
+                    </main>
+                </div>
+                <TheFooter />
             </div>
-        </main>
+        </div>
     );
 };
 

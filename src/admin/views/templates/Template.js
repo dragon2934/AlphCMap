@@ -24,7 +24,7 @@ import { CContainer, CFade } from '@coreui/react';
 import '../../../styles/admin/style.scss';
 import { icons } from "../../assets/icons"
 
-const User = ({ match }) => {
+const Template = ({ match }) => {
     const dispatch = useDispatch();
 
     const [record, setRecord] = useState(null);
@@ -152,4 +152,4 @@ const User = ({ match }) => {
     );
 };
 
-export default User;
+export default Template;

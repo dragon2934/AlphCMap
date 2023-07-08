@@ -18,7 +18,7 @@ import { setEditMode } from '../../../redux/actionCreators/registrationActionCre
 import { deleteAccount } from '../../../redux/actionCreators/appActionCreators';
 import { logoutUser } from '../../../redux/actionCreators/authActionCreators';
 import { toastr } from 'react-redux-toastr';
-import { getLoginType, setLoginType, clearLoginType } from '../../../utils/utils';
+import { getLoginType, setLoginType, clearLoginType, checkUseLevel } from '../../../utils/utils';
 import { loadConnectedTotal, sendPasswordBeforeDeleteAccount } from '../../../redux/actionCreators/adminActionCreators';
 // import { useMitt } from 'react-mitt'
 import EventBus from '../../../utils/eventBus';
@@ -65,9 +65,10 @@ const Header = () => {
     loginType = getLoginType();
     // console.log('...loginType=' + loginType);
     // const [connectionSwitch, setConnectionSwitch] = useState(parseInt(loginType) === 2 ? true : false);
+    let roleName = ''
     if (user !== null && user !== undefined && user.property !== null && user.property !== undefined) {
-        //  console.log('user.property =' + JSON.stringify(user.property));
-
+        // console.log('user =' + JSON.stringify(user));
+        roleName = user.role.name;
         // console.log('..loginType=..' + loginType);
         if (user.companyName) {
             userEmail = user.property.email + '@' + user.companyName + '.com';
@@ -212,14 +213,14 @@ const Header = () => {
                             onstyle="btn-success"
                         /> : null}
                     </NavItem>
-                    {/* <NavItem>
+                    {checkUseLevel(roleName) === 1 ? <NavItem>
                         <NavLink
                             tag={ReactRouterLink}
                             onClick={collapse}
-                            to="/pricing">
-                            Pricing
+                            to="/admin/users">
+                            Admin
                         </NavLink>
-                    </NavItem> */}
+                    </NavItem> : null}
                     <NavItem>
                         <NavLink
                             tag={ReactRouterLink}

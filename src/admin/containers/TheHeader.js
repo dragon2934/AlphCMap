@@ -7,13 +7,13 @@ import {
     CToggler,
 } from '@coreui/react';
 import React from "react";
-import {useDispatch, useSelector} from 'react-redux';
-import {setShowSidebar} from '../../redux/actionCreators/adminActionCreators';
+import { useDispatch, useSelector } from 'react-redux';
+import { setShowSidebar } from '../../redux/actionCreators/adminActionCreators';
 
 // routes config
 import routes from '../routes';
 
-import {TheHeaderDropdown} from './index';
+import { TheHeaderDropdown } from './index';
 
 const TheHeader = () => {
     const dispatch = useDispatch();

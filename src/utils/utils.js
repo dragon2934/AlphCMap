@@ -50,11 +50,7 @@ export const utilsTools = {
         //  console.log('makeData:' + JSON.stringify(tableData));
         return tableData;
     },
-    checkUseLevel: (roleName) => {
-        if (roleName === process.env.REACT_APP_ROLE_ADMIN_NAME) return 1;
-        if (roleName === process.env.REACT_APP_ROLE_PM_NAME) return 1;
-        return 3;
-    },
+
     isAppEmbedWebview: () => {
         return window.ReactNativeWebView ? true : false
     },
@@ -71,6 +67,11 @@ export const utilsTools = {
 
 
 
+}
+export const checkUseLevel = (roleName) => {
+    if (roleName === process.env.REACT_APP_ROLE_ADMIN_NAME) return 1;
+    if (roleName === process.env.REACT_APP_ROLE_PM_NAME) return 1;
+    return 3;
 }
 export const generateString = (length) => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
