@@ -21,13 +21,22 @@ import { useHistory } from 'react-router';
 import * as Yup from 'yup';
 // import MapContext from '../../../common/contexts/MapContext/MapContext';
 import {
-    fetchRoles,
+
+    fetchTemplate,
     fetchUser,
-    saveUser,
+    saveTemplate,
     saveTenant
 } from '../../../redux/actionCreators/adminActionCreators';
 import MobileInput from '../../../common/components/MobileInput';
 import Header from '../../../site/pages/newHome/Header';
+
+import TextArea from "antd/lib/input/TextArea";
+import { Editor } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
+import { EditorState, convertToRaw } from 'draft-js';
+
 
 import { TheContent, TheSidebar, TheFooter, TheHeader } from '../../containers/index';
 import { CContainer, CFade } from '@coreui/react';
@@ -35,13 +44,11 @@ import '../../../styles/admin/style.scss';
 import { icons } from "../../assets/icons"
 
 const validationSchema = Yup.object().shape({
-    mobileNumber: Yup.number().required('Mobile number is required'),
-    firstName: Yup.string(),
-    lastName: Yup.string(),
-    password: Yup.string()
-        .min(6, 'Password is  too Short!')
-        .max(16, 'Password is too Long!'),
-    role: Yup.string().required('Role is required'),
+    from_name: Yup.string().required('From name is required'),
+    template_name: Yup.string().required('Template name is required'),
+    subject: Yup.string().required('Subject is required'),
+
+
 });
 
 const TemplateEdit = ({ match }) => {
@@ -52,60 +59,39 @@ const TemplateEdit = ({ match }) => {
     const loginedUser = useSelector((state) => state.auth.me);
 
 
+    const [editorState, setEditorState] = useState(EditorState.createEmpty())
+
     // console.log('loginedUser=' + JSON.stringify(loginedUser.role));
     const formik = useFormik({
         initialValues: {
             id: match.params.id,
-            mobileNumber: '',
-            firstName: '',
-            lastName: '',
-            email: '',
-            password: '',
-
-            username: '',
-            role: '',
-            // property: undefined,
-            emailVerified: true,
-            mobileVerified: true,
-            createAt: '',
-            blocked: false,
-            confirmed: true,
-            location: {},
+            from_name: '',
+            template_name: '',
+            subject: '',
+            from_email: '',
+            template_body: '',
         },
         validationSchema,
         onSubmit: (values, { setSubmitting }) => {
             setSubmitting(true);
+            //PM add a tenant
+            const user = {
+                ...values,
+                owner_id: loginedUser.id,
+                tenant: loginedUser.id,
+                // propertyId: property!=null && property!=undefined ? property.id:landlordId,
+                // unitNo: unitNo
+            };
 
-            if (loginedUser.role.name === process.env.REACT_APP_ROLE_PM_NAME) {
-                //PM add a tenant
-                const user = {
-                    ...values,
-                    tenant: loginedUser.tenant,
-                    // propertyId: property!=null && property!=undefined ? property.id:landlordId,
-                    // unitNo: unitNo
-                };
+            dispatch(saveTemplate(user))
+                .then((resp) => {
+                    console.log('..save template..', resp);
+                    if (match.params.id)
+                        history.push(`/admin/templates/${match.params.id}`);
+                    else history.push('/admin/templates');
+                })
+                .catch(() => setSubmitting(false));
 
-                dispatch(saveTenant(user))
-                    .then(() => {
-                        if (match.params.id)
-                            history.push(`/admin/users/${match.params.id}`);
-                        else history.push('/admin/users');
-                    })
-                    .catch(() => setSubmitting(false));
-            } else {
-                const user = {
-                    ...values,
-                    tenant: loginedUser.tenant,
-                };
-
-                dispatch(saveUser(user))
-                    .then(() => {
-                        if (match.params.id)
-                            history.push(`/admin/users/${match.params.id}`);
-                        else history.push('/admin/users');
-                    })
-                    .catch(() => setSubmitting(false));
-            }
         },
     });
 
@@ -129,17 +115,17 @@ const TemplateEdit = ({ match }) => {
     // const [landlordId,setLandlordId] = useState('');
     useEffect(() => {
         if (match.params.id) {
-            dispatch(fetchUser(match.params.id)).then(({ value: user }) => {
-                delete user.user_alert;
+            dispatch(fetchTemplate(match.params.id)).then(({ value: record }) => {
+
 
                 setValues({
-                    ...user,
-                    role: user.role.id,
-                    // property: user.property.id,
+                    id: record.data.id,
+                    template_name: record.data.attributes.template_name,
+                    subject: record.data.attributes.subject,
+                    from_email: record.data.attributes.from_email,
+                    from_name: record.data.attributes.from_name,
+                    template_body: record.data.attributes.template_body,
                 });
-
-                // setLandlordId(user.property.landlordId); //房东的ID
-                console.log('property =' + JSON.stringify(user.property));
 
             });
         }
@@ -147,190 +133,211 @@ const TemplateEdit = ({ match }) => {
     }, [dispatch, loginedUser, match.params.id, setValues]);
 
 
+    const onEditorStateChange = (state) => {
+        setEditorState(state);
+        const htmlContent = draftToHtml(convertToRaw(state.getCurrentContent()));
+        console.log('..htmlContent..' + htmlContent);
+        // const title = values.promotionTitle;
+        setValues({
+            ...values,
+            template_body: htmlContent
+        })
+    }
+    const [uploadedImages, setUploadedImages] = useState([]);
+    const uploadCallback = async (fileData) => {
+        let formData = new FormData();
 
-    useEffect(() => {
-        dispatch(fetchRoles());
-    }, [dispatch]);
+        formData.append("files", fileData);
 
+        const imgData = await http.post(apiUrl + "/upload", formData, {
+            headers: {
+                // "Content-Type": "multipart/form-data",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+        console.log('..imgData..' + JSON.stringify(imgData));
+        return Promise.resolve({
+            data: {
+                link: `https://rest.alphcmap.com${imgData.data[0].url}`
+            }
+        });
+    }
     // const [unitNo,setUnitNo] = useState('');
     return (
-        <main>
-            <Header />
-            <div className="content">
-                <CRow>
-                    <CCol md={12}>
-                        <CForm onSubmit={handleSubmit}>
-                            <CCard>
-                                <CCardHeader>User id: {match.params.id}</CCardHeader>
-                                <CCardBody>
-                                    <CCol xs="12">
-                                        <CFormGroup>
-                                            <CLabel htmlFor="firstName">
-                                                First Name
-                                            </CLabel>
-                                            <CInput
-                                                id="firstName"
-                                                name="firstName"
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.firstName}
-                                                invalid={
-                                                    touched.firstName &&
-                                                    errors.firstName
-                                                }
-                                            />
-                                            <CInvalidFeedback>
-                                                {errors.firstName}
-                                            </CInvalidFeedback>
-                                        </CFormGroup>
-                                    </CCol>
-                                    <CCol xs="12">
-                                        <CFormGroup>
-                                            <CLabel htmlFor="lastName">
-                                                Last Name
-                                            </CLabel>
-                                            <CInput
-                                                id="lastName"
-                                                name="lastName"
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.lastName}
-                                                invalid={
-                                                    touched.lastName && errors.lastName
-                                                }
-                                            />
-                                            <CInvalidFeedback>
-                                                {errors.lastName}
-                                            </CInvalidFeedback>
-                                        </CFormGroup>
-                                    </CCol>
-                                    <CCol xs="12">
-                                        <CFormGroup>
-                                            <CLabel htmlFor="username">
-                                                User Name
-                                            </CLabel>
-                                            <CInput
-                                                id="username"
-                                                name="username"
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.username}
-                                                invalid={
-                                                    touched.username && errors.username
-                                                }
-                                            />
-                                            <CInvalidFeedback>
-                                                {errors.username}
-                                            </CInvalidFeedback>
-                                        </CFormGroup>
-                                    </CCol>
-                                    <CCol xs="12">
-                                        <CFormGroup>
-                                            <CLabel htmlFor="mobileNumber">
-                                                Mobile Number
-                                            </CLabel>
-                                            <MobileInput
-                                                setFieldValue={setFieldValue}
-                                                setFieldTouched={setFieldTouched}
-                                                placeholder="Mobile Number"
-                                                name={'mobileNumber'}
-                                                value={values.mobileNumber}
-                                                invalid={
-                                                    touched.mobileNumber &&
-                                                    errors.mobileNumber
-                                                }
-                                            />
-                                            <CInvalidFeedback>
-                                                {errors.mobileNumber}
-                                            </CInvalidFeedback>
-                                        </CFormGroup>
-                                    </CCol>
-                                    <CCol xs="12">
-                                        <CFormGroup>
-                                            <CLabel htmlFor="email">Email</CLabel>
-                                            <CInput
-                                                id="email"
-                                                name="email"
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.email}
-                                                invalid={touched.email && errors.email}
-                                            />
-                                            <CInvalidFeedback>
-                                                {errors.email}
-                                            </CInvalidFeedback>
-                                        </CFormGroup>
-                                    </CCol>
+        <div className="c-app c-default-layout">
+            <TheSidebar />
+            <div className="c-wrapper">
 
-                                    <CCol xs="12">
-                                        <CFormGroup>
-                                            <CLabel htmlFor="role">Role</CLabel>
-                                            <CSelect
-                                                custom
-                                                id="role"
-                                                name="role"
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.role}
-                                                invalid={touched.role && errors.role}>
-                                                <option value="">Please select</option>
-                                                {roles.map((r) => (
-                                                    <option key={r.id} value={r.id}>
-                                                        {r.name}
-                                                    </option>
-                                                ))}
-                                            </CSelect>
-                                            <CInvalidFeedback>
-                                                {errors.role}
-                                            </CInvalidFeedback>
-                                        </CFormGroup>
-                                    </CCol>
-                                    <CCol xs="12">
-                                        <CFormGroup>
-                                            <CLabel htmlFor="password">Password</CLabel>
-                                            <CInput
-                                                id="password"
-                                                name="password"
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.password}
-                                                invalid={
-                                                    touched.password && errors.password
-                                                }
-                                            />
-                                            <CInvalidFeedback>
-                                                {errors.password}
-                                            </CInvalidFeedback>
-                                        </CFormGroup>
-                                    </CCol>
+                <TheHeader />
+                <div className="c-body">
+                    <main className="c-main">
+                        <CContainer fluid className={'h-100'}>
+                            <div className="content">
+                                <CRow>
+                                    <CCol md={12}>
+                                        <CForm onSubmit={handleSubmit}>
+                                            <CCard>
+                                                <CCardHeader>Template id: {match.params.id}</CCardHeader>
+                                                <CCardBody>
+                                                    <CCol xs="12">
+                                                        <CFormGroup>
+                                                            <CLabel htmlFor="template_name">
+                                                                Template Name
+                                                            </CLabel>
+                                                            <CInput
+                                                                id="template_name"
+                                                                name="template_name"
+                                                                onChange={handleChange}
+                                                                onBlur={handleBlur}
+                                                                value={values.template_name}
+                                                                invalid={
+                                                                    touched.template_name &&
+                                                                    errors.template_name
+                                                                }
+                                                            />
+                                                            <CInvalidFeedback>
+                                                                {errors.template_name}
+                                                            </CInvalidFeedback>
+                                                        </CFormGroup>
+                                                    </CCol>
+                                                    <CCol xs="12">
+                                                        <CFormGroup>
+                                                            <CLabel htmlFor="subject">
+                                                                Subject
+                                                            </CLabel>
+                                                            <CInput
+                                                                id="subject"
+                                                                name="subject"
+                                                                onChange={handleChange}
+                                                                onBlur={handleBlur}
+                                                                value={values.subject}
+                                                                invalid={
+                                                                    touched.subject && errors.subject
+                                                                }
+                                                            />
+                                                            <CInvalidFeedback>
+                                                                {errors.subject}
+                                                            </CInvalidFeedback>
+                                                        </CFormGroup>
+                                                    </CCol>
+                                                    <CCol xs="12">
+                                                        <CFormGroup>
+                                                            <CLabel htmlFor="from_email">
+                                                                From Email
+                                                            </CLabel>
+                                                            <CInput
+                                                                id="from_email"
+                                                                name="from_email"
+                                                                onChange={handleChange}
+                                                                onBlur={handleBlur}
+                                                                value={values.from_email}
+                                                                invalid={
+                                                                    touched.from_email && errors.from_email
+                                                                }
+                                                            />
+                                                            <CInvalidFeedback>
+                                                                {errors.from_email}
+                                                            </CInvalidFeedback>
+                                                        </CFormGroup>
+                                                    </CCol>
+                                                    <CCol xs="12">
+                                                        <CFormGroup>
+                                                            <CLabel htmlFor="from_name">
+                                                                From Name
+                                                            </CLabel>
+                                                            <CInput
+                                                                id="from_name"
+                                                                name="from_name"
+                                                                onChange={handleChange}
+                                                                onBlur={handleBlur}
+                                                                value={values.from_name}
+                                                                invalid={
+                                                                    touched.from_name && errors.from_name
+                                                                }
+                                                            />
+                                                            <CInvalidFeedback>
+                                                                {errors.from_name}
+                                                            </CInvalidFeedback>
+                                                        </CFormGroup>
+                                                    </CCol>
+                                                    <CCol xs="12">
+                                                        <TextArea
+                                                            disabled
+                                                            style={{ width: "1px", height: "1px", visibility: "hidden" }}
+                                                            type="text"
+                                                            name="template_body"
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
 
-                                </CCardBody>
-                                <CCardFooter className="text-right">
-                                    <CButton
-                                        disabled={!isValid || isSubmitting}
-                                        type="submit"
-                                        size="sm"
-                                        color="primary">
-                                        {isSubmitting ? (
-                                            <CSpinner size="sm" />
-                                        ) : (
-                                            'Submit'
-                                        )}
-                                    </CButton>{' '}
-                                    <CButton
-                                        type="reset"
-                                        size="sm"
-                                        color="danger"
-                                        onClick={() => resetForm()}>
-                                        Reset
-                                    </CButton>
-                                </CCardFooter>
-                            </CCard>
-                        </CForm>
-                    </CCol>
-                </CRow>
+                                                            value={values.template_body}
+                                                            invalid={touched.template_body && errors.template_body}
+                                                        />
+                                                        <Editor
+                                                            editorState={editorState}
+                                                            toolbarClassName="toolbarClassName"
+                                                            wrapperClassName="wrapperClassName"
+                                                            editorClassName="editorClassName"
+                                                            onEditorStateChange={onEditorStateChange}
+                                                            toolbar={{
+                                                                options: ['inline', 'fontSize', 'fontFamily', 'list',
+                                                                    'textAlign', 'colorPicker', 'link', 'image'],
+                                                                link: {
+                                                                    defaultTargetOption: '_blank',
+                                                                    popupClassName: "mail-editor-link"
+                                                                },
+                                                                image: {
+                                                                    urlEnabled: true,
+                                                                    uploadEnabled: true,
+                                                                    uploadCallback: uploadCallback,
+                                                                    alignmentEnabled: true,
+                                                                    defaultSize: {
+                                                                        height: 'auto',
+                                                                        width: '600px',
+                                                                    },
+                                                                    inputAccept: 'application/pdf,text/plain,application/vnd.openxmlformatsofficedocument.wordprocessingml.document,application/msword,application/vnd.ms-excel,image/gif,image/jpeg,image/jpg,image/png,image/svg'
+                                                                }
+                                                            }}
+                                                        />
+                                                    </CCol>
+
+
+
+
+                                                </CCardBody>
+                                                <CCardFooter className="text-right">
+                                                    <CButton
+                                                        disabled={!isValid || isSubmitting}
+                                                        type="submit"
+                                                        size="sm"
+                                                        color="primary">
+                                                        {isSubmitting ? (
+                                                            <CSpinner size="sm" />
+                                                        ) : (
+                                                            'Submit'
+                                                        )}
+                                                    </CButton>{' '}
+                                                    <CButton
+                                                        type="reset"
+                                                        size="sm"
+                                                        color="danger"
+                                                        onClick={() => resetForm()}>
+                                                        Reset
+                                                    </CButton>
+                                                </CCardFooter>
+                                            </CCard>
+                                        </CForm>
+                                    </CCol>
+                                </CRow>
+                                <CRow>
+                                    <br /> <br /> <br /> <br /> <br />
+                                </CRow>
+                            </div>
+                        </CContainer>
+                    </main>
+                </div>
+                <TheFooter />
             </div>
-        </main>
+        </div>
     );
 };
 

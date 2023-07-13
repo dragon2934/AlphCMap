@@ -146,6 +146,9 @@ const BusinessInfo = ({ }) => {
         return () => { };
     }, [dispatch, property]);
 
+    const editBusinessProfile = () => {
+        history.push('/business-profile?id=' + property.id);
+    }
     const disConnectToMerchant = () => {
         const jsonData = {
             merchant_property_id: property.id
@@ -467,7 +470,13 @@ const BusinessInfo = ({ }) => {
 
                     <Row>
                         {
-                            user !== undefined && user.property !== undefined && property.id === user.property.id ? null :
+                            user !== undefined && user.property !== undefined && property.id === user.property.id ? <Col><Button
+
+                                color={'success'}
+                                block
+                                onClick={() => editBusinessProfile()}>
+                                Edit
+                            </Button></Col> :
                                 companyProfile ? <Col>
 
                                     {property.connected === "1" ?

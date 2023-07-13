@@ -15,9 +15,10 @@ import { Link } from "react-router-dom";
 
 import {
     deleteUser,
-    fetchUser,
+    fetchTemplate,
 } from '../../../redux/actionCreators/adminActionCreators';
 import Header from '../../../site/pages/newHome/Header';
+// import ReactHtmlParser from 'react-html-parser';
 
 import { TheContent, TheSidebar, TheFooter, TheHeader } from '../../containers/index';
 import { CContainer, CFade } from '@coreui/react';
@@ -32,15 +33,15 @@ const Template = ({ match }) => {
 
     useEffect(() => {
         if (match.params.id)
-            dispatch(fetchUser(match.params.id)).then(({ value: record }) =>
-                setRecord(record),
+            dispatch(fetchTemplate(match.params.id)).then(({ value: record }) =>
+                setRecord(record.data),
             );
     }, [dispatch, match.params.id]);
 
 
     const history = useHistory();
 
-    const onClickDeleteUser = useCallback(() => {
+    const onClickDeleteTemplate = useCallback(() => {
         if (record.user_alert) {
             toastr.error(
                 'Unsuccessful',
@@ -64,22 +65,18 @@ const Template = ({ match }) => {
 
     if (!record) return null;
 
-    const user = {
+    const template = {
         id: record.id,
-        email: record.email,
-        username: record.username,
-        mobileNumber: record.mobileNumber,
-        role: record.role.name,
-        firstName: record.firstName,
-        lastName: record.lastName,
-        // property: record.property ? record.property.email : '',
-        // emailVerified: record.emailVerified.toString(),
-        // mobileVerified: record.mobileVerified.toString(),
-        createdAt: record.createdAt
+        template_name: record.attributes.template_name,
+        subject: record.attributes.subject,
+        from_email: record.attributes.from_email,
+        from_name: record.attributes.from_name,
+        template_body: record.attributes.template_body,
+        createdAt: record.attributes.createdAt
     };
 
-    const userDetails = user
-        ? Object.entries(user)
+    const templateDetails = template
+        ? Object.entries(template)
         : [
             [
                 'id',
@@ -104,33 +101,38 @@ const Template = ({ match }) => {
                                     <CCol md={12}>
                                         <CCard>
                                             <CCardHeader>
-                                                User id: {match.params.id}
+                                                Template id: {match.params.id}
                                                 <div className="card-header-actions">
                                                     <CButton
-                                                        onClick={onClickDeleteUser}
+                                                        onClick={onClickDeleteTemplate}
                                                         className="btn-ghost-danger h-auto"
                                                         size={'sm'}>
-                                                        Delete User
+                                                        Delete Template
                                                     </CButton>
                                                     <CButton
                                                         tag={Link}
-                                                        to={`/admin/edit/user/${match.params.id}`}
+                                                        to={`/admin/edit/templates/${match.params.id}`}
                                                         className="btn-ghost-warning h-auto"
                                                         size={'sm'}>
-                                                        Edit User
+                                                        Edit Template
                                                     </CButton>
                                                 </div>
                                             </CCardHeader>
                                             <CCardBody>
-                                                <h3>User Details</h3>
+                                                <h3>Template Details</h3>
                                                 <table className="table table-striped table-hover">
                                                     <tbody>
-                                                        {userDetails.map(([key, value], index) => {
+                                                        {templateDetails.map(([key, value], index) => {
                                                             return (
                                                                 <tr key={index.toString()}>
                                                                     <td>{`${key}:`}</td>
                                                                     <td>
-                                                                        <strong>{value}</strong>
+                                                                        <strong>{
+                                                                            key === 'template_body' ? <div
+                                                                                dangerouslySetInnerHTML={{ __html: value }}
+                                                                            /> : value
+
+                                                                        }</strong>
                                                                     </td>
                                                                 </tr>
                                                             );

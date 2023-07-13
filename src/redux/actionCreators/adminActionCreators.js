@@ -42,7 +42,9 @@ import {
     ADMIN_GET_ADDRESS_BY_TYPE,
     ADMIN_CHECK_BUSINESS_PROFILE,
     ADMIN_GET_HIGHRISE_INFO,
-    ADMIN_GET_HIGHRISE_BUSINESS_INFO
+    ADMIN_GET_HIGHRISE_BUSINESS_INFO,
+    ADMIN_FETCH_ACTION,
+    ADMIN_SAVE_ACTION
 } from '../actionTypes';
 
 import { getLoginType } from '../../utils/utils';
@@ -1466,6 +1468,92 @@ export const getHighRiseBusinessInfo = (email) => {
                 body: JSON.stringify({
                     email,
                 })
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const fetchTemplates = (ownerId, { page = 1, pageSize = 10 }) => {
+    const start = (page - 1) * pageSize;
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_FETCH_ACTION,
+            payload: fetch(`${SERVICE_URL}/templates?_start=${start}&_limit=${pageSize}&filters[$and][0][owner_id][$eq]=${ownerId}`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'GET',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+export const fetchTemplate = (id) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_FETCH_ACTION,
+            payload: fetch(`${SERVICE_URL}/templates/${id}`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'GET',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const saveTemplate = (data) => {
+
+    const jsonData = {
+        data: data
+    }
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        const url = data.id
+            ? `${SERVICE_URL}/templates/${data.id}`
+            : `${SERVICE_URL}/templates`;
+
+        console.log('save templates=' + JSON.stringify(data));
+        return dispatch({
+            type: ADMIN_SAVE_ACTION,
+            payload: fetch(url, {
+                body: JSON.stringify(jsonData),
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: data.id ? 'PUT' : 'POST',
             })
                 .then((r) => r.json())
                 .then((responseData) => {

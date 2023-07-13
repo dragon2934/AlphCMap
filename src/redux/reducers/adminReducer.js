@@ -6,8 +6,9 @@ import {
     ADMIN_FETCH_ROLES,
     ADMIN_FETCH_USERS,
     ADMIN_SHOW_SIDEBAR,
-    ADMIN_GET_BUSINESS_PROFILE
-
+    ADMIN_GET_BUSINESS_PROFILE,
+    ADMIN_FETCH_ACTION,
+    ADMIN_SAVE_ACTION
 } from '../actionTypes';
 
 const initialState = {
@@ -30,6 +31,8 @@ function adminReducer(state = initialState, action) {
                 ...state,
                 users: [],
             };
+        case `${ADMIN_SAVE_ACTION}}_${ActionType.Fulfilled}`:
+        case `${ADMIN_FETCH_ACTION}_${ActionType.Fulfilled}`:
         case `${ADMIN_GET_BUSINESS_PROFILE}_${ActionType.Fulfilled}`:
             return {
                 ...state,
