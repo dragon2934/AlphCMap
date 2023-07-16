@@ -2,7 +2,7 @@ import React from 'react';
 import { Col, Container, Row } from 'reactstrap';
 import Footer from './Footer';
 import Header from './Header';
-const TermsOfUse = () => {
+const UnSubscribed = () => {
     return (
         <main>
             <Header />
@@ -20,4 +20,4 @@ const TermsOfUse = () => {
     );
 };
 
-export default TermsOfUse;
+export default UnSubscribed;
