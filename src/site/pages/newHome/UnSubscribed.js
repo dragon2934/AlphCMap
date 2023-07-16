@@ -2,6 +2,7 @@ import React from 'react';
 import { Col, Container, Row } from 'reactstrap';
 import Footer from './Footer';
 import Header from './Header';
+import { Link } from 'react-router-dom';
 const UnSubscribed = () => {
     return (
         <Col md={12} sm={12} xs={12} className="overlay-form-container">
