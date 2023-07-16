@@ -44,7 +44,8 @@ import {
     ADMIN_GET_HIGHRISE_INFO,
     ADMIN_GET_HIGHRISE_BUSINESS_INFO,
     ADMIN_FETCH_ACTION,
-    ADMIN_SAVE_ACTION
+    ADMIN_SAVE_ACTION,
+    ADMIN_DELETE_ACTION
 } from '../actionTypes';
 
 import { getLoginType } from '../../utils/utils';
@@ -1554,6 +1555,31 @@ export const saveTemplate = (data) => {
                     Authorization: `Bearer ${token}`,
                 },
                 method: data.id ? 'PUT' : 'POST',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+export const deleteTemplate = (id) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_DELETE_ACTION,
+            payload: fetch(`${SERVICE_URL}/templates/${id}`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'DELETE',
             })
                 .then((r) => r.json())
                 .then((responseData) => {

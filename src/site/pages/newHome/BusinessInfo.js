@@ -458,7 +458,7 @@ const BusinessInfo = ({ }) => {
                                     </>
                                     : <>
                                         <Row>
-                                            {loading ? null : <Col> Profile not setup yet! </Col>}
+                                            {loading ? null : <Col> Login and complete business registration! </Col>}
                                         </Row>
 
                                     </>
@@ -470,7 +470,7 @@ const BusinessInfo = ({ }) => {
 
                     <Row>
                         {
-                            user !== undefined && user.property !== undefined && property.id === user.property.id ? <Col><Button
+                            parseInt(loginType) === 2 && user !== undefined && user.property !== undefined && property.id === user.property.id ? <Col><Button
 
                                 color={'success'}
                                 block

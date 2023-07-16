@@ -50,6 +50,8 @@ import BusinessProfile from "./pages/newHome/BusinessProfile";
 import Cart from "./pages/cart";
 import BusinessPortal from "./pages/newHome/BusinessPortal";
 import UnSubscribe from "./pages/newHome/UnSubscribe";
+import UnSubscribed from "./pages/newHome/UnSubscribed";
+
 import Connect from "./pages/newHome/Connect";
 import ResetPassword from "./pages/newHome/ResetPassword";
 import VerifyResetPassword from './pages/newHome/VerifyResetPassword';
@@ -125,6 +127,7 @@ const Site = () => {
       <Route exact path="/business-profile" component={BusinessProfile} />
       <Route exact path="/business-portal/:id" component={BusinessPortal} />
       <Route exact path="/un-subscribe/:id" component={UnSubscribe} />
+      <Route exact path="/unsubscribed" component={UnSubscribed} />
 
 
       <Route exact path="/about-us" component={AboutUs} />

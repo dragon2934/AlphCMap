@@ -11,7 +11,6 @@ import {
     CInvalidFeedback,
     CLabel,
     CRow,
-    CSelect,
     CSpinner,
 } from '@coreui/react';
 import { useFormik } from 'formik';
@@ -23,25 +22,19 @@ import * as Yup from 'yup';
 import {
 
     fetchTemplate,
-    fetchUser,
-    saveTemplate,
-    saveTenant
+    saveTemplate
 } from '../../../redux/actionCreators/adminActionCreators';
-import MobileInput from '../../../common/components/MobileInput';
-import Header from '../../../site/pages/newHome/Header';
 
 import TextArea from "antd/lib/input/TextArea";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftToHtml from 'draftjs-to-html';
-import htmlToDraft from 'html-to-draftjs';
-import { EditorState, convertToRaw } from 'draft-js';
+import { EditorState, convertToRaw, ContentState, convertFromHTML } from 'draft-js';
 
 
-import { TheContent, TheSidebar, TheFooter, TheHeader } from '../../containers/index';
-import { CContainer, CFade } from '@coreui/react';
+import { TheSidebar, TheFooter, TheHeader } from '../../containers/index';
+import { CContainer } from '@coreui/react';
 import '../../../styles/admin/style.scss';
-import { icons } from "../../assets/icons"
 
 const validationSchema = Yup.object().shape({
     from_name: Yup.string().required('From name is required'),
@@ -117,7 +110,7 @@ const TemplateEdit = ({ match }) => {
         if (match.params.id) {
             dispatch(fetchTemplate(match.params.id)).then(({ value: record }) => {
 
-
+                console.log('...fetch template..', record);
                 setValues({
                     id: record.data.id,
                     template_name: record.data.attributes.template_name,
@@ -126,7 +119,13 @@ const TemplateEdit = ({ match }) => {
                     from_name: record.data.attributes.from_name,
                     template_body: record.data.attributes.template_body,
                 });
-
+                setEditorState(
+                    EditorState.createWithContent(
+                        ContentState.createFromBlockArray(
+                            convertFromHTML(record.data.attributes.template_body)
+                        )
+                    )
+                );
             });
         }
 

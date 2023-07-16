@@ -51,12 +51,13 @@ const PrivacyPolicy = () => {
                     </p>  <p>We keep personal information, including sensitive personal information, as long as we need it to provide our products, comply with legal obligations or protect our or other's interests. We decide how long we need information on a case-by-case basis.
 
                     </p>  <p>Depending on where you live and subject to certain exceptions, you may have some or all of the following rights:
-                        Right to Know: The right to request that we disclose to you the Personal Information we collect, use, or disclose, and information about our data practices.
-                        Right to Request Correction: The right to request that we correct inaccurate Personal Information that we maintain about you.
-                        Right to Request Deletion: The right to request that we delete your Personal Information that we have collected from or about you.
-                        Right to Opt Out of Targeted Advertising: The right to opt out of the processing of your Personal Information obtained from your activities on nonaffiliated websites or online applications for the purposes of targeted advertising.
-                        Right to Non-Discrimination: The right not to receive discriminatory treatment for exercising your privacy rights.
-
+                        <ul className='privacy_policy'>
+                            <li>Right to Know: The right to request that we disclose to you the Personal Information we collect, use, or disclose, and information about our data practices.
+                            </li><li>Right to Request Correction: The right to request that we correct inaccurate Personal Information that we maintain about you.
+                            </li><li>Right to Request Deletion: The right to request that we delete your Personal Information that we have collected from or about you.
+                            </li><li>Right to Opt Out of Targeted Advertising: The right to opt out of the processing of your Personal Information obtained from your activities on nonaffiliated websites or online applications for the purposes of targeted advertising.
+                            </li><li>Right to Non-Discrimination: The right not to receive discriminatory treatment for exercising your privacy rights.</li>
+                        </ul>
                     </p>  <p>Security
                     </p>  <p>We value your trust and strive to use commercially acceptable means of protecting your Personal Data. However, no method of electronic transmission or storage is completely without risk, and we cannot guarantee the absolute security of your Personal Data.
 

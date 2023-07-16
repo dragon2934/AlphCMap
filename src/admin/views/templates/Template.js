@@ -14,7 +14,7 @@ import { useHistory } from 'react-router';
 import { Link } from "react-router-dom";
 
 import {
-    deleteUser,
+    deleteTemplate,
     fetchTemplate,
 } from '../../../redux/actionCreators/adminActionCreators';
 import Header from '../../../site/pages/newHome/Header';
@@ -42,23 +42,18 @@ const Template = ({ match }) => {
     const history = useHistory();
 
     const onClickDeleteTemplate = useCallback(() => {
-        if (record.user_alert) {
-            toastr.error(
-                'Unsuccessful',
-                'User is inside an active alert area. Please delete alert before deleting user.',
-            );
-        } else {
-            toastr.confirm(
-                'Are you sure you want to delete this account? This action is irreversible!',
-                {
-                    onOk: () => {
-                        dispatch(deleteUser(match.params.id)).then(() => {
-                            history.push('/admin/users');
-                        });
-                    },
+
+        toastr.confirm(
+            'Are you sure you want to delete this template? This action is irreversible!',
+            {
+                onOk: () => {
+                    dispatch(deleteTemplate(match.params.id)).then(() => {
+                        history.push('/admin/templates');
+                    });
                 },
-            );
-        }
+            },
+        );
+
     }, [dispatch, history, match.params.id, record]);
 
 
