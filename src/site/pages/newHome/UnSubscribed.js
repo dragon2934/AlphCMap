@@ -14,10 +14,10 @@ const UnSubscribed = () => {
                 />
             </Link>
             <br /><br /><br /><br /><br />
-            <p> You're unsubscribed. </p>
+            <p>  </p>
 
             <Row>
-                <Col> UnSubscribe Successful! Sorry to see you go!
+                <Col> You're unsubscribed.
                 </Col>
             </Row>
         </Col>
