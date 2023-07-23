@@ -72,6 +72,8 @@ const Templates = React.lazy(() => import('../admin/views/templates/Templates'))
 const Template = React.lazy(() => import('../admin/views/templates/Template'));
 const TemplateEdit = React.lazy(() => import('../admin/views/templates/TemplateEdit'));
 
+const CreateEmailCampaign = React.lazy(() => import('../admin/views/emailCampaigns/CreateEmailCampaigns'));
+const EmailCampaigns = React.lazy(() => import('../admin/views/emailCampaigns/EmailCampaigns'));
 
 const Site = () => {
   return (
@@ -91,6 +93,21 @@ const Site = () => {
           </MapProvider>
         )}
         path={`/edit-property`}
+        exact
+      />
+
+
+
+      <Route exact path="/admin/email-campaigns" component={EmailCampaigns} />
+      {/* <Route exact path="/admin/email-campaigns/new" component={CreateEmailCampaign} /> */}
+
+      <Route
+        component={(props) => (
+          <MapProvider>
+            <CreateEmailCampaign {...props} />
+          </MapProvider>
+        )}
+        path={`/admin/email-campaigns/new`}
         exact
       />
 

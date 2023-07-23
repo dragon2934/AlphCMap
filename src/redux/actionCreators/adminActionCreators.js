@@ -645,22 +645,28 @@ export const saveProperty = (data) => {
 
 // Alerts
 // 
-export const fetchAlerts = ({ page = 1, pageSize = 10 }) => {
+export const fetchEmailCampaigns = (ownerId, { page = 1, pageSize = 10 }) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
         const start = (page - 1) * pageSize;
 
+        const jsonData = {
+            ownerId: ownerId,
+            start: start,
+            pageSize: pageSize
+        }
         return dispatch({
-            type: ADMIN_FETCH_ALERTS,
+            type: ADMIN_FETCH_ACTION,
             payload: fetch(
-                `${SERVICE_URL}/alerts?_start=${start}&_limit=${pageSize}&status=1`,
+                `${SERVICE_URL}/email-campaign/lists`,
                 {
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}`,
                     },
-                    method: 'GET',
+                    body: JSON.stringify(jsonData),
+                    method: 'POST',
                 },
             )
                 .then((r) => r.json())

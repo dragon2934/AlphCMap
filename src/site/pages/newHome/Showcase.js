@@ -326,11 +326,11 @@ class Showcase extends Component {
             const user = auth.user;
 
             if (user !== null && user !== undefined) {
-                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, false, user);
+                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, false,);
                 showPrimaryDistancesOnMap(map, convertedProperties, user);
                 showHomeAndBusinessOnMap(map, convertedProperties, user);
             } else {
-                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, false, user);
+                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, false,);
 
             }
 
@@ -512,7 +512,7 @@ class Showcase extends Component {
             const properties = convertGeoProperty(tobeRemain);
             const { auth } = this.props;
             const user = auth.user;
-            showPropertiesOnMap(map, properties, this.renderPropertiesTooltip, false, user);
+            showPropertiesOnMap(map, properties, this.renderPropertiesTooltip, false,);
 
             showPrimaryDistancesOnMap(map, properties, user);
             showHomeAndBusinessOnMap(map, properties, user);
@@ -618,9 +618,9 @@ class Showcase extends Component {
             });
 
             if (user === null || user === undefined) {
-                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true, null);
+                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true,);
             } else {
-                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true, user);
+                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true,);
                 showPrimaryDistancesOnMap(map, convertedProperties, user);
                 showHomeAndBusinessOnMap(map, convertedProperties, user);
             }

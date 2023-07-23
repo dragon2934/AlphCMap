@@ -42,8 +42,8 @@ const TheSidebar = () => {
         },
         {
             _tag: 'CSidebarNavItem',
-            name: 'Email',
-            to: '/admin/email',
+            name: 'Email Campaigns',
+            to: '/admin/email-campaigns',
             icon: 'cil-home',
         },
         {
