@@ -1243,6 +1243,33 @@ export const unSubscribeMerchant = (data) => {
         });
     };
 };
+export const unsubscribeBeforeConnect = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_UNSUBSCRIBE,
+            payload: fetch(`${SERVICE_URL}/public/unsubscribe-before-connect`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+
 
 export const loadConnectedTotal = (data) => {
     return (dispatch, getState) => {
