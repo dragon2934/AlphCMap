@@ -14,6 +14,7 @@
   &.disabled {
     filter: grayscale(100%);
     transition: filter 0.5s;
+
     .mapboxgl-canvas {
       filter: grayscale(100%);
       transition: filter 0.5s;
@@ -60,25 +61,55 @@
   flex-direction: column;
 
   z-index: 1040;
-  .logo-container{
-    height:8em;
+
+  .logo-container {
+    height: 8em;
   }
+
   .step-wizard {
     width: 100%;
   }
 }
 
+.overlay-form-container-left {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(97, 127, 160, 0.8);
+  color: #ffffff;
+  height: 100%;
+  display: flex;
+
+  align-items: safe center;
+
+  overflow-y: auto;
+  // overflow-x: scroll;
+  flex-direction: column;
+
+  z-index: 1040;
+
+  .logo-container {
+    height: 8em;
+  }
+
+  .step-wizard {
+    width: 100%;
+  }
+}
+
+
 .info-box {
   position: fixed;
   top: 0;
 }
-.home-back-button{
+
+.home-back-button {
   position: fixed;
   bottom: 2em;
   left: 2em;
 }
 
-.email-container{
+.email-container {
   background-color: #1f2152;
   color: white;
   padding-top: 0.5em;

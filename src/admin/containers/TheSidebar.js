@@ -21,6 +21,10 @@ const TheSidebar = () => {
     const dispatch = useDispatch();
     const navigation = [
         {
+            _tag: 'CSidebarNavTitle',
+            _children: ['Data'],
+        },
+        {
             _tag: 'CSidebarNavItem',
             name: 'Users',
             to: '/admin/users',
@@ -32,13 +36,29 @@ const TheSidebar = () => {
             to: '/admin/properties',
             icon: 'cil-home',
         },
+        {
+            _tag: 'CSidebarNavTitle',
+            _children: ['Campaigns'],
+        },
+        {
+            _tag: 'CSidebarNavItem',
+            name: 'Email Campaigns',
+            to: '/admin/email-campaigns',
+            icon: 'cil-home',
+        },
+        {
+            _tag: 'CSidebarNavItem',
+            name: 'Templates',
+            to: '/admin/templates',
+            icon: 'cil-home',
+        },
     ];
     const show = useSelector((state) => state.admin.sidebarShow);
     return (
         <CSidebar
             show={show}
             onShowChange={(val) => dispatch(setShowSidebar(val))}>
-            <CSidebarBrand className="d-md-down-none" to="/admin">
+            <CSidebarBrand className="d-md-down-none" to="/">
                 <CImg
                     className="c-sidebar-brand-full"
                     src={'/assets/img/logo-sm.png'}
@@ -51,15 +71,6 @@ const TheSidebar = () => {
                 />
             </CSidebarBrand>
             <CSidebarNav>
-                <li className="c-sidebar-nav-item">
-                    <a
-                        aria-current="page"
-                        className="c-sidebar-nav-link"
-                        href="/">
-                        <CIcon className="c-sidebar-nav-icon" name="cil-home" />
-                        Front Page
-                    </a>
-                </li>
                 <CCreateElement
                     items={navigation}
                     components={{

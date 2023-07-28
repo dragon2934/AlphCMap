@@ -346,12 +346,14 @@ const MobileAccountVerifyByPhoneNumber = ({
 
                                 }
                                 dispatch(toggleVerificationModal());
+                                localStorage.setItem("show_login_tips", 2);
                                 setTimeout(() => {
-                                    history.push("/");
+                                    // history.push("/");
+                                    history.push('/logout');
                                 }, 500);
 
                             }}>
-                            Start Using Website
+                            Login and Complete Business Profile
                         </Button>
                     </div>
                 </>

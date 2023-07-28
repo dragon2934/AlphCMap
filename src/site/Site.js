@@ -49,6 +49,31 @@ import CheckoutFailed from './pages/newHome/CheckoutFailed';
 import BusinessProfile from "./pages/newHome/BusinessProfile";
 import Cart from "./pages/cart";
 import BusinessPortal from "./pages/newHome/BusinessPortal";
+import UnSubscribe from "./pages/newHome/UnSubscribe";
+import UnSubscribed from "./pages/newHome/UnSubscribed";
+
+import Connect from "./pages/newHome/Connect";
+import ResetPassword from "./pages/newHome/ResetPassword";
+import VerifyResetPassword from './pages/newHome/VerifyResetPassword';
+import ResetPassword3 from './pages/newHome/ResetPassword3';
+// import Admin from "../admin/Admin";
+
+const Users = React.lazy(() => import('../admin/views/users/Users'));
+const User = React.lazy(() => import('../admin/views/users/User'));
+const UserEdit = React.lazy(() => import('../admin/views/users/UserEdit'));
+
+const Properties = React.lazy(() => import('../admin/views/properties/Properties'));
+const Property = React.lazy(() => import('../admin/views/properties/Property'));
+const PropertyEdit = React.lazy(() =>
+  import('../admin/views/properties/PropertyEdit'),
+);
+
+const Templates = React.lazy(() => import('../admin/views/templates/Templates'));
+const Template = React.lazy(() => import('../admin/views/templates/Template'));
+const TemplateEdit = React.lazy(() => import('../admin/views/templates/TemplateEdit'));
+
+const CreateEmailCampaign = React.lazy(() => import('../admin/views/emailCampaigns/CreateEmailCampaigns'));
+const EmailCampaigns = React.lazy(() => import('../admin/views/emailCampaigns/EmailCampaigns'));
 
 const Site = () => {
   return (
@@ -72,17 +97,54 @@ const Site = () => {
       />
 
 
+
+      <Route exact path="/admin/email-campaigns" component={EmailCampaigns} />
+      {/* <Route exact path="/admin/email-campaigns/new" component={CreateEmailCampaign} /> */}
+
+      <Route
+        component={(props) => (
+          <MapProvider>
+            <CreateEmailCampaign {...props} />
+          </MapProvider>
+        )}
+        path={`/admin/email-campaigns/new`}
+        exact
+      />
+
+      <Route exact path="/admin/users" component={Users} />
+      <Route exact path="/admin/users/new" component={UserEdit} />
+      <Route exact path="/admin/users/:id" component={User} />
+      <Route exact path="/admin/edit/user/:id" component={UserEdit} />
+
+      <Route exact path="/admin/properties" component={Properties} />
+      <Route exact path="/admin/properties/new" component={PropertyEdit} />
+      <Route exact path="/admin/properties/:id" component={Property} />
+      <Route exact path="/admin/edit/properties/:id" component={PropertyEdit} />
+
+      <Route exact path="/admin/templates" component={Templates} />
+      <Route exact path="/admin/templates/new" component={TemplateEdit} />
+      <Route exact path="/admin/templates/:id" component={Template} />
+      <Route exact path="/admin/edit/templates/:id" component={TemplateEdit} />
+
+
+      {/* <Route exact path="/admin" component={Admin} /> */}
+      <Route exact path="/connect" component={Connect} />
       <Route exact path="/cart" component={Cart} />
       <Route exact path="/change-email" component={ChangeEMail} />
       <Route exact path="/pricing" component={MemberShip} />
       <Route exact path="/checkout/:id" component={Checkout} />
       <Route exact path="/change-mobile" component={ChangeMobile} />
       <Route exact path="/change-password" component={ChangePassword} />
+      <Route exact path="/reset-password" component={ResetPassword} />
+      <Route exact path="/verify-reset-password/:mobileNumber" component={VerifyResetPassword} />
+      <Route exact path="/reset-password-change-password/:mobileNumber" component={ResetPassword3} />
 
       <Route exact path="/checkout_success" component={CheckoutSuccess} />
       <Route exact path="/checkout_failed" component={CheckoutFailed} />
       <Route exact path="/business-profile" component={BusinessProfile} />
       <Route exact path="/business-portal/:id" component={BusinessPortal} />
+      <Route exact path="/un-subscribe/:id" component={UnSubscribe} />
+      <Route exact path="/unsubscribed" component={UnSubscribed} />
 
 
       <Route exact path="/about-us" component={AboutUs} />

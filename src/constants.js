@@ -5,6 +5,7 @@ export const SERVICE_URL = process.env.REACT_APP_SERVICE_URL
     : 'http://localhost:1337';
 export const PARTNER_TOKEN = process.env.REACT_APP_PARTNER_TOKEN;
 
+export const STRIPE_URL = process.env.REACT_APP_SOCKET_SERVER
 
 export const MapMarkerUrls = {
     property: {
@@ -21,6 +22,10 @@ export const MapMarkerUrls = {
         safe: '/map-markers/green_user_pin.png',
         away: '/map-markers/yellow_user_pin.png',
     },
+    extra: {
+        edit_mode: '/map-markers/edit_mode.jpeg',
+        connect_mode: '/map-markers/connect_mode.jpeg'
+    }
 };
 
 export const PropertyStatus = {

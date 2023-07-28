@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { NavLink as ReactRouterLink, useHistory } from "react-router-dom";
 import {
@@ -18,7 +18,10 @@ import { setEditMode } from '../../../redux/actionCreators/registrationActionCre
 import { deleteAccount } from '../../../redux/actionCreators/appActionCreators';
 import { logoutUser } from '../../../redux/actionCreators/authActionCreators';
 import { toastr } from 'react-redux-toastr';
-import { getLoginType, clearLoginType } from '../../../utils/utils';
+import { getLoginType, setLoginType, clearLoginType, checkUseLevel } from '../../../utils/utils';
+import { loadConnectedTotal, sendPasswordBeforeDeleteAccount } from '../../../redux/actionCreators/adminActionCreators';
+// import { useMitt } from 'react-mitt'
+import EventBus from '../../../utils/eventBus';
 
 const Header = () => {
     const user = useSelector((state) => state.auth.me);
@@ -28,13 +31,30 @@ const Header = () => {
     const collapse = () => setIsOpen(false);
     const [dropDownOpen, setDropDownOpen] = useState(false);
     const utilsData = useSelector((state) => state.utilsData);
-    const [editSwitch, setEditSwitch] = useState(false);
-
+    const [editSwitch, setEditSwitch] = useState(utilsData.editMode);
+    // const { emitter } = useMitt();
     const dispatch = useDispatch();
 
     let userName = '';
     let userEmail = '';
     let loginType = 0;
+    const [totalConnected, setTotalConnected] = useState(null);
+
+    useEffect(() => {
+
+        EventBus.$on('onTotalConnectChange', (data) => {
+            console.log(data);
+            const data1 = totalConnected;
+            if (totalConnected) {
+                const data2 = data.totalConnected;
+                console.log(' .. data1..' + data1 + ' ..data2.. ' + data2);
+                setTotalConnected(parseInt(data1) + parseInt(data2));
+            }
+        })
+        return () => {
+
+        };
+    }, [totalConnected]);
 
     try {
         userName = [user.firstName, user.lastName]
@@ -42,11 +62,13 @@ const Header = () => {
             .join(' ')
             .trim();
     } catch (e) { }
-
-
+    loginType = getLoginType();
+    // console.log('...loginType=' + loginType);
+    // const [connectionSwitch, setConnectionSwitch] = useState(parseInt(loginType) === 2 ? true : false);
+    let roleName = ''
     if (user !== null && user !== undefined && user.property !== null && user.property !== undefined) {
-        //  console.log('user.property =' + JSON.stringify(user.property));
-        loginType = getLoginType();
+        // console.log('user =' + JSON.stringify(user));
+        roleName = user.role.name;
         // console.log('..loginType=..' + loginType);
         if (user.companyName) {
             userEmail = user.property.email + '@' + user.companyName + '.com';
@@ -54,14 +76,44 @@ const Header = () => {
         } else if (user.lastName) {
             userEmail = user.property.email + '@' + user.lastName + '.com';
             localStorage.setItem("current_domain", user.lastName + '.com');
+        } else {
+            userEmail = user.property.email + '@alphcmap.com';
+            localStorage.setItem("current_domain", 'alphcmap.com');
         }
+        if (user.noDelivery && user.noDelivery === 1) {
+            userEmail = '';
+        }
+
 
     } else {
         userEmail = 'Enter your address to create your account';
     }
+    useEffect(() => {
+        if (user && parseInt(loginType) === 2) {
+            const jsonData = {
+                id_type: 0,
+                id: user.id
+            }
+            dispatch(loadConnectedTotal(jsonData)).then(resp => {
+                console.log('..get total ..' + JSON.stringify(resp));
+                let total1 = parseInt(resp.value.value[0].iCount) + parseInt(resp.value.value2) + parseInt(resp.value.value3[0].iCount);
+                setTotalConnected(total1 > 0 ? total1 : 0);
+            }).catch(error => {
+
+            });
+        }
+    }, [dispatch, loginType]);
     const toggleDropDownMenu = useCallback(() => {
         setDropDownOpen(!dropDownOpen)
     });
+    // const handleConnectionChange = useCallback(() => {
+    //     if (connectionSwitch) {
+    //         setLoginType(1);
+    //     } else {
+    //         setLoginType(2);
+    //     }
+    //     window.location.reload();
+    // });
     const handleEditModeChange = useCallback(() => {
         // setEditMode(!editMode);
         if (utilsData.drawing) {
@@ -85,21 +137,29 @@ const Header = () => {
 
     });
     const onClickDeleteAccount = useCallback(() => {
-        dispatch(deleteAccount()).then(({ value: retObj }) => {
-            console.log('....delete acount return...' + JSON.stringify(retObj));
-            clearLoginType();
-            if (retObj.status === 'successed') {
-                dispatch(logoutUser()).then(() => {
-                    // history.push('/');
-                    localStorage.removeItem("current_domain");
-                    setTimeout(() => {
-                        location.reload(true);
-                    }, 500);
 
+        dispatch(sendPasswordBeforeDeleteAccount()).then(({ value: retObj }) => {
+            console.log('..retObj..' + JSON.stringify(retObj));
+            const token = prompt('Please enter the verify code from your e-mail');
+            if (token) {
+                dispatch(deleteAccount(token)).then(({ value: retObj }) => {
+                    console.log('....delete acount return...' + JSON.stringify(retObj));
+                    clearLoginType();
+                    if (retObj.status === 'successed') {
+                        dispatch(logoutUser()).then(() => {
+                            // history.push('/');
+                            localStorage.removeItem("current_domain");
+                            setTimeout(() => {
+                                window.location.href = '/';
+                                location.reload(true);
+                            }, 500);
+
+                        });
+                    } else {
+                        console.log('error message:' + retObj.message);
+                        toastr.error('Error !', retObj.error.details[0].messages[0].message);
+                    }
                 });
-            } else {
-                console.log('error message:' + retObj.message);
-                toastr.error('Error !', retObj.message);
             }
         });
     }, [dispatch, history]);
@@ -125,8 +185,23 @@ const Header = () => {
                 <i className="fa fa-bars" />
             </NavbarToggler>
             <Collapse isOpen={isOpen} navbar>
-                <div style={{ width: "64%", textAlign: "center", fontSize: "20px", fontWeight: "bold" }}> {userEmail} </div>
+                <div style={{ width: "64%", textAlign: "center", fontSize: "20px", fontWeight: "bold" }}> {userEmail}  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {totalConnected ? 'Connected:' + totalConnected : ''} </div>
                 <Nav className="ml-auto" navbar>
+                    <NavItem>
+                        {/* {user ? <Toggle
+                            checked={connectionSwitch}
+                            text="Connect Mode"
+                            size="default"
+                            disabled={false}
+                            onChange={handleConnectionChange}
+                            offstyle="btn-danger"
+                            onstyle="btn-success"
+                        /> : null} */}
+                        {
+                            user ? <div style={{ marginTop: "10px", fontSize: "14px" }}>Connect Mode</div> : null
+                        }
+
+                    </NavItem>
                     <NavItem>
                         {user && parseInt(loginType) === 2 ? <Toggle
                             checked={editSwitch}
@@ -138,14 +213,14 @@ const Header = () => {
                             onstyle="btn-success"
                         /> : null}
                     </NavItem>
-                    {/* <NavItem>
+                    {checkUseLevel(roleName) === 1 ? <NavItem>
                         <NavLink
                             tag={ReactRouterLink}
                             onClick={collapse}
-                            to="/pricing">
-                            Pricing
+                            to="/admin/users">
+                            Admin
                         </NavLink>
-                    </NavItem> */}
+                    </NavItem> : null}
                     <NavItem>
                         <NavLink
                             tag={ReactRouterLink}

@@ -19,6 +19,8 @@ import { propertyBinding } from '../../../redux/actionCreators/adminActionCreato
 import { useHistory } from 'react-router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import MobileInput from '../../../common/components/MobileInput';
+// import { generateString } from '../../../utils/utils';
 const bindingSchema = Yup.object().shape({
 
     bindingName: Yup.string().required('This field is required'),
@@ -37,6 +39,7 @@ const BindingForm = ({ callback }) => {
 
     const formik = useFormik({
         initialValues: {
+            bindingUnitNum: property !== null && property !== undefined && property.bindingUnitNum !== 'null' ? property.bindingUnitNum : '',
             bindingName: property !== null && property !== undefined && property.bindingName !== 'null' ? property.bindingName : '',
             bindingEmail: property !== null && property !== undefined && property.bindingEmail !== 'null' ? property.bindingEmail : '',
             bindingPhone: property !== null && property !== undefined && property.bindingPhone !== 'null' ? property.bindingPhone : '',
@@ -47,14 +50,22 @@ const BindingForm = ({ callback }) => {
         onSubmit: (values, { setSubmitting }) => {
             setSubmitting(true);
             utilsData.bindingProperty = false;
-            const email = utilsData.emailForChangeColor
+            const email = utilsData.emailForChangeColor;
+            // let emailDisplay = '';
+            // if (values.bindingUnitNum) {
+            //     property.unitNo = values.bindingUnitNum;
+            //     emailDisplay = generateString(property);
+            // }
+            const fncCallback = utilsData.fncCallback;
             const data = {
                 email: email,
                 ownerMobileNumber: user.mobileNumber,
                 ...values
             }
             dispatch(propertyBinding(data)).then(resp => {
-
+                if (fncCallback) {
+                    fncCallback();
+                }
             })
         }
     });
@@ -67,6 +78,7 @@ const BindingForm = ({ callback }) => {
         isValid,
         isSubmitting,
         setFieldValue,
+        setFieldTouched,
         values,
     } = formik;
 
@@ -84,7 +96,18 @@ const BindingForm = ({ callback }) => {
 
                     <Col style={{ textAlign: "left" }}>
                         <FormGroup tag="fieldset">
-
+                            <FormGroup>
+                                <Label for="lblPropertyName">Unit # &nbsp;&nbsp;</Label>
+                                <Input
+                                    type="text"
+                                    name="bindingUnitNum"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.bindingUnitNum}
+                                    invalid={touched.bindingUnitNum && errors.bindinbindingUnitNumgName}
+                                />
+                                <FormFeedback>{errors.bindingUnitNum}</FormFeedback>
+                            </FormGroup>
                             <FormGroup>
                                 <Label for="lblPropertyName">Name &nbsp;&nbsp;<span className="item_required">*</span></Label>
                                 <Input
@@ -113,11 +136,11 @@ const BindingForm = ({ callback }) => {
 
                             <FormGroup>
                                 <Label for="lblPropertyName">Phone</Label>
-                                <Input
+                                <MobileInput
                                     type="text"
                                     name="bindingPhone"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
+                                    setFieldValue={setFieldValue}
+                                    setFieldTouched={setFieldTouched}
                                     value={values.bindingPhone}
                                     invalid={touched.bindingPhone && errors.bindingPhone}
                                 />

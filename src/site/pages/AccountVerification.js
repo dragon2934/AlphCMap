@@ -65,11 +65,13 @@ const AccountVerification = () => {
                                 } catch (e) { }
 
                                 dispatch(toggleVerificationModal());
+                                localStorage.setItem("show_login_tips", 2);
                                 setTimeout(function () {
-                                    location.reload(true);
+                                    // location.reload(true);
+                                    history.push('/logout');
                                 }, 500)
                             }}>
-                            Start Using Website
+                            Login and Complete Business Profile
                         </Button>
                     </>
                 )}

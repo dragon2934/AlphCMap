@@ -48,8 +48,7 @@ const showPropertyTooltip = (map, renderTooltip, e) => {
     }
     if (feature.properties.companyName) {
         domain = feature.properties.companyName + ".com";
-    }
-    if (feature.properties.lastName) {
+    } else if (feature.properties.lastName) {
         domain = feature.properties.lastName + ".com";
     }
     if (feature.properties.email.includes("@")) {
@@ -150,61 +149,19 @@ export const showPropertiesOnMapEx = (map, data, renderTooltip, bAddImage) => {
 
     map.on('click', showPropertyTooltip.bind(undefined, map, renderTooltip));
 };
-export const showPropertiesOnMap = (map, data, renderTooltip, bAddImage, user) => {
-    const businessProperty = data.filter((i) => i.is_business === 1 || i.is_business);
+export const showPropertiesOnMap = (map, data, renderTooltip, bAddImage) => {
+    const businessProperty = data.filter((i) => i.usuage === 2 || i.color === 'red');
 
-    const consumerProperty = data.filter((i) => i.is_business === 0 || !i.is_business);
+    const confirmedConsumer = data.filter((i) => [0, 1, 3].includes(i.usuage) && i.color === 'default');
+    const pendingConsumer = data.filter((i) => [0, 1, 3].includes(i.usuage) && i.color === 'grey');
 
-
-    /*
-    let defaultItems = other.filter(
-        (i) => i.color === PropertyStatus.DEFAULT,
-    );
-    if (user !== null && user !== undefined) {
-        const noneOwnerData = propertiesWithAlert.filter(
-            (i) => i.primaryAddress === 1 && i.ownerMobileNumber !== user.mobileNumber,
-        );
-        defaultItems = defaultItems.concat(noneOwnerData);
-    }
-    // safe: '/map-markers/green_home_pin.png',
-    const safe = other.filter(
-        (i) => i.color === PropertyStatus.SAFE,
-    );
-
-    // pending: '/map-markers/grey_home_pin.png',
-    const pending = other.filter(
-        (i) => i.color === PropertyStatus.PENDING,
-    );
-
-    // hasInjured: '/map-markers/red_home_pin.png',
-    const hasInjured = other.filter(
-        (i) => i.color === PropertyStatus.HAS_INJURED,
-    );
-    let primary = null;
-    if (user !== null && user !== undefined) {
-        primary = propertiesWithAlert.filter(
-            (i) => i.primaryAddress === 1 && i.ownerMobileNumber === user.mobileNumber,
-        );
-    } else {
-        primary = propertiesWithAlert.filter(
-            (i) => i.primaryAddress,
-        );
-    }
-    // secondary: '/map-markers/second_home_pin.png',
-    const secondary = other.filter(
-        (i) => i.color === PropertyStatus.SECONDARY,
-    );
-    primary.map(item => {
-        hasInjured.push(item);
-    })
-    */
 
     showPointLayer(
         bAddImage,
         map,
         MapMarkerUrls.property.default,
         'other-properties',
-        consumerProperty,
+        confirmedConsumer,
         (i) => [i.location.longitude, i.location.latitude],
     );
 
@@ -231,7 +188,7 @@ export const showPropertiesOnMap = (map, data, renderTooltip, bAddImage, user) =
         map,
         MapMarkerUrls.property.pending,
         'pending-properties',
-        [],
+        pendingConsumer,
         (i) => [i.location.longitude, i.location.latitude],
     );
 
@@ -396,8 +353,48 @@ export const showDistancesOnMap = (map, residents) => {
 
 export const clearDistancesFromMap = (map) => {
     clearLayer(map, 'resident-property-distances');
+    clearLayer(map, 'home-business-distances');
 };
+export const showSolidLineLayer = (
+    map,
+    imageUrl,
+    layerId,
+    data,
+    coordinateSelector,
+    callback,
+) => {
+    map.addSource(layerId, {
+        type: 'geojson',
+        data: {
+            type: 'FeatureCollection',
+            features: data.map((p) => ({
+                type: 'Feature',
+                properties: p,
+                geometry: {
+                    type: 'LineString',
+                    coordinates: coordinateSelector(p).filter((i) => i),
+                },
+            })),
+        },
+    });
 
+    map.addLayer({
+        id: layerId,
+        source: layerId,
+        type: 'line',
+        layout: {
+            'line-join': 'round',
+            'line-cap': 'round',
+        },
+        paint: {
+            'line-color': '#888888',
+            'line-width': 4,
+            // 'line-dasharray': [2, 2],
+        },
+    });
+
+    if (callback) callback();
+};
 export const showLineLayer = (
     map,
     imageUrl,
@@ -527,7 +524,31 @@ export const clearLayer = (map, layerId) => {
     if (map.getLayer(layerId)) map.removeLayer(layerId);
     if (map.getSource(layerId)) map.removeSource(layerId);
 };
+export const showHomeAndBusinessOnMap = (map, properties, user) => {
+    //Home Address
+    const residentsWithLocation = properties.filter(
+        (i) =>
+            i.location &&
+            i.location.latitude && parseInt(i.user_id) === user.id && parseInt(i.usuage) === 1
+    );
+    const primaryAddress = properties.filter(
+        (i) =>
+            parseInt(i.user_id) === user.id && parseInt(i.usuage) === 2
+    );
 
+    //Business Address
+
+    showSolidLineLayer(
+        map,
+        MapMarkerUrls.user.injured,
+        'home-business-distances',
+        residentsWithLocation,
+        (i) => [
+            [primaryAddress[0].location.longitude, primaryAddress[0].location.latitude],
+            [i.location.longitude, i.location.latitude],
+        ],
+    );
+};
 export const showPrimaryDistancesOnMap = (map, properties, user) => {
     const residentsWithLocation = properties.filter(
         (i) =>
@@ -536,7 +557,7 @@ export const showPrimaryDistancesOnMap = (map, properties, user) => {
     );
     const primaryAddress = properties.filter(
         (i) =>
-            i.primaryAddress == 1 && i.ownerMobileNumber === user.mobileNumber
+            i.id === user.property.id
     );
 
     showLineLayer(

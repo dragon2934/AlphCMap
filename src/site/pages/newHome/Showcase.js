@@ -8,12 +8,15 @@ import {
     fetchUsers,
     loadBusinessAddress,
     loadConnected,
+    getAddressByType,
+    checkBusinessProfile
 } from '../../../redux/actionCreators/adminActionCreators';
 import {
     clearDistancesFromMap,
     clearPropertiesFromMap,
     clearResidentsFromMap,
     showPrimaryDistancesOnMap,
+    showHomeAndBusinessOnMap,
     showPropertiesOnMap,
     showLineLayer,
     clearLayer,
@@ -32,7 +35,7 @@ import ReactDOM from 'react-dom';
 import { setPropertyRegistrationForm } from '../../../redux/actionCreators/registrationActionCreators';
 
 import { saveBatchProperties, deleteUserAdditionalAddressById } from '../../../redux/actionCreators/appActionCreators';
-
+import { getMe } from '../../../redux/actionCreators/authActionCreators';
 import {
     MapMarkerUrls,
 } from '../../../constants';
@@ -45,6 +48,12 @@ import FlyerForm from './FlyerForm';
 import { convertAttributes, convertLocation, convertGeoProperty } from '../../../utils/utils';
 import BusinessInfo from './BusinessInfo';
 import { getLoginType } from '../../../utils/utils';
+import { toastr } from 'react-redux-toastr';
+import { parseInt } from 'lodash-es';
+// import mitt from 'mitt';
+import EventBus from '../../../utils/eventBus';
+import ShowHighRiseInfo from './ShowHighRiseInfo';
+import ShowNoDelivery from './ShowNoDelivery';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_GL_ACCESS_TOKEN;
 
@@ -69,7 +78,10 @@ class Showcase extends Component {
         selectedPropertyEmail: [],
         satelliteMode: false,
         showMapLegend: false,
-        showBusinessInfo: false
+        showBusinessInfo: false,
+        propertyByTpe: null,
+        has2Address: true,
+        hasBusinessProfile: true,
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -99,23 +111,56 @@ class Showcase extends Component {
         }
     }
 
-    // renderResidentsTooltip = ({id, email}) => {
-    //     const {history} = this.props;
 
-    //     return <ResidentTooltip email={email} id={id} history={history} />;
-    // };
 
     renderPropertiesTooltip = ({ id, email, property }) => {
-        const { utilsData } = this.props;
+        const { utilsData, } = this.props;
+        const { properties } = this.state;
         const { auth } = this.props;
         const user = auth.user;
-        if (property.is_business && property.is_business === true) {
+        console.log('...renderPropertiesTooltip..', property);
+        if (property.usuage && parseInt(property.usuage) === 2) {
             utilsData.selectedProperty = property;
             utilsData.showBusinessInfo = true;
+            utilsData.fncCallback = this.cbBusinessInfoCallBack;
 
+            // if this is merchant login && this is merchant's property, check whether has no-delivery
+            const loginType = getLoginType();
+            if (parseInt(loginType) === 2) {
+                let noDeliveryCount = 0;
+                properties.map(item => {
+                    if (item.properties.no_delivery === 1) {
+                        noDeliveryCount++;
+                    }
+                })
+                if (noDeliveryCount > 0) {
+                    utilsData.properties = properties;
+                    utilsData.showBusinessInfo = true;
+                    utilsData.showNoDelivery = true;
+                    this.setState({
+                        showBusinessInfo: true,
+
+                    });
+                } else {
+                    this.setState({
+                        showBusinessInfo: true,
+                    });
+                }
+            } else {
+                this.setState({
+                    showBusinessInfo: true,
+                });
+            }
+
+
+        } else if ((parseInt(property.usuage) === 3 || parseInt(property.usuage) === 1) && property.settlement_type === 'highRise' && property.unit_no) {
+            utilsData.selectedProperty = property;
+            utilsData.showHighRiseInfo = true;
+            utilsData.fncCallback = this.cbBusinessInfoCallBack;
             this.setState({
                 showBusinessInfo: true,
             });
+
         } else {
             return <PropertiesTooltip email={email} id={id}
                 property={property} cb={this.removeProperty}
@@ -160,21 +205,38 @@ class Showcase extends Component {
         const { auth } = this.props;
         utilsData.selectedProperty = property;
         utilsData.showBusinessInfo = true;
+        utilsData.fncCallback = this.cbBusinessInfoCallBack;
 
         this.setState({
             showBusinessInfo: true,
         });
     }
+    cbBusinessInfoCallBack = () => {
+        console.log('...call back function works...');
+        this.redrawMap();
+    }
     bindingProperty = async (email, property) => {
         const { utilsData } = this.props;
-        // const { properties } = this.state;
-        utilsData.bindingProperty = true;
-        utilsData.emailForChangeColor = email;
-        utilsData.selectedProperty = property;
-        console.log('....setting utilsData.bindingProperty.....' + email);
-        this.setState({
-            bindingProperty: true
-        });
+        if (property && property.is_business && (property.is_business === 1 || property.is_business === true)) {
+            //show business profile
+            utilsData.selectedProperty = property;
+            utilsData.showBusinessInfo = true;
+            utilsData.fncCallback = this.cbBusinessInfoCallBack;
+
+            this.setState({
+                showBusinessInfo: true,
+            });
+        } else {
+            console.log('..binding property..' + JSON.stringify(property));
+            utilsData.bindingProperty = true;
+            utilsData.emailForChangeColor = email;
+            utilsData.selectedProperty = property;
+            utilsData.fncCallback = this.cbBusinessInfoCallBack;
+            console.log('....setting utilsData.bindingProperty.....' + email);
+            this.setState({
+                bindingProperty: true
+            });
+        }
     }
     bindingBusiness = (email) => {
 
@@ -201,7 +263,7 @@ class Showcase extends Component {
         });
         const { loadConnected, } = this.props;
         const { value: properties } = await loadConnected();
-        const convertedProperties = convertAttributes(properties, true);
+        const convertedProperties = convertLocation(properties.value);
 
         try {
             //remove all the markers
@@ -246,10 +308,10 @@ class Showcase extends Component {
             });
 
             const popups = document.getElementsByClassName("mapboxgl-popup");
-            console.log('...remove popup box...popups.length ..' + popups.length);
+
             if (popups.length) {
                 let popupTotal = popups.length;
-                for (let i = 0; i < popupTotal; i++) {
+                for (let i = popupTotal - 1; i >= 0; i--) {
                     console.log('...remove popup box i= ..' + i);
                     try {
                         if (popups[i]) {
@@ -264,11 +326,12 @@ class Showcase extends Component {
             const user = auth.user;
 
             if (user !== null && user !== undefined) {
-                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, false, user);
-                showPrimaryDistancesOnMap(map, convertedProperties);
+                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, false,);
+                showPrimaryDistancesOnMap(map, convertedProperties, user);
+                showHomeAndBusinessOnMap(map, convertedProperties, user);
             } else {
-                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, false, user);
-                // showPrimaryDistancesOnMap(map, convertedProperties);
+                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, false,);
+
             }
 
         } catch (e) {
@@ -329,11 +392,6 @@ class Showcase extends Component {
                                 <li>
                                     <Button
                                         size={'sm'}
-                                        onClick={() => this.bindingBusiness(email)}>
-                                        Business
-                                    </Button> &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <Button
-                                        size={'sm'}
                                         onClick={() => this.bindingProperty(email)}>
                                         Info
                                     </Button> &nbsp;&nbsp;&nbsp;&nbsp;
@@ -345,7 +403,7 @@ class Showcase extends Component {
                                     {/* &nbsp;&nbsp;&nbsp;&nbsp; */}
                                     <Button
                                         size={'sm'}
-                                        onClick={() => this.addAddress()}>
+                                        onClick={() => this.addAddress(3)}>
                                         Add
                                     </Button> &nbsp;&nbsp;&nbsp;&nbsp;
 
@@ -392,12 +450,22 @@ class Showcase extends Component {
             history.push("/edit-property");
             return;
         }
-        console.log('..to be remove..' + JSON.stringify(tobeDelete));
+        // console.log('..to be remove..' + JSON.stringify(tobeDelete));
         //clear everything, then reload
         const { deleteUserAdditionalAddressById } = this.props;
+        const { utilsData } = this.props;
 
         if (tobeDelete && tobeDelete.length > 0) {
             const resp = await deleteUserAdditionalAddressById(tobeDelete[0].properties.id);
+            //need to change total connected count
+            // console.log('.. property to be deleted, color is: ' + tobeDelete[0].properties.color);
+            if (tobeDelete[0].properties.color !== "grey") {
+                // console.log('....should change total connected...');
+                // const emitter = mitt();
+                // emitter.emit('onTotalConnectChange', { totalConnected: -1 })
+                EventBus.$dispatch('onTotalConnectChange', { totalConnected: -1 });
+                // console.log('....emitter event onTotalConnectChange ...');
+            }
         }
         const { map } = this.context;
 
@@ -406,7 +474,7 @@ class Showcase extends Component {
 
             const popups = document.getElementsByClassName("mapboxgl-popup");
 
-            console.log('...remove popup box...popups.length ..' + popups.length);
+
             if (popups.length) {
                 let popupTotal = popups.length;
                 for (let i = popupTotal - 1; i >= 0; i--) {
@@ -430,7 +498,7 @@ class Showcase extends Component {
             // }
 
 
-            console.log('...remove map...');
+            // console.log('...remove map...');
             if (map) {
                 clearPropertiesFromMap(map);
                 clearResidentsFromMap(map);
@@ -440,13 +508,14 @@ class Showcase extends Component {
             this.setState({
                 properties: tobeRemain
             });
-            console.log('...redraw the map after remove property...');
+            // console.log('...redraw the map after remove property...');
             const properties = convertGeoProperty(tobeRemain);
             const { auth } = this.props;
             const user = auth.user;
-            showPropertiesOnMap(map, properties, this.renderPropertiesTooltip, false, user);
-            // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
+            showPropertiesOnMap(map, properties, this.renderPropertiesTooltip, false,);
+
             showPrimaryDistancesOnMap(map, properties, user);
+            showHomeAndBusinessOnMap(map, properties, user);
         } catch (e) {
 
             console.log('...remove property error...' + JSON.stringify(e));
@@ -455,7 +524,7 @@ class Showcase extends Component {
 
     async initializeLayers() {
         const { map } = this.context;
-        const { loadConnected, loadBusinessAddress } = this.props;
+        const { loadConnected, loadBusinessAddress, getAddressByType, checkBusinessProfile } = this.props;
         const draw = new MapboxDraw({
             controls: {
                 point: false,
@@ -469,6 +538,7 @@ class Showcase extends Component {
         const { auth } = this.props;
         const user = auth.user;
         let convertedProperties = [];
+        let loginHints = '';
 
         if (user === null || user === undefined) {
             const { value: properties } = await loadBusinessAddress();
@@ -477,6 +547,38 @@ class Showcase extends Component {
         } else {
             const { value: properties } = await loadConnected();
             convertedProperties = convertLocation(properties.value);
+            const loginType = getLoginType();
+            const { value: property } = await getAddressByType(loginType);
+            // console.log('.. property by type..' + JSON.stringify(property));
+
+            if (property.value && property.value.length > 0) {
+                //already has business Or Home Address
+                // loginHints = 'Please login to access account';
+            } else {
+                this.setState({
+                    has2Address: false,
+                });
+                // loginHints = 'Please login to access account and complete registration';
+                // const usuage = parseInt(loginType) === 1 ? ' Home Address' : ' Business Address';
+                let msg = 'Please switch to Edit Mode and add your Business Address';
+                if (parseInt(loginType) === 1) {
+                    msg = 'Please enter and register home address';
+                }
+                toastr.info('Tips', msg);
+            }
+            if (parseInt(loginType) === 2) {
+                const { value: hasBusinessProfile } = await checkBusinessProfile();
+                console.log('..hasBusinessProfile..' + JSON.stringify(hasBusinessProfile));
+                if (parseInt(hasBusinessProfile.value[0].profileTotal) === 0) {
+                    toastr.info('Tips', "Please setup your business profile!");
+                    if (property.value && property.value.length > 0) {
+                        location.href = '/business-profile?id=' + property.value[0].id
+                    } else {
+                        console.log('..me is ..' + JSON.stringify(user));
+                    }
+                }
+            }
+
         }
 
         // console.log('..load business.. ' + JSON.stringify(convertedProperties));
@@ -516,12 +618,25 @@ class Showcase extends Component {
             });
 
             if (user === null || user === undefined) {
-                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true, null);
+                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true,);
             } else {
-                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true, user);
+                showPropertiesOnMap(map, convertedProperties, this.renderPropertiesTooltip, true,);
                 showPrimaryDistancesOnMap(map, convertedProperties, user);
+                showHomeAndBusinessOnMap(map, convertedProperties, user);
             }
             // showResidentsOnMap(map, residents, this.renderResidentsTooltip);
+            const showLoginTips = localStorage.getItem('show_login_tips');
+            if (showLoginTips && parseInt(showLoginTips) === 1) {
+                localStorage.removeItem('show_login_tips');
+
+                toastr.info('Tips', 'Please login to access account');
+            }
+            if (showLoginTips && parseInt(showLoginTips) === 2) {
+                localStorage.removeItem('show_login_tips');
+
+                toastr.info('Tips', 'Please login to access account and complete registration');
+            }
+
 
         } catch (e) {
             console.log('init map layer error:' + JSON.stringify(e));
@@ -548,10 +663,25 @@ class Showcase extends Component {
     };
 
 
+
     createMarker = async ({ latitude, longitude }) => {
         // const {domain} = this.state;
         const { map } = this.context;
+        const loginType = getLoginType();
+        const { has2Address } = this.state;
 
+        let addText = 'Add';
+        let usuage = 3;
+        if (!has2Address) {
+            if (parseInt(loginType) === 1) {
+                addText = 'Add Home Address'
+                usuage = 1;
+            } else {
+                addText = 'Add Business Address'
+                usuage = 2;
+            }
+
+        }
         const el = document.createElement('div');
         const width = 48;
         const height = 48;
@@ -601,14 +731,14 @@ class Showcase extends Component {
                             <li>
                                 {/* <Button
                                     size={'sm'}
-                                    onClick={() => this.changeColor(email)}>
-                                    Color
+                                    onClick={() => this.addUnitNumber(email)}>
+                                    Add Unit #
                                 </Button>
                                 &nbsp;&nbsp;&nbsp;&nbsp; */}
                                 <Button
                                     size={'sm'}
-                                    onClick={() => this.addAddress()}>
-                                    Add
+                                    onClick={() => this.addAddress(usuage)}>
+                                    {addText}
                                 </Button> &nbsp;&nbsp;&nbsp;&nbsp;
 
                                 <Button
@@ -719,15 +849,38 @@ class Showcase extends Component {
         }
 
     }
-    addAddress = () => {
-        const { selectedAddress, email, properties, pins, layerAdded } = this.state;
+    addUnitNumber = (email) => {
+        const unitNumber = prompt("Please enter unit number", "");
+        if (unitNumber) {
+            //change property address
+            const { selectedAddress, properties, pins, } = this.state;
+            const currentPin = pins.filter(item => item.email === email);
+            console.log('..selectedAddress..' + JSON.stringify(selectedAddress));
+            selectedAddress.unitNo = unitNumber;
+            const emailDisplay = generateEmail(selectedAddress);
+            console.log('..emailDisplay..' + emailDisplay);
+            selectedAddress.email = emailDisplay;
+            currentPin[0].email = emailDisplay;
+            this.setState({
+                selectedAddress: selectedAddress,
+                pins: pins
+            });
+
+
+        }
+    }
+    addAddress = (usuage) => {
+        const { selectedAddress, email, properties, pins, layerAdded, has2Address } = this.state;
         const { map } = this.context;
+        const { utilsData } = this.props;
+        const loginType = getLoginType();
         const currentPin = pins.filter(item => item.email === email);
         const postData = {
             item: {
                 email: email,
+                usuage: usuage,
                 ...selectedAddress,
-                color: currentPin[0].color
+                color: has2Address ? 'grey' : parseInt(loginType) === 1 ? 'default' : 'red' //consumer is pending
             }
         }
         const data = {
@@ -745,10 +898,10 @@ class Showcase extends Component {
                 ],
             },
         }
-        const { saveBatchProperties } = this.props;
+        const { saveBatchProperties, getMe } = this.props;
         properties.push(data);
         saveBatchProperties(postData).then(async (resp) => {
-            console.log('..saveBatchProperties..' + JSON.stringify(resp));
+            // console.log('..saveBatchProperties..' + JSON.stringify(resp));
             //remove the popup and show line
 
             // console.log('..pins..' + JSON.stringify(pins));
@@ -772,11 +925,6 @@ class Showcase extends Component {
                             <Col className="list-unstyled text-right">
 
                                 <li>
-                                    <Button
-                                        size={'sm'}
-                                        onClick={() => this.bindingBusiness(email)}>
-                                        Business
-                                    </Button> &nbsp;&nbsp;&nbsp;&nbsp;
                                     <Button
                                         size={'sm'}
                                         onClick={() => this.bindingProperty(email)}>
@@ -826,16 +974,40 @@ class Showcase extends Component {
                 layerAdded: layerAdded,
                 properties: properties
             });
-            showLineLayer(
-                map,
-                MapMarkerUrls.user.injured,
-                randomString,
-                residentsWithLocation,
-                (i) => [
-                    [primaryAddress[0].properties.location.longitude, primaryAddress[0].properties.location.latitude],
-                    [i.location.longitude, i.location.latitude],
-                ],
-            );
+            if (primaryAddress && primaryAddress.length > 0) {
+                showLineLayer(
+                    map,
+                    MapMarkerUrls.user.injured,
+                    randomString,
+                    residentsWithLocation,
+                    (i) => [
+                        [primaryAddress[0].properties.location.longitude, primaryAddress[0].properties.location.latitude],
+                        [i.location.longitude, i.location.latitude],
+                    ],
+                );
+            }
+
+
+            console.log('..binding property..' + JSON.stringify(selectedAddress));
+            utilsData.bindingProperty = true;
+            utilsData.emailForChangeColor = email;
+            utilsData.selectedProperty = selectedAddress;
+            utilsData.fncCallback = this.cbBusinessInfoCallBack;
+            // console.log('....setting utilsData.bindingProperty.....' + email);
+            if (has2Address) {
+                this.setState({
+                    bindingProperty: true
+                });
+            } else {
+                // get me and reload to refresh data
+                getMe(loginType).then(resp => {
+                    location.reload()
+                }).catch(error => {
+                    toastr.error('Error', "Get information error!");
+                });
+
+
+            }
 
         });
 
@@ -906,7 +1078,7 @@ class Showcase extends Component {
                                 </Button> &nbsp;&nbsp;&nbsp;&nbsp;
                                 <Button
                                     size={'sm'}
-                                    onClick={() => this.addAddress()}>
+                                    onClick={() => this.addAddress(3)}>
                                     Add
                                 </Button>
                             </li>
@@ -958,9 +1130,6 @@ class Showcase extends Component {
         const { searchText } = this.state;
 
         if (!searchText.trim()) return;
-        // const { utilsData } = this.props;
-        // if(!utilsData.editMode) return;
-
         geocodeAddress({ address: searchText }).then((data) => {
             const { map } = this.context;
 
@@ -1042,7 +1211,7 @@ class Showcase extends Component {
             utilsData.drawFinished = true;
 
             utilsData.selectedProperty = data;
-
+            utilsData.fncCallback = this.cbBusinessInfoCallBack;
             this.setState({
                 drawing: !drawing,
                 selectedProperties: data,
@@ -1081,7 +1250,7 @@ class Showcase extends Component {
         },
     ];
     render() {
-        const { pins, searchText, drawing, satelliteMode, showMapLegend } = this.state;
+        const { pins, searchText, drawing, satelliteMode, showMapLegend, has2Address, } = this.state;
         const { utilsData, active, editMode, auth } = this.props;
 
         const user = auth.user;
@@ -1096,14 +1265,22 @@ class Showcase extends Component {
         if (utilsData.connectToMerchantId > 0) showIcon = false;
         if (showMapLegend) showIcon = false;
         if (parseInt(loginType) === 1) showIcon = false;
+        let mapDisabled = false;
+        if (!utilsData.editMode && user !== null && user !== undefined) {
+            if (parseInt(loginType) === 1 && !has2Address) {
+                // mapDisabled = true;
+            } else {
+                mapDisabled = true;
+            }
+        }
 
         return <>
             <div className={'showcase-map-top-actions'}>
                 <div className={'search-actions'}>
-                    {parseInt(loginType) === 1 ? null : <Form onSubmit={this.onSubmitSearch}>
+                    {user !== null && user !== undefined && parseInt(loginType) === 1 && has2Address ? null : <Form onSubmit={this.onSubmitSearch}>
                         <Input
                             bsSize={'lg'}
-                            disabled={!utilsData.editMode && user !== null && user !== undefined}
+                            disabled={mapDisabled}
                             className=""
                             value={searchText}
                             onChange={this.onChangeSearchText}
@@ -1159,7 +1336,33 @@ class Showcase extends Component {
 
                     <b>Address Markers</b>
 
-                    <table> <tr>
+                    <table>
+                        <tr><td > Business </td>
+                            <td>
+                                <img
+                                    alt={this.PropertyMarkerDescriptions[1].description}
+                                    src={this.PropertyMarkerDescriptions[1].marker}
+                                    height={20}
+                                /> &nbsp;&nbsp;
+                            </td>
+                            <td > Connected Customer </td>
+                            <td>
+                                <img
+                                    alt={this.PropertyMarkerDescriptions[0].description}
+                                    src={this.PropertyMarkerDescriptions[0].marker}
+                                    height={20}
+                                /> &nbsp;&nbsp;
+                            </td>
+                            <td > Unactivated </td>
+                            <td>
+                                <img
+                                    alt={this.PropertyMarkerDescriptions[2].description}
+                                    src={this.PropertyMarkerDescriptions[2].marker}
+                                    height={20}
+                                /> &nbsp;&nbsp;
+                            </td>
+                        </tr>
+                        {/* <tr>
                         {this.PropertyMarkerDescriptions.map(
                             ({ marker, description }) => (
 
@@ -1175,8 +1378,33 @@ class Showcase extends Component {
                             ),
                         )}
                     </tr>
-                        <tr><td colSpan={this.PropertyMarkerDescriptions.length}><hr />{this.PropertyMarkerDescriptions[0].description}<hr /></td></tr>
+                    <tr><td colSpan={this.PropertyMarkerDescriptions.length}><hr />{this.PropertyMarkerDescriptions[0].description}<hr /></td></tr> */}
                     </table>
+                    <hr />
+                    <table>
+                        <tr>
+                            <td>
+                                <img
+                                    alt='Manually add clients'
+                                    src={MapMarkerUrls.extra.edit_mode}
+                                    height={30}
+                                /> &nbsp;&nbsp;
+                            </td>
+                            <td>Manually Add Clients</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <img
+                                    alt='Connect with Clients'
+                                    src={MapMarkerUrls.extra.connect_mode}
+                                    height={30}
+                                /> &nbsp;&nbsp;
+                            </td>
+                            <td>Connect with Clients</td>
+                        </tr>
+                    </table>
+
+                    <hr />
                     <b>Tools Bar</b>
                     <table>
                         <tr><td><i className="fa-2x fa-solid fa-draw-polygon"></i></td><td>Pan, Draw, Connect, Addresses boundary and identify area to Send Email<hr /></td></tr>
@@ -1197,6 +1425,9 @@ class Showcase extends Component {
             {utilsData.drawFinished && <FlyerForm />}
             {utilsData.showBusinessInfo && <BusinessInfo />}
             {utilsData.connectToMerchantId > 0 && <PropertyForm />}
+            {utilsData.showHighRiseInfo && <ShowHighRiseInfo />}
+            {utilsData.showNoDelivery && <ShowNoDelivery />}
+
         </>
 
             ;
@@ -1212,6 +1443,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
+    getAddressByType: (data) =>
+        dispatch(getAddressByType(data)),
     loadBusinessAddress: () =>
         dispatch(loadBusinessAddress()),
     loadConnected: (data) =>
@@ -1219,7 +1452,9 @@ const mapDispatchToProps = (dispatch) => ({
     fetchUsers: () => dispatch(fetchUsers({ page: 1, pageSize: 100000 })),
     setPropertyRegistrationForm: (data) => dispatch(setPropertyRegistrationForm(data)),
     saveBatchProperties: (data) => dispatch(saveBatchProperties(data)),
-    deleteUserAdditionalAddressById: (propertyId) => dispatch(deleteUserAdditionalAddressById(propertyId))
+    deleteUserAdditionalAddressById: (propertyId) => dispatch(deleteUserAdditionalAddressById(propertyId)),
+    checkBusinessProfile: () => dispatch(checkBusinessProfile()),
+    getMe: (loginType) => dispatch(getMe(loginType)),
 });
 
 export default connect(

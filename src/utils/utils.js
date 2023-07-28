@@ -50,11 +50,7 @@ export const utilsTools = {
         //  console.log('makeData:' + JSON.stringify(tableData));
         return tableData;
     },
-    checkUseLevel: (roleName) => {
-        if (roleName === process.env.REACT_APP_ROLE_ADMIN_NAME) return 1;
-        if (roleName === process.env.REACT_APP_ROLE_PM_NAME) return 1;
-        return 3;
-    },
+
     isAppEmbedWebview: () => {
         return window.ReactNativeWebView ? true : false
     },
@@ -71,6 +67,11 @@ export const utilsTools = {
 
 
 
+}
+export const checkUseLevel = (roleName) => {
+    if (roleName === process.env.REACT_APP_ROLE_ADMIN_NAME) return 1;
+    if (roleName === process.env.REACT_APP_ROLE_PM_NAME) return 1;
+    return 3;
 }
 export const generateString = (length) => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -90,7 +91,11 @@ export const convertLocation = (items) => {
             ...item,
             primaryAddress: item.primary_address,
             ownerMobileNumber: item.owner_mobile_number,
-            location: JSON.parse(item.location)
+            location: JSON.parse(item.location),
+            // bindingName: item.binding_name,
+            // bindingEmail: item.binding_email,
+            // bindingPhone: item.binding_phone,
+            // bindingOthers: item.binding_others
         }
         retItems.push(retItem);
 

@@ -10,16 +10,18 @@ import {
     Label,
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { getBusinessProfile, saveMerchantConnection } from '../../../redux/actionCreators/adminActionCreators';
+import { getBusinessProfile, saveMerchantConnection, disConnectionMerchant } from '../../../redux/actionCreators/adminActionCreators';
 import { changePropertyColor, cancelShowBusinessInfo } from '../../../redux/actionCreators/appActionCreators';
 import { useHistory } from 'react-router';
 import { setPropertyRegistrationForm } from '../../../redux/actionCreators/registrationActionCreators';
+import QRCode from "react-qr-code";
 const BusinessPortal = ({ match }) => {
 
     // console.log('..match..' + JSON.stringify(match));
     const propertyId = match.params.id;
     const utilsData = useSelector((state) => state.utilsData);
-
+    const history = useHistory();
+    const shareUrl = "https://klosertoyou.com/business-portal/" + propertyId;
     const dispatch = useDispatch();
     // const property = utilsData.selectedProperty;
     // console.log('..property.. ' + JSON.stringify(property));
@@ -61,7 +63,20 @@ const BusinessPortal = ({ match }) => {
     }, [dispatch]);
 
     const disConnectToMerchant = () => {
+        const jsonData = {
+            merchant_property_id: property.id
+        }
+        dispatch(disConnectionMerchant(jsonData)).then(resp => {
+            console.log('disconnect ..' + JSON.stringify(resp));
+            utilsData.showBusinessInfo = false;
+            const fncCallback = utilsData.fncCallback;
+            dispatch(cancelShowBusinessInfo()).then(resp => {
+                history.push('/');
+            });
 
+        }).catch(error => {
+
+        })
     }
     const connectToMerchant = () => {
 
@@ -72,8 +87,7 @@ const BusinessPortal = ({ match }) => {
                 merchant_property_id: property.id
             }
             dispatch(saveMerchantConnection(jsonData)).then(resp => {
-                //need redraw the map
-                //how to pass redraw map ??
+                history.push('/');
             }).catch(error => {
                 console.log('...save connection error');
             })
@@ -91,7 +105,9 @@ const BusinessPortal = ({ match }) => {
             dispatch(setPropertyRegistrationForm({
                 address: blankAddress,
                 active: true,
-            }));
+            })).then(resp => {
+                history.push('/');
+            });
         }
     }
 
@@ -116,24 +132,25 @@ const BusinessPortal = ({ match }) => {
                                     <Col><h1>{companyProfile.companyName}</h1></Col> </Row>
                                 <Row>   <Col><i className="fa-solid fa-address"></i> {property.streetNumber + ' ' + property.route + ' ' + property.locality + ',' + property.city + ',' + property.postalCode} </Col> </Row>
                                 <Row>   <Col><i className="fa-solid fa-phone"></i> {companyProfile.phone} </Col> </Row>
-                                <Row>   <Col><i className="fa-solid fa-globe"></i> {companyProfile.website} </Col> </Row>
-                                {property.binding_email && property.binding_email !== null && property.binding_email !== 'null' ? <Row>   <Col><i className="fa-solid fa-envelope"></i> {property.binding_email} </Col> </Row> : null}
+                                <Row>   <Col><i className="fa-solid fa-globe"></i> <a href={companyProfile.website} target="_blank" className='business_link'>Company Website</a> </Col> </Row>
+                                {/* {property.binding_email && property.binding_email !== null && property.binding_email !== 'null' ? <Row>   <Col><i className="fa-solid fa-envelope"></i> {property.binding_email} </Col> </Row> : null} */}
+                                {property.email && property.email !== null && property.email !== 'null' ? <Row>   <Col><i className="fa-solid fa-envelope"></i> {property.email + '@' + companyProfile.companyName + '.com'} </Col> </Row> : null}
                                 <Row>
-                                    <Col>Working Hours <hr /></Col>
+                                    <Col> <hr /></Col>
 
                                 </Row>
                                 <Row>
                                     <Col md={3}>
-                                        <Label style={{ textAlign: "right" }} for="lblPropertyName">Monday:</Label>
+                                        Monday:
                                     </Col>
                                     {getWorkingHourValue(workingHour, 0, 3) === true ?
                                         <>       <Col md={6}>
-                                            <Label for="lblPropertyName">We're Closed </Label>
+                                            We're Closed
                                         </Col>
                                         </> :
                                         <>
                                             <Col md={6}>
-                                                <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 0, 1)} - {getWorkingHourValue(workingHour, 0, 2)} </Label>
+                                                {getWorkingHourValue(workingHour, 0, 1)} - {getWorkingHourValue(workingHour, 0, 2)}
                                             </Col>
                                         </>
                                     }
@@ -141,16 +158,16 @@ const BusinessPortal = ({ match }) => {
                                 </Row>
                                 <Row>
                                     <Col md={3}>
-                                        <Label style={{ textAlign: "right" }} for="lblPropertyName">Tuesday:</Label>
+                                        Tuesday:
                                     </Col>
                                     {getWorkingHourValue(workingHour, 1, 3) === true ?
                                         <>       <Col md={6}>
-                                            <Label for="lblPropertyName">We're Closed </Label>
+                                            We're Closed
                                         </Col>
                                         </> :
                                         <>
                                             <Col md={6}>
-                                                <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 1, 1)} - {getWorkingHourValue(workingHour, 1, 2)} </Label>
+                                                {getWorkingHourValue(workingHour, 1, 1)} - {getWorkingHourValue(workingHour, 1, 2)}
                                             </Col>
                                         </>
                                     }
@@ -158,16 +175,16 @@ const BusinessPortal = ({ match }) => {
                                 </Row>
                                 <Row>
                                     <Col md={3}>
-                                        <Label style={{ textAlign: "right" }} for="lblPropertyName">Wednesday:</Label>
+                                        Wednesday:
                                     </Col>
                                     {getWorkingHourValue(workingHour, 2, 3) === true ?
                                         <>       <Col md={6}>
-                                            <Label for="lblPropertyName">We're Closed </Label>
+                                            We're Closed
                                         </Col>
                                         </> :
                                         <>
                                             <Col md={6}>
-                                                <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 2, 1)} - {getWorkingHourValue(workingHour, 2, 2)} </Label>
+                                                {getWorkingHourValue(workingHour, 2, 1)} - {getWorkingHourValue(workingHour, 2, 2)}
                                             </Col>
                                         </>
                                     }
@@ -175,16 +192,16 @@ const BusinessPortal = ({ match }) => {
                                 </Row>
                                 <Row>
                                     <Col md={3}>
-                                        <Label style={{ textAlign: "right" }} for="lblPropertyName">Thursday:</Label>
+                                        Thursday:
                                     </Col>
                                     {getWorkingHourValue(workingHour, 3, 3) === true ?
                                         <>       <Col md={6}>
-                                            <Label for="lblPropertyName">We're Closed </Label>
+                                            We're Closed
                                         </Col>
                                         </> :
                                         <>
                                             <Col md={6}>
-                                                <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 3, 1)} - {getWorkingHourValue(workingHour, 3, 2)} </Label>
+                                                {getWorkingHourValue(workingHour, 3, 1)} - {getWorkingHourValue(workingHour, 3, 2)}
                                             </Col>
                                         </>
                                     }
@@ -192,33 +209,34 @@ const BusinessPortal = ({ match }) => {
                                 </Row>
                                 <Row>
                                     <Col md={3}>
-                                        <Label style={{ textAlign: "right" }} for="lblPropertyName">Friday:</Label>
+                                        Friday:
                                     </Col>
                                     {getWorkingHourValue(workingHour, 4, 3) === true ?
                                         <>       <Col md={6}>
-                                            <Label for="lblPropertyName">We're Closed </Label>
+                                            We're Closed
                                         </Col>
                                         </> :
                                         <>
                                             <Col md={6}>
-                                                <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 4, 1)} - {getWorkingHourValue(workingHour, 4, 2)} </Label>
+                                                {getWorkingHourValue(workingHour, 4, 1)} - {getWorkingHourValue(workingHour, 4, 2)}
                                             </Col>
                                         </>
                                     }
 
+
                                 </Row>
                                 <Row>
                                     <Col md={3}>
-                                        <Label style={{ textAlign: "right" }} for="lblPropertyName">Saturday:</Label>
+                                        Saturday:
                                     </Col>
                                     {getWorkingHourValue(workingHour, 5, 3) === true ?
                                         <>       <Col md={6}>
-                                            <Label for="lblPropertyName">We're Closed </Label>
+                                            We're Closed
                                         </Col>
                                         </> :
                                         <>
                                             <Col md={6}>
-                                                <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 5, 1)} - {getWorkingHourValue(workingHour, 5, 2)} </Label>
+                                                {getWorkingHourValue(workingHour, 5, 1)} - {getWorkingHourValue(workingHour, 5, 2)}
                                             </Col>
                                         </>
                                     }
@@ -226,16 +244,16 @@ const BusinessPortal = ({ match }) => {
                                 </Row>
                                 <Row>
                                     <Col md={3}>
-                                        <Label style={{ textAlign: "right" }} for="lblPropertyName">Sunday:</Label>
+                                        Sunday:
                                     </Col>
                                     {getWorkingHourValue(workingHour, 6, 3) == true ?
                                         <>       <Col md={6}>
-                                            <Label for="lblPropertyName">We're Closed </Label>
+                                            We're Closed
                                         </Col>
                                         </> :
                                         <>
                                             <Col md={6}>
-                                                <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 6, 1)} - {getWorkingHourValue(workingHour, 6, 2)} </Label>
+                                                {getWorkingHourValue(workingHour, 6, 1)} - {getWorkingHourValue(workingHour, 6, 2)}
                                             </Col>
                                         </>
                                     }
@@ -245,6 +263,15 @@ const BusinessPortal = ({ match }) => {
                         )
                     }
 
+                </Col>
+                <Col>
+                    <QRCode
+                        size={256}
+                        className={'logo-container'}
+                        style={{ marginTop: "20px", height: "100px", maxWidth: "100%", width: "100%" }}
+                        value={shareUrl}
+                        viewBox={`0 0 256 256`}
+                    />
                 </Col>
             </Row>
             <Row>
@@ -267,22 +294,7 @@ const BusinessPortal = ({ match }) => {
                         </Button>
                     }
                 </Col>
-                <Col>
-                    <Button
-                        className="mt-1 mb-5"
-                        color={'danger'}
-                        block
-                        onClick={() => {
-                            // const data = {
-                            //     email: utilsData.emailForChangeColor,
-                            //     color: color
-                            // };
-                            utilsData.showBusinessInfo = false;
-                            dispatch(cancelShowBusinessInfo());
-                        }}>
-                        Cancel
-                    </Button>
-                </Col>
+
 
 
             </Row>

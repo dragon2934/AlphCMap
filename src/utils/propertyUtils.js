@@ -38,7 +38,7 @@ export const generateEmail = ({
     region,
     province,
 }) => {
-    let components = [streetNumber, route, locality, city, country];
+    let components = [streetNumber, route, locality, city, postalCode];
 
     if (lotNo && plotNo) {
         components = [
@@ -59,14 +59,14 @@ export const generateEmail = ({
         components = [unitNo, ...components];
     }
 
-    console.log('..components..' + JSON.stringify(components));
+    // console.log('..components..' + JSON.stringify(components));
 
     if (components.some((value) => !value)) {
         return `Lati${latitude}_Long${longitude}`;
     }
 
     return components
-        .map((c) => (c ? c.replace(/[ ]/g, '-') : c))
+        .map((c) => (c ? c.trim().replace(/[ ]/g, '-') : c))
         .join('-')
         .toLowerCase();
 };

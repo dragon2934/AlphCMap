@@ -32,6 +32,11 @@ import UploadService from "../../file-upload/services/FileUploadService";
 import { useSelector } from 'react-redux';
 import Header from '../../../site/pages/newHome/Header';
 
+import { TheContent, TheSidebar, TheFooter, TheHeader } from '../../containers/index';
+import { CContainer, CFade } from '@coreui/react';
+import '../../../styles/admin/style.scss';
+import { icons } from "../../assets/icons"
+
 const PropertyEdit = ({ match }) => {
 
 
@@ -152,160 +157,171 @@ const PropertyEdit = ({ match }) => {
         // setProgressInfos({ val: [] });
     };
     return (
-        <main>
-            <Header />
-            <div className="content">
+        <div className="c-app c-default-layout">
+            <TheSidebar />
+            <div className="c-wrapper">
 
-                <CTabs activeTab="home"
-                    onActiveTabChange={(idx) => setActiveTab(idx)}>
-                    <CNav variant="tabs">
-                        <CNavItem>
-                            <CNavLink data-tab="home">
-                                {match.params.id
-                                    ? `Record id: ${match.params.id}`
-                                    : 'New Property'}
-                            </CNavLink>
-                        </CNavItem>
-                    </CNav>
-                    <CTabContent>
-                        <CTabPane data-tab="home"  >
-                            <CRow active={activeTab === 0}>
-                                <CCol md={10}>
-                                    <CForm onSubmit={handleSubmit}>
-                                        <CCard>
-                                            {/* <CCardHeader>
+                <TheHeader />
+                <div className="c-body">
+                    <main className="c-main">
+                        <CContainer fluid className={'h-100'}>
+                            <div className="content">
+
+                                <CTabs activeTab="home"
+                                    onActiveTabChange={(idx) => setActiveTab(idx)}>
+                                    <CNav variant="tabs">
+                                        <CNavItem>
+                                            <CNavLink data-tab="home">
+                                                {match.params.id
+                                                    ? `Record id: ${match.params.id}`
+                                                    : 'New Property'}
+                                            </CNavLink>
+                                        </CNavItem>
+                                    </CNav>
+                                    <CTabContent>
+                                        <CTabPane data-tab="home"  >
+                                            <CRow active={activeTab === 0}>
+                                                <CCol md={10}>
+                                                    <CForm onSubmit={handleSubmit}>
+                                                        <CCard>
+                                                            {/* <CCardHeader>
                             {match.params.id
                                 ? `Record id: ${match.params.id}`
                                 : 'New Property'}
                         </CCardHeader> */}
-                                            <CCardBody>
+                                                            <CCardBody>
 
-                                                <CCol xs="12">
-                                                    <CFormGroup>
-                                                        <CLabel htmlFor="area">
-                                                            地区
-                                                        </CLabel>
-                                                        <CInput
-                                                            id="area"
-                                                            name="area"
-                                                            onChange={handleChange}
-                                                            onBlur={handleBlur}
-                                                            value={values.area}
-                                                            invalid={
-                                                                touched.area &&
-                                                                errors.area
-                                                            }
-                                                        />
-                                                        <CInvalidFeedback>
-                                                            {errors.area}
-                                                        </CInvalidFeedback>
-                                                    </CFormGroup>
+                                                                <CCol xs="12">
+                                                                    <CFormGroup>
+                                                                        <CLabel htmlFor="area">
+                                                                            地区
+                                                                        </CLabel>
+                                                                        <CInput
+                                                                            id="area"
+                                                                            name="area"
+                                                                            onChange={handleChange}
+                                                                            onBlur={handleBlur}
+                                                                            value={values.area}
+                                                                            invalid={
+                                                                                touched.area &&
+                                                                                errors.area
+                                                                            }
+                                                                        />
+                                                                        <CInvalidFeedback>
+                                                                            {errors.area}
+                                                                        </CInvalidFeedback>
+                                                                    </CFormGroup>
+                                                                </CCol>
+                                                                <CCol xs="12">
+                                                                    <CFormGroup>
+                                                                        <CLabel htmlFor="serial_no">
+                                                                            编号
+                                                                        </CLabel>
+                                                                        <CInput
+                                                                            id="serial_no"
+                                                                            name="serial_no"
+                                                                            onChange={handleChange}
+                                                                            onBlur={handleBlur}
+                                                                            value={values.serial_no}
+                                                                            invalid={
+                                                                                touched.serial_no &&
+                                                                                errors.serial_no
+                                                                            }
+                                                                        />
+                                                                        <CInvalidFeedback>
+                                                                            {errors.serial_no}
+                                                                        </CInvalidFeedback>
+                                                                    </CFormGroup>
+                                                                </CCol>
+                                                                <CCol xs="12">
+                                                                    <CFormGroup>
+                                                                        <CLabel htmlFor="address">
+                                                                            地址
+                                                                        </CLabel>
+                                                                        <CInput
+                                                                            id="address"
+                                                                            name="address"
+                                                                            onChange={handleChange}
+                                                                            onBlur={handleBlur}
+                                                                            value={values.address}
+                                                                            invalid={touched.address && errors.address}
+                                                                        />
+                                                                        <CInvalidFeedback>
+                                                                            {errors.address}
+                                                                        </CInvalidFeedback>
+                                                                    </CFormGroup>
+                                                                </CCol>
+                                                                <CCol xs="12">
+                                                                    <CFormGroup>
+                                                                        <CLabel htmlFor="locality">地址信息 &nbsp;&nbsp;</CLabel>
+                                                                        <CLabel htmlFor='fileName'>{values.application_form_url} &nbsp;&nbsp;</CLabel>
+                                                                        <br />
+                                                                        <input type="file" onChange={selectApplicationFormFiles} />
+                                                                    </CFormGroup>
+                                                                </CCol>
+                                                                <CCol xs="12">
+                                                                    <CFormGroup>
+                                                                        <CLabel htmlFor="locality">地址图纸&nbsp;&nbsp;</CLabel>
+                                                                        <CLabel htmlFor='fileName'>{values.plans_url} &nbsp;&nbsp;</CLabel>
+                                                                        <br />
+                                                                        <input type="file" onChange={selectPlanFiles} />
+                                                                    </CFormGroup>
+                                                                </CCol>
+                                                                <CCol xs="12">
+                                                                    <CFormGroup>
+                                                                        <CLabel htmlFor="acreage">
+                                                                            面积
+                                                                        </CLabel>
+                                                                        <CInput
+                                                                            id="acreage"
+                                                                            name="acreage"
+                                                                            onChange={handleChange}
+                                                                            onBlur={handleBlur}
+                                                                            value={values.acreage}
+                                                                            invalid={touched.acreage && errors.acreage}
+                                                                        />
+                                                                        <CInvalidFeedback>
+                                                                            {errors.acreage}
+                                                                        </CInvalidFeedback>
+                                                                    </CFormGroup>
+                                                                </CCol>
+                                                            </CCardBody>
+                                                            <CCardFooter className="text-right">
+                                                                <CButton
+                                                                    type="submit"
+                                                                    size="sm"
+                                                                    color="primary">
+                                                                    {isSubmitting ? (
+                                                                        <CSpinner size="sm" />
+                                                                    ) : (
+                                                                        'Submit'
+                                                                    )}
+                                                                </CButton>{' '}
+                                                                <CButton
+                                                                    type="reset"
+                                                                    size="sm"
+                                                                    color="danger"
+                                                                    onClick={() => resetForm()}>
+                                                                    Reset
+                                                                </CButton>
+                                                            </CCardFooter>
+                                                        </CCard>
+                                                    </CForm>
                                                 </CCol>
-                                                <CCol xs="12">
-                                                    <CFormGroup>
-                                                        <CLabel htmlFor="serial_no">
-                                                            编号
-                                                        </CLabel>
-                                                        <CInput
-                                                            id="serial_no"
-                                                            name="serial_no"
-                                                            onChange={handleChange}
-                                                            onBlur={handleBlur}
-                                                            value={values.serial_no}
-                                                            invalid={
-                                                                touched.serial_no &&
-                                                                errors.serial_no
-                                                            }
-                                                        />
-                                                        <CInvalidFeedback>
-                                                            {errors.serial_no}
-                                                        </CInvalidFeedback>
-                                                    </CFormGroup>
-                                                </CCol>
-                                                <CCol xs="12">
-                                                    <CFormGroup>
-                                                        <CLabel htmlFor="address">
-                                                            地址
-                                                        </CLabel>
-                                                        <CInput
-                                                            id="address"
-                                                            name="address"
-                                                            onChange={handleChange}
-                                                            onBlur={handleBlur}
-                                                            value={values.address}
-                                                            invalid={touched.address && errors.address}
-                                                        />
-                                                        <CInvalidFeedback>
-                                                            {errors.address}
-                                                        </CInvalidFeedback>
-                                                    </CFormGroup>
-                                                </CCol>
-                                                <CCol xs="12">
-                                                    <CFormGroup>
-                                                        <CLabel htmlFor="locality">地址信息 &nbsp;&nbsp;</CLabel>
-                                                        <CLabel htmlFor='fileName'>{values.application_form_url} &nbsp;&nbsp;</CLabel>
-                                                        <br />
-                                                        <input type="file" onChange={selectApplicationFormFiles} />
-                                                    </CFormGroup>
-                                                </CCol>
-                                                <CCol xs="12">
-                                                    <CFormGroup>
-                                                        <CLabel htmlFor="locality">地址图纸&nbsp;&nbsp;</CLabel>
-                                                        <CLabel htmlFor='fileName'>{values.plans_url} &nbsp;&nbsp;</CLabel>
-                                                        <br />
-                                                        <input type="file" onChange={selectPlanFiles} />
-                                                    </CFormGroup>
-                                                </CCol>
-                                                <CCol xs="12">
-                                                    <CFormGroup>
-                                                        <CLabel htmlFor="acreage">
-                                                            面积
-                                                        </CLabel>
-                                                        <CInput
-                                                            id="acreage"
-                                                            name="acreage"
-                                                            onChange={handleChange}
-                                                            onBlur={handleBlur}
-                                                            value={values.acreage}
-                                                            invalid={touched.acreage && errors.acreage}
-                                                        />
-                                                        <CInvalidFeedback>
-                                                            {errors.acreage}
-                                                        </CInvalidFeedback>
-                                                    </CFormGroup>
-                                                </CCol>
-                                            </CCardBody>
-                                            <CCardFooter className="text-right">
-                                                <CButton
-                                                    type="submit"
-                                                    size="sm"
-                                                    color="primary">
-                                                    {isSubmitting ? (
-                                                        <CSpinner size="sm" />
-                                                    ) : (
-                                                        'Submit'
-                                                    )}
-                                                </CButton>{' '}
-                                                <CButton
-                                                    type="reset"
-                                                    size="sm"
-                                                    color="danger"
-                                                    onClick={() => resetForm()}>
-                                                    Reset
-                                                </CButton>
-                                            </CCardFooter>
-                                        </CCard>
-                                    </CForm>
-                                </CCol>
-                            </CRow>
-                        </CTabPane>
+                                            </CRow>
+                                        </CTabPane>
 
 
 
-                    </CTabContent>
-                </CTabs>
+                                    </CTabContent>
+                                </CTabs>
+                            </div>
+                        </CContainer>
+                    </main>
+                </div>
+                <TheFooter />
             </div>
-        </main>
+        </div>
 
     );
 };

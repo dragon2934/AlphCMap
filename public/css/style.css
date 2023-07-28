@@ -2490,3 +2490,56 @@ a:hover {
 .about_us_list li {
   color: black !important;
 }
+
+a.business_link:hover,
+a.business_link:link,
+a.business_link:visited {
+  color: white;
+  text-decoration: underline !important;
+}
+
+.register-form,
+.login-form {
+  padding: 20px;
+}
+
+.wrapperClassName {
+  min-height: 300px;
+  background-color: white;
+  color: black;
+}
+
+.fa-eye-slash,
+.fa-eye {
+  position: absolute;
+  right: 30px;
+  top: 40px;
+  font-size: 20px !important;
+  cursor: pointer;
+  z-index: 99999;
+  color: black;
+}
+
+.fa {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.border_img {
+  width: 100%;
+  border: 1px solid #1b75bc;
+}
+
+.border_img img {
+  width: 100%;
+}
+
+p.figure-caption {
+  font-style: italic;
+  margin-top: -10px;
+  line-height: 16px;
+}

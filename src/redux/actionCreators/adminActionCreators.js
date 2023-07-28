@@ -35,9 +35,20 @@ import {
     ADMIN_GET_BUSINESS_ADDRESS,
     ADMIN_SAVE_MERCHANT_CONNECTION,
     ADMIN_SAVE_SHOPPING_CART,
-    ADMIN_LOAD_SHOPPING_CART
+    ADMIN_LOAD_SHOPPING_CART,
+    ADMIN_UNSUBSCRIBE,
+    ADMIN_TOTAL_CONNECTED,
+    ADMIN_CONFIRM_CONNECTION,
+    ADMIN_GET_ADDRESS_BY_TYPE,
+    ADMIN_CHECK_BUSINESS_PROFILE,
+    ADMIN_GET_HIGHRISE_INFO,
+    ADMIN_GET_HIGHRISE_BUSINESS_INFO,
+    ADMIN_FETCH_ACTION,
+    ADMIN_SAVE_ACTION,
+    ADMIN_DELETE_ACTION
 } from '../actionTypes';
 
+import { getLoginType } from '../../utils/utils';
 // UI
 
 export const setShowSidebar = (data) => {
@@ -634,22 +645,28 @@ export const saveProperty = (data) => {
 
 // Alerts
 // 
-export const fetchAlerts = ({ page = 1, pageSize = 10 }) => {
+export const fetchEmailCampaigns = (ownerId, { page = 1, pageSize = 10 }) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
         const start = (page - 1) * pageSize;
 
+        const jsonData = {
+            ownerId: ownerId,
+            start: start,
+            pageSize: pageSize
+        }
         return dispatch({
-            type: ADMIN_FETCH_ALERTS,
+            type: ADMIN_FETCH_ACTION,
             payload: fetch(
-                `${SERVICE_URL}/alerts?_start=${start}&_limit=${pageSize}&status=1`,
+                `${SERVICE_URL}/email-campaign/lists`,
                 {
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}`,
                     },
-                    method: 'GET',
+                    body: JSON.stringify(jsonData),
+                    method: 'POST',
                 },
             )
                 .then((r) => r.json())
@@ -814,17 +831,19 @@ export const listFiles = () => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
     };
 };
 
-export const uploadFiles = () => {
+export const uploadFiles = (fileData) => {
     return (dispatch, getState) => {
         // const token = getState().auth.jwt;
+        let formData = new FormData();
 
+        formData.append("files", fileData);
         return dispatch({
             type: ADMIN_UPLOAD_FILE,
             payload: fetch(`${SERVICE_URL}/upload`, {
@@ -832,6 +851,7 @@ export const uploadFiles = () => {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                 },
+                body: formData,
                 method: 'POST',
             })
                 .then((r) => r.json())
@@ -839,7 +859,7 @@ export const uploadFiles = () => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
@@ -870,7 +890,7 @@ export const updateProperty = (fileName, fileUrl) => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
@@ -901,7 +921,7 @@ export const updateLatLng = () => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
@@ -928,7 +948,7 @@ export const propertyBinding = (data) => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
@@ -955,7 +975,7 @@ export const sendPromotionContents = (data) => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
@@ -982,7 +1002,7 @@ export const saveBusinessProfile = (data) => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
@@ -996,6 +1016,31 @@ export const getBusinessProfile = (data) => {
         return dispatch({
             type: ADMIN_GET_BUSINESS_PROFILE,
             payload: fetch(`${SERVICE_URL}/public/load-business-profile`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+export const getBusinessProfileByConnectToken = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_GET_BUSINESS_PROFILE,
+            payload: fetch(`${SERVICE_URL}/public/load-business-profile-by-token`, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -1040,11 +1085,12 @@ export const loadBusinessAddress = (data) => {
 };
 export const loadConnected = (data) => {
 
+    const loginType = getLoginType();
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
         return dispatch({
             type: ADMIN_GET_BUSINESS_ADDRESS,
-            payload: fetch(`${SERVICE_URL}/residents/load-connected`, {
+            payload: fetch(`${SERVICE_URL}/residents/load-connected?loginType=` + loginType, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -1083,7 +1129,7 @@ export const saveMerchantConnection = (data) => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
@@ -1112,7 +1158,7 @@ export const saveShoppingCart = (data) => {
                     if (responseData.statusCode >= 300) {
                         return Promise.reject(responseData);
                     } else {
-                        return responseData.roles;
+                        return responseData;
                     }
                 }),
         });
@@ -1132,6 +1178,441 @@ export const loadShoppingCart = (userId) => {
                     Authorization: `Bearer ${token}`,
                 },
                 method: 'GET',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const disConnectionMerchant = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_SAVE_MERCHANT_CONNECTION,
+            payload: fetch(`${SERVICE_URL}/residents/disconnect-merchant`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const unSubscribeMerchant = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_UNSUBSCRIBE,
+            payload: fetch(`${SERVICE_URL}/public/unsubscribe`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+export const unsubscribeBeforeConnect = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_UNSUBSCRIBE,
+            payload: fetch(`${SERVICE_URL}/public/unsubscribe-before-connect`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+
+
+export const loadConnectedTotal = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_TOTAL_CONNECTED,
+            payload: fetch(`${SERVICE_URL}/public/total-connected`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const confirmConnection = (data) => {
+    return (dispatch, getState) => {
+
+        return dispatch({
+            type: ADMIN_CONFIRM_CONNECTION,
+            payload: fetch(`${SERVICE_URL}/public/confirm-connected`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const getAddressByType = (loginType) => {
+
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_GET_ADDRESS_BY_TYPE,
+            payload: fetch(`${SERVICE_URL}/residents/get-address-by-type?type=` + loginType, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'GET',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const checkBusinessProfile = () => {
+
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_CHECK_BUSINESS_PROFILE,
+            payload: fetch(`${SERVICE_URL}/residents/check-business-profile`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'GET',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+export const sendPasswordBeforeDeleteAccount = () => {
+
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_CHECK_BUSINESS_PROFILE,
+            payload: fetch(`${SERVICE_URL}/residents/send-password-before-delete-account`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+                body: JSON.stringify({})
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+export const getHighRiseInfo = (email, type = 'C') => {
+
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_GET_HIGHRISE_INFO,
+            payload: fetch(`${SERVICE_URL}/residents/get-highrise-binding`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+                body: JSON.stringify({
+                    email,
+                    type
+                })
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+export const removeHighRiseBinding = (userId, userPropertyId) => {
+
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_GET_HIGHRISE_INFO,
+            payload: fetch(`${SERVICE_URL}/residents/remove-highrise-binding`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+                body: JSON.stringify({
+                    userId, userPropertyId
+                })
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+export const removeNoDelivery = (consumerId, merchantId) => {
+
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_GET_HIGHRISE_INFO,
+            payload: fetch(`${SERVICE_URL}/residents/remove-no-delivery`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+                body: JSON.stringify({
+                    consumerId,
+                    merchantId
+                })
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+
+export const getHighRiseBusinessInfo = (email) => {
+
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_GET_HIGHRISE_BUSINESS_INFO,
+            payload: fetch(`${SERVICE_URL}/public/get-business-highrise`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                body: JSON.stringify({
+                    email,
+                })
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const fetchTemplates = (ownerId, { page = 1, pageSize = 10 }) => {
+    const start = (page - 1) * pageSize;
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_FETCH_ACTION,
+            payload: fetch(`${SERVICE_URL}/templates?_start=${start}&_limit=${pageSize}&filters[$and][0][owner_id][$eq]=${ownerId}`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'GET',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+export const fetchTemplate = (id) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        return dispatch({
+            type: ADMIN_FETCH_ACTION,
+            payload: fetch(`${SERVICE_URL}/templates/${id}`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'GET',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const saveTemplate = (data) => {
+
+    const jsonData = {
+        data: data
+    }
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        const url = data.id
+            ? `${SERVICE_URL}/templates/${data.id}`
+            : `${SERVICE_URL}/templates`;
+
+        console.log('save templates=' + JSON.stringify(data));
+        return dispatch({
+            type: ADMIN_SAVE_ACTION,
+            payload: fetch(url, {
+                body: JSON.stringify(jsonData),
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: data.id ? 'PUT' : 'POST',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+export const deleteTemplate = (id) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_DELETE_ACTION,
+            payload: fetch(`${SERVICE_URL}/templates/${id}`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'DELETE',
             })
                 .then((r) => r.json())
                 .then((responseData) => {

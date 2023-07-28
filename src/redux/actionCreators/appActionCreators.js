@@ -20,7 +20,10 @@ import {
     SAVE_SECONDORY_PROPERTY,
     CHANGE_PROPERTY_COLOR,
     CANCEL_CHANGE_PROPERTY_COLOR,
-    CANCEL_DISPLAY_BUSINESS
+    CANCEL_DISPLAY_BUSINESS,
+    CANCEL_DISPLAY_HIGHRISE,
+    SEND_VERIFICATION_CODE,
+    CANCEL_DISPLAY_NODELIVERY
 } from '../actionTypes';
 
 
@@ -95,8 +98,18 @@ export const cancelShowBusinessInfo = () => {
         type: CANCEL_DISPLAY_BUSINESS,
     };
 }
+export const cancelShowHighRiseInfo = () => {
+    return {
+        type: CANCEL_DISPLAY_HIGHRISE,
+    };
+}
+export const cancelShowNoDelivery = () => {
+    return {
+        type: CANCEL_DISPLAY_NODELIVERY,
+    };
+}
 
-export const deleteAccount = () => {
+export const deleteAccount = (verifyCode) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
 
@@ -108,7 +121,10 @@ export const deleteAccount = () => {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-                method: 'DELETE',
+                body: JSON.stringify({
+                    verifyCode: verifyCode
+                }),
+                method: 'POST',
             })
                 .then((r) => r.json())
                 .then((responseData) => {
@@ -342,13 +358,13 @@ export const getUserPropertyById = (id) => {
         });
     };
 };
-export const getUserProperty = () => {
+export const getUserProperty = (loginType) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
 
         return dispatch({
             type: GET_USER_PROPERTY,
-            payload: fetch(`${SERVICE_URL}/residents/property/get`, {
+            payload: fetch(`${SERVICE_URL}/residents/property/get?loginType=` + loginType, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -479,6 +495,39 @@ export const resendMobileVerificationCode = () => {
     };
 };
 
+
+
+export const sendVerificationCodeByMobileNumber = (code, mobileNumber) => {
+    return (dispatch, getState) => {
+        // const token = getState().auth.jwt;
+        const data = {
+            code,
+            mobileNumber
+        }
+        return dispatch({
+            type: SEND_VERIFICATION_CODE,
+            payload: fetch(
+                `${SERVICE_URL}/public/send-verification-code`,
+                {
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                    method: 'POST',
+                },
+            )
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
 export const resendMobileVerificationCodeByMobileNumber = (mobileNumber) => {
     return (dispatch, getState) => {
         // const token = getState().auth.jwt;

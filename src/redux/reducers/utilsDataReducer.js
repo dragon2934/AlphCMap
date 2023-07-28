@@ -3,7 +3,9 @@ import {
     SET_EDIT_MODE,
     ADMIN_PROPERTY_BINDING,
     ADMIN_SEND_PROMOTE_EMAIL,
-    CANCEL_DISPLAY_BUSINESS
+    CANCEL_DISPLAY_BUSINESS,
+    CANCEL_DISPLAY_HIGHRISE,
+    CANCEL_DISPLAY_NODELIVERY
 } from '../actionTypes';
 
 const initialState = {
@@ -16,6 +18,11 @@ const initialState = {
     drawing: false,
     showBusinessInfo: false,
     connectToMerchantId: 0,
+    fncCallback: null,
+    totalConnected: 0,
+    showHighRiseInfo: false,
+    showNoDelivery: false,
+    properties: []
 };
 
 function utilsDataReducer(state = initialState, action) {
@@ -45,6 +52,8 @@ function utilsDataReducer(state = initialState, action) {
             };
         case `${CANCEL_DISPLAY_BUSINESS}`:
         case 'CANCEL_CHANGE_PROPERTY_COLOR':
+        case `${CANCEL_DISPLAY_HIGHRISE}`:
+        case `${CANCEL_DISPLAY_NODELIVERY}`:
             return {
                 ...state,
             };

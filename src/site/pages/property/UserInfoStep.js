@@ -1,5 +1,5 @@
 import { useFormik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     Button,
@@ -42,12 +42,12 @@ const validationSchema = Yup.object().shape({
             [true],
             'Confirm you have read Privacy Policy and Terms of Use.',
         ),
-    liability: Yup.boolean()
-        .required('Confirm you have read above instruction')
-        .oneOf(
-            [true],
-            'Confirm you have read above instruction.',
-        )
+    // liability: Yup.boolean()
+    //     .required('Confirm you have read above instruction')
+    //     .oneOf(
+    //         [true],
+    //         'Confirm you have read above instruction.',
+    //     )
 
 });
 
@@ -68,7 +68,7 @@ const UserInfoStep = ({ wizardInstance }) => {
             password: '',
             passwordConfirmation: '',
             consent: false,
-            liability: false
+            liability: true
         },
         isInitialValid: false,
         validationSchema,
@@ -105,7 +105,7 @@ const UserInfoStep = ({ wizardInstance }) => {
 
             dispatch(registerUser(newUser))
                 .then(() => {
-                    dispatch(getMe()).then(resp => {
+                    dispatch(getMe(2)).then(resp => {
                         console.log('.get me.resp..' + JSON.stringify(resp));
                         dispatch(
                             setPropertyRegistrationForm({
@@ -154,7 +154,21 @@ const UserInfoStep = ({ wizardInstance }) => {
         setFieldValue,
         setFieldTouched,
     } = formik;
-
+    const [eye, seteye] = useState(true);
+    const [password, setpassword] = useState("password");
+    const [type, settype] = useState(false);
+    const Eye = () => {
+        if (password == "password") {
+            setpassword("text");
+            seteye(false);
+            settype(true);
+        }
+        else {
+            setpassword("password");
+            seteye(true);
+            settype(false);
+        }
+    }
     return (
         <Form onSubmit={handleSubmit}>
             <Col>
@@ -218,10 +232,10 @@ const UserInfoStep = ({ wizardInstance }) => {
                 </FormGroup>
             </Col>
             <Col>
-                <FormGroup>
+                <FormGroup className='passwordFormGroup'>
                     <Label for="password">Password</Label>
                     <Input
-                        type="password"
+                        type={password}
                         name="password"
                         id="password"
                         value={values.password}
@@ -229,17 +243,17 @@ const UserInfoStep = ({ wizardInstance }) => {
                         onBlur={handleBlur}
                         invalid={touched.password && errors.password}
                         placeholder="********"
-                    />
+                    /><i onClick={Eye} className={`fa ${eye ? "fa-eye-slash" : "fa-eye"}`}></i>
                     <FormFeedback>{errors.password}</FormFeedback>
                 </FormGroup>
             </Col>
             <Col>
-                <FormGroup>
+                <FormGroup className='passwordFormGroup'>
                     <Label for="passwordConfirmation">
                         Password Confirmation
                     </Label>
                     <Input
-                        type="password"
+                        type={password}
                         name="passwordConfirmation"
                         id="passwordConfirmation"
                         value={values.passwordConfirmation}
@@ -250,7 +264,7 @@ const UserInfoStep = ({ wizardInstance }) => {
                             errors.passwordConfirmation
                         }
                         placeholder="********"
-                    />
+                    /><i onClick={Eye} className={`fa ${eye ? "fa-eye-slash" : "fa-eye"}`}></i>
                     <FormFeedback>{errors.passwordConfirmation}</FormFeedback>
                 </FormGroup>
             </Col>
@@ -283,7 +297,7 @@ const UserInfoStep = ({ wizardInstance }) => {
                             <a target={'_blank'} href="/terms-of-use">Terms of Use</a>.
                         </Label>
                         <Label check>
-                            <Input
+                            {/* <Input
                                 type="checkbox"
                                 name="liability"
                                 onChange={(e) => {
@@ -296,8 +310,8 @@ const UserInfoStep = ({ wizardInstance }) => {
                                 checked={values.liability}
                                 onBlur={handleBlur}
                                 invalid={touched.liability && errors.liability}
-                            />
-                            Disclaimer: In an emergency contact your local first responder directly. AlphC E-Alert App is only an aid and is not intended to replace first responders. First responders can license this technology to increase the safety of your community.
+                            /> */}
+                            {/* Disclaimer: In an emergency contact your local first responder directly. AlphC E-Alert App is only an aid and is not intended to replace first responders. First responders can license this technology to increase the safety of your community. */}
                         </Label>
 
                     </FormGroup>
@@ -309,12 +323,12 @@ const UserInfoStep = ({ wizardInstance }) => {
                     <FormFeedback>{errors.consent}</FormFeedback>
                 </FormGroup>
             </Col>
-            <Col>
+            {/* <Col>
                 <FormGroup>
                     <Input type="hidden" invalid={errors.liability} />
                     <FormFeedback>{errors.liability}</FormFeedback>
                 </FormGroup>
-            </Col>
+            </Col> */}
             <Col>
                 <Button
                     block

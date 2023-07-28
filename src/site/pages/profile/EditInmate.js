@@ -218,14 +218,21 @@ const EditInmate = ({
         });
     }
 
-    // const query = new URLSearchParams(window.location.search);
-    // // console.log('query = ' + query);
-    // const [propertyId,setPropertyId] = useState(null);
-    // if(query!=null && query!==undefined){
-    //     const pid = query.get('propertyId');
-    //     // console.log('pid ==' + pid);
-    //     setPropertyId(pid);
-    // }
+    const [eye, seteye] = useState(true);
+    const [password, setpassword] = useState("password");
+    const [type, settype] = useState(false);
+    const Eye = () => {
+        if (password == "password") {
+            setpassword("text");
+            seteye(false);
+            settype(true);
+        }
+        else {
+            setpassword("password");
+            seteye(true);
+            settype(false);
+        }
+    }
     return (
         <Card>
             <Form onSubmit={handleSubmit}>
@@ -323,7 +330,7 @@ const EditInmate = ({
                                 <FormGroup>
                                     <Label for="password">Password</Label>
                                     <Input
-                                        type="password"
+                                        type={password}
                                         name="password"
                                         id="password"
                                         value={values.password}
@@ -333,7 +340,7 @@ const EditInmate = ({
                                             touched.password && errors.password
                                         }
                                         placeholder="********"
-                                    />
+                                    /><i onClick={Eye} className={`fa ${eye ? "fa-eye-slash" : "fa-eye"}`}></i>
                                     <FormFeedback>
                                         {errors.password}
                                     </FormFeedback>
@@ -346,7 +353,7 @@ const EditInmate = ({
                                         Password Confirmation
                                     </Label>
                                     <Input
-                                        type="password"
+                                        type={password}
                                         name="passwordConfirmation"
                                         id="passwordConfirmation"
                                         value={values.passwordConfirmation}
@@ -357,7 +364,7 @@ const EditInmate = ({
                                             errors.passwordConfirmation
                                         }
                                         placeholder="********"
-                                    />
+                                    /><i onClick={Eye} className={`fa ${eye ? "fa-eye-slash" : "fa-eye"}`}></i>
                                     <FormFeedback>
                                         {errors.passwordConfirmation}
                                     </FormFeedback>

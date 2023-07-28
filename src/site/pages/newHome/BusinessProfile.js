@@ -42,6 +42,7 @@ const BusinessProfile = () => {
     // console.log('..queryPage..' + queryPage);
     const propertyId = queryPage[1];
     const user = useSelector((state) => state.auth.me);
+    // console.log('..user..' + JSON.stringify(user));
     const [companyProfile, setCompanyProfile] = useState({});
 
     const getWorkingHourValue = (hours, dayOfWeek, index) => {
@@ -79,32 +80,54 @@ const BusinessProfile = () => {
     }
     const formik = useFormik({
         initialValues: {
-            companyName: '',
+            companyName: user.companyName,
             phone: '',
             website: '',
+            email: user.email
         },
         isInitialValid: false,
         validationSchema: bindingSchema,
         onSubmit: (values, { setSubmitting }) => {
             setSubmitting(true);
 
-            const postData = {
-                profileId: companyProfile !== null && companyProfile !== undefined && companyProfile.id !== null && companyProfile.id !== undefined ? companyProfile.id : 0,
-                ...values,
-                property_id: propertyId
-            }
-            dispatch(saveBusinessProfile(postData)).then(resp => {
-                console.log('..save business profile..' + JSON.stringify(resp));
-                setSubmitting(false);
-                toastr.success('Success', 'Business profile saved!');
-                const proudct = {
-                    membershipId: 1,
-
+            let data0 = false;
+            let data1 = false;
+            let data2 = false;
+            let data3 = false;
+            let data4 = false;
+            let data5 = false;
+            let data6 = false;
+            if (values.close0 || (values.openHour0 && values.openHour0.length > 0 && values.closeHour0 && values.closeHour0.length > 0)) data0 = true;
+            if (values.close1 || (values.openHour1 && values.openHour1.length > 0 && values.closeHour1 && values.closeHour1.length > 0)) data1 = true;
+            if (values.close2 || (values.openHour2 && values.openHour2.length > 0 && values.closeHour2 && values.closeHour2.length > 0)) data2 = true;
+            if (values.close3 || (values.openHour3 && values.openHour3.length > 0 && values.closeHour3 && values.closeHour3.length > 0)) data3 = true;
+            if (values.close4 || (values.openHour4 && values.openHour4.length > 0 && values.closeHour4 && values.closeHour4.length > 0)) data4 = true;
+            if (values.close5 || (values.openHour5 && values.openHour5.length > 0 && values.closeHour5 && values.closeHour5.length > 0)) data5 = true;
+            if (values.close6 || (values.openHour6 && values.openHour6.length > 0 && values.closeHour6 && values.closeHour6.length > 0)) data6 = true;
+            if (data0 && data1 && data2 && data3 && data4 && data5 && data6) {
+                const postData = {
+                    profileId: companyProfile !== null && companyProfile !== undefined && companyProfile.id !== null && companyProfile.id !== undefined ? companyProfile.id : 0,
+                    ...values,
+                    property_id: propertyId
                 }
+                dispatch(saveBusinessProfile(postData)).then(resp => {
+                    console.log('..save business profile..' + JSON.stringify(resp));
+                    setSubmitting(false);
+                    user.companyName = values.companyName;
+                    user.email = values.email;
+                    toastr.success('Success', 'Business profile saved!');
+                    const proudct = {
+                        membershipId: 1,
 
-                addProductToCard(proudct);
+                    }
+                    history.push('/');
+                    // addProductToCard(proudct);
 
-            });
+                });
+            } else {
+                toastr.error('Error', 'Please make sure that all fields are entered correctly!')
+            }
+            setSubmitting(false);
         }
     });
     const {
@@ -137,9 +160,10 @@ const BusinessProfile = () => {
                     companyName: profile.companyName,
                     phone: profile.phone,
                     website: profile.website,
+                    email: profile.email,
                     openHour0: getWorkingHourValue(hours, 0, 1),
                     closeHour0: getWorkingHourValue(hours, 0, 2),
-                    close0: getWorkingHourValue(hours, 0, 2) === true ? true : false,
+                    close0: getWorkingHourValue(hours, 0, 3) === true ? true : false,
 
                     openHour1: getWorkingHourValue(hours, 1, 1),
                     closeHour1: getWorkingHourValue(hours, 1, 2),
@@ -202,7 +226,7 @@ const BusinessProfile = () => {
                                     <Row>
                                         <Col md={12}>
                                             <FormGroup>
-                                                <Label>Contact Phone:</Label>
+                                                <Label>Business Number:</Label>
                                                 <Input
                                                     type="text"
                                                     name="phone"
@@ -218,7 +242,7 @@ const BusinessProfile = () => {
                                     <Row>
                                         <Col md={12}>
                                             <FormGroup>
-                                                <Label>Website:</Label>
+                                                <Label>Website:(Optional)</Label>
                                                 <Input
                                                     type="text"
                                                     name="website"
@@ -228,6 +252,23 @@ const BusinessProfile = () => {
                                                     invalid={touched.website && errors.website}
                                                 />
                                                 <FormFeedback>{errors.website}</FormFeedback>
+                                            </FormGroup>
+                                        </Col>
+
+                                    </Row>
+                                    <Row>
+                                        <Col md={12}>
+                                            <FormGroup>
+                                                <Label>E-mail:</Label>
+                                                <Input
+                                                    type="text"
+                                                    name="email"
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                    value={values.email}
+                                                    invalid={touched.email && errors.email}
+                                                />
+                                                <FormFeedback>{errors.email}</FormFeedback>
                                             </FormGroup>
                                         </Col>
 

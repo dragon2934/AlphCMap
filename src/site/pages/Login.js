@@ -35,6 +35,23 @@ const Login = ({ history }) => {
     const [error, setError] = useState(null);
     const [loginAs, setLoginAs] = useState(1);
 
+    const [txtPassword, setTxtPassword] = React.useState({
+        password: "",
+        showPassword: false,
+    });
+
+    const handleClickShowPassword = () => {
+        setValues({ ...valutxtPasswordes, showPassword: !txtPassword.showPassword });
+    };
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+
+    const handlePasswordChange = (prop) => (event) => {
+        setValues({ ...values, [prop]: event.target.value });
+    };
+
     const formik = useFormik({
         initialValues: {
             email: 'test@nyzsoft.com',
@@ -44,13 +61,13 @@ const Login = ({ history }) => {
         onSubmit: (values, { setSubmitting }) => {
             setError(null);
             setSubmitting(true);
-            dispatch(loginUser(values.email, values.password))
+            dispatch(loginUser(values.email, values.password, loginAs))
                 .then((response) => {
                     if (response.value.error && response.value.error.status > 300) {
                         toastr.error('Error', response.value.error.details[0].messages[0].message);
                     } else {
                         console.log('..start get me');
-                        dispatch(getMe()).then(resp => {
+                        dispatch(getMe(loginAs)).then(resp => {
                             history.push('/');
                         }).catch(error => {
                             toastr.error('Error', "Mobile Or Password doesn't match, Please verify!");
@@ -92,6 +109,21 @@ const Login = ({ history }) => {
         setLoginAs(2);
         handleSubmit();
     }
+    const Eye = () => {
+        if (password == "password") {
+            setpassword("text");
+            seteye(false);
+            settype(true);
+        }
+        else {
+            setpassword("password");
+            seteye(true);
+            settype(false);
+        }
+    }
+    const [eye, seteye] = useState(true);
+    const [password, setpassword] = useState("password");
+    const [type, settype] = useState(false);
     return (
         <HomeLayout>
             <Row noGutters className="login-container">
@@ -111,7 +143,7 @@ const Login = ({ history }) => {
                         </p>
                     </div>
                 </Col>
-                <Col lg={4} md={12} className="main">
+                <Col lg={6} md={12} className="main">
                     <div className="login-form">
                         <Form onSubmit={handleSubmit}>
                             {error && (
@@ -134,10 +166,11 @@ const Login = ({ history }) => {
                                 </FormGroup>
                             </Col>
                             <Col>
-                                <FormGroup>
+                                <FormGroup className='passwordFormGroup'>
                                     <Label for="password">Password</Label>
+
                                     <Input
-                                        type="password"
+                                        type={password}
                                         name="password"
                                         id="password"
                                         onChange={handleChange}
@@ -146,7 +179,10 @@ const Login = ({ history }) => {
                                             touched.password && errors.password
                                         }
                                         placeholder="********"
+
                                     />
+                                    <i onClick={Eye} className={`fa ${eye ? "fa-eye-slash" : "fa-eye"}`}></i>
+
                                     <FormFeedback>
                                         {errors.password}
                                     </FormFeedback>
@@ -160,7 +196,7 @@ const Login = ({ history }) => {
                                         {isSubmitting && loginAs === 1 ? (
                                             <Spinner size={'sm'} />
                                         ) : (
-                                            'Login as a Consumer'
+                                            'Login Personal Account'
                                         )}
                                     </Button>
                                 </Col><Col>
@@ -168,12 +204,20 @@ const Login = ({ history }) => {
                                         {isSubmitting && loginAs === 2 ? (
                                             <Spinner size={'sm'} />
                                         ) : (
-                                            'Login as a Business Owner'
+                                            'Login Business Account'
                                         )}
                                     </Button>
                                 </Col>
                             </Row>
+                            <Row>
+                                <Col>
+                                    <FormGroup> <br /> <br />
+                                        <a href="/reset-password">Forgot Password ?</a>
+                                    </FormGroup>
+                                </Col>
+                            </Row>
                         </Col>
+
 
                     </div>
                 </Col>

@@ -29,6 +29,11 @@ import {
 import MobileInput from '../../../common/components/MobileInput';
 import Header from '../../../site/pages/newHome/Header';
 
+import { TheContent, TheSidebar, TheFooter, TheHeader } from '../../containers/index';
+import { CContainer, CFade } from '@coreui/react';
+import '../../../styles/admin/style.scss';
+import { icons } from "../../assets/icons"
+
 const validationSchema = Yup.object().shape({
     mobileNumber: Yup.number().required('Mobile number is required'),
     firstName: Yup.string(),
