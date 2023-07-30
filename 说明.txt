@@ -1,0 +1,65 @@
+
+Staging
+API:   
+   port: 5337
+   folder: /var/www/node/staging/alphc-map-webservice
+   database: ``alphcmap`
+   url: https://rest.alphcmap.com
+
+Website
+    folder: /var/www/node/staging/AlphCMap
+    port: 3001
+    https://staging.alphcworld.com
+
+
+Production:
+
+
+API:   
+   port: 6337
+   folder: /var/www/node/production/alphc-map-webservice
+   database: `kloserToYou`
+   url: https://rest.kloserToYou.com
+
+   pm2 start "yarn develop" --name kloserToYou-API
+    - Congratulations! Your certificate and chain have been saved at:
+   /etc/letsencrypt/live/rest.klosertoyou.com/fullchain.pem
+   Your key file has been saved at:
+   /etc/letsencrypt/live/rest.klosertoyou.com/privkey.pem
+   
+Website
+    folder: /var/www/node/production/AlphCMap
+    port: 3030
+    https://kloserToYou.com
+
+
+Certbot
+
+
+pm2 start --name=kloserToYou-website npm -- start
+
+
+ alphc.ca.conf
+ -- root /var/www/node/production/AlphC-Website/alphc-emergency-web;   3000 1337
+ alphc.com.conf
+ -- root /var/www/node/production/AlphC-Website/alphc-emergency-web;   3000 1337
+ alphcmap.conf
+ 301 redirect to https://klosertoyou.com
+
+ alphcworld.conf
+ -- root /var/www/node/staging/AlphCMap; 3001 5337
+ crutch.api.conf
+ --  root /opt/crutch/elderly-helper/api/build; 4337
+ crutch.conf
+ -- root /opt/crutch/crutch;
+ 
+
+ rest.alphc.com.conf
+ --  root /var/www/node/production/AlphC-Webservice/alphc-emergency-ws; 1337
+ rest.alphcmap.conf
+ -- root /var/www/node/staging/alphc-map-webservice/build; 5337
+
+ klosertoyou.com.conf
+ -- root /var/www/node/production/AlphCMap; 3030 6337
+ rest.klosertoyou.com.conf
+ -- root /var/www/node/production/alphc-map-webservice/build; 6337

@@ -59,7 +59,8 @@ const EmailCampaigns = () => {
         setLoading(true);
         dispatch(fetchEmailCampaigns(currentUser.id, { page, pageSize: 1000000 }))
             .then(resp => {
-                console.log('...data..', resp);
+                console.log('...data..', resp.value.data);
+                setEmailCampaigns(resp.value.data)
             })
             .finally(() =>
                 setLoading(false),
@@ -107,12 +108,16 @@ const EmailCampaigns = () => {
                                                     loading={loading}
                                                     fields={[
                                                         {
-                                                            key: 'mobileNumber', _classes: 'font-weight-bold'
+                                                            key: 'subject', _classes: 'font-weight-bold'
                                                         },
-                                                        'sender',
-                                                        // 'mobileNumber',
-                                                        'name',
-                                                        'createdAt'
+                                                        {
+                                                            key: 'template_name', label: ' Template'
+                                                        },
+                                                        {
+                                                            key: 'created_at', label: ' Create At'
+                                                        },
+
+
                                                     ]}
                                                     hover
                                                     sorter
@@ -122,7 +127,7 @@ const EmailCampaigns = () => {
                                                     pagination
                                                     clickableRows
                                                     onRowClick={(item) =>
-                                                        history.push(`/admin/email-campaigns/${item.id}`)
+                                                        history.push(`/admin/email-campaign/${item.id}`)
                                                     }
                                                 />
                                                 {

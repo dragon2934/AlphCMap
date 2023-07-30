@@ -681,13 +681,13 @@ export const fetchEmailCampaigns = (ownerId, { page = 1, pageSize = 10 }) => {
     };
 };
 
-export const fetchAlert = (id) => {
+export const fetchCampaign = (id) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
 
         return dispatch({
             type: ADMIN_FETCH_ALERT,
-            payload: fetch(`${SERVICE_URL}/alerts/${id}`, {
+            payload: fetch(`${SERVICE_URL}/email-campaigns/${id}`, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -1456,7 +1456,7 @@ export const removeHighRiseBinding = (userId, userPropertyId) => {
         });
     };
 };
-export const removeNoDelivery = (consumerId, merchantId) => {
+export const removeNoDelivery = (consumerId, merchantId, userPropertiesId) => {
 
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
@@ -1471,7 +1471,8 @@ export const removeNoDelivery = (consumerId, merchantId) => {
                 method: 'POST',
                 body: JSON.stringify({
                     consumerId,
-                    merchantId
+                    merchantId,
+                    userPropertiesId
                 })
             })
                 .then((r) => r.json())
@@ -1613,6 +1614,68 @@ export const deleteTemplate = (id) => {
                     Authorization: `Bearer ${token}`,
                 },
                 method: 'DELETE',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const deleteCampaign = (id) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        const data = {
+            data: {
+                IsDeleted: 1
+            }
+        }
+
+        return dispatch({
+            type: ADMIN_DELETE_ACTION,
+            payload: fetch(`${SERVICE_URL}/email-campaigns/${id}`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'PUT',
+                body: JSON.stringify(data)
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const createCampaigns = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        const url = `${SERVICE_URL}/email-campaign/save`;
+
+        console.log('save templates=' + JSON.stringify(data));
+        return dispatch({
+            type: ADMIN_SAVE_ACTION,
+            payload: fetch(url, {
+                body: JSON.stringify(data),
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
             })
                 .then((r) => r.json())
                 .then((responseData) => {
