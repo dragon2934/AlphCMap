@@ -44,31 +44,38 @@ const ShowNoDelivery = () => {
         return () => { };
     }, [dispatch,]);
 
-    const onClickDelete = (event, id) => {
+    const onClickDelete = (event, id, row) => {
         // console.log('...onClickDeleteContact...' + id);
         // navigate('/edit/contact/' + id);
         toastr.confirm(
             'Are you sure you want to delete your this record? This action is irreversible!',
             {
-                onOk: () => onConfirmDelete(id),
+                onOk: () => onConfirmDelete(id, row),
             },
         );
     };
-    const onConfirmDelete = (id) => {
-        console.log('..delete..' + id);
-        dispatch(removeNoDelivery(id, user.id)).then(resp => {
-            console.log('..remove high rise binding..', resp);
-            //reload page
-            let itemData = []
-            properties.map(item => {
-                if (item.properties.no_delivery === 1 && item.properties.user_id !== id) {
-                    itemData.push(item.properties)
-                }
+    const onConfirmDelete = (id, row) => {
+        // const toBeDeleted = properties.filter(item => parseInt(item.user_id) === parseInt(id));
+        console.log('..row', row);
+        // console.log('..to be deleted..', toBeDeleted);
+        // if (toBeDeleted && toBeDeleted.length > 0) 
+        {
+            // console.log('..delete..' + id, toBeDeleted);
+            //find userPropertiesId
+            dispatch(removeNoDelivery(id, user.id, row.original.userPropertiesId)).then(resp => {
+                console.log('..remove high rise binding..', resp);
+                //reload page
+                let itemData = []
+                properties.map(item => {
+                    if (item.properties.no_delivery === 1 && item.properties.user_id !== id) {
+                        itemData.push(item.properties)
+                    }
+                });
+                console.log('..', itemData);
+                setBindingInfo(itemData);
+                setNeedReload(true);
             });
-            console.log('..', itemData);
-            setBindingInfo(itemData);
-            setNeedReload(true);
-        })
+        }
     };
     const columns = [
         {
@@ -76,7 +83,7 @@ const ShowNoDelivery = () => {
             accessor: "user_id",
             Cell: row => (
                 <>
-                    <img src="/images/buttons/delete.png" onClick={(event) => onClickDelete(event, row.value)} />
+                    <img src="/images/buttons/delete.png" onClick={(event) => onClickDelete(event, row.value, row)} />
                 </>
             ),
         },

@@ -15,7 +15,8 @@ import { useHistory } from 'react-router';
 import MapContext from '../../../common/contexts/MapContext/MapContext';
 import {
     loadConnected,
-    fetchTemplates
+    fetchTemplates,
+    createCampaigns
 } from '../../../redux/actionCreators/adminActionCreators';
 import { createAlert } from '../../../redux/actionCreators/alertActionCreators';
 import PropertiesMap from '../properties/PropertiesMap';
@@ -157,22 +158,24 @@ const CreateEmailCampaign = () => {
     }, [map]);
 
     const onClickCreateCampaigns = useCallback(() => {
-        let alertText = alertType + "! ";
         if (!templateId) {
-
+            toastr.error('Error', 'Please choose a template');
             return;
         }
-        console.log('Alert Text=' + alertText);
+        if (selectedProperties.length === 0) {
+            toastr.error('Error', 'Please select customer from the map');
+            return;
+        }
+        console.log('selectedProperties=', selectedProperties);
         dispatch(
-            createAlert({
+            createCampaigns({
                 templateId: templateId,
                 properties: selectedProperties.map((i) => i.properties.id),
-                geojson: feature,
-                sender: sender,
-                tenant: user.tenant
+                ownerId: currentUser.id,
             }),
-        ).then(({ value: alert }) => {
-            history.push(`/admin/alerts/${alert.id}`);
+        ).then(({ value: campaign }) => {
+            console.log('..campaign..', campaign)
+            history.push(`/admin/email-campaign/` + campaign.value);
         });
     }, [dispatch, feature, history, name, selectedProperties, alertNameOthers]);
 
