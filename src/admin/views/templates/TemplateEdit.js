@@ -157,7 +157,7 @@ const TemplateEdit = ({ match }) => {
         console.log('..imgData..' + JSON.stringify(imgData));
         return Promise.resolve({
             data: {
-                link: `https://rest.alphcmap.com${imgData.data[0].url}`
+                link: `https://rest.klosertoyou.com${imgData.data[0].url}`
             }
         });
     }
