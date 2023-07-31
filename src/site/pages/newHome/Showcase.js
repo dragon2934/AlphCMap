@@ -686,7 +686,7 @@ class Showcase extends Component {
         const width = 48;
         const height = 48;
         el.className = 'marker';
-        el.style.backgroundImage = `url(https://alphcmap.com/map-markers/blue_home_pin.png)`;
+        el.style.backgroundImage = `url(https://klosertoyou.com/map-markers/blue_home_pin.png)`;
         el.style.width = `${width}px`;
         el.style.height = `${height}px`;
         el.style.backgroundSize = '100%';
