@@ -23,11 +23,11 @@ import {
     ADMIN_UPLOAD_FILE,
     ADMIN_UPDATE_LAT_LNG,
     ADMIN_SEARCH_PROPERTIES,
-    ADMIN_FETCH_CITIES,
-    ADMIN_FETCH_CITY,
-    ADMIN_FETCH_CITY_COUNT,
-    ADMIN_DELETE_CITY,
-    ADMIN_ADD_CITY,
+    ADMIN_FETCH_COUPONS,
+    ADMIN_FETCH_COUPON,
+    ADMIN_FETCH_COUPON_COUNT,
+    ADMIN_DELETE_COUPON,
+    ADMIN_ADD_COUPON,
     ADMIN_PROPERTY_BINDING,
     ADMIN_SEND_PROMOTE_EMAIL,
     ADMIN_SAVE_BUSINESS_PROFILE,
@@ -61,13 +61,13 @@ export const setShowSidebar = (data) => {
 };
 
 
-export const fetchCity = (id) => {
+export const fetchCoupon = (id) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
 
         return dispatch({
-            type: ADMIN_FETCH_CITY,
-            payload: fetch(`${SERVICE_URL}/cities/${id}`, {
+            type: ADMIN_FETCH_COUPON,
+            payload: fetch(`${SERVICE_URL}/coupons/${id}`, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -87,17 +87,17 @@ export const fetchCity = (id) => {
     };
 };
 
-export const saveCity = (data) => {
+export const saveCoupon = (data) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
 
-        const url = data.id
-            ? `${SERVICE_URL}/cities/${data.id}`
-            : `${SERVICE_URL}/cities`;
+        const url = data.id && data.id > 0
+            ? `${SERVICE_URL}/coupons/${data.id}`
+            : `${SERVICE_URL}/coupons`;
 
-        console.log('save city=' + JSON.stringify(data));
+        console.log('save COUPON=' + JSON.stringify(data));
         return dispatch({
-            type: ADMIN_ADD_CITY,
+            type: ADMIN_ADD_COUPON,
             payload: fetch(url, {
                 body: JSON.stringify(data),
                 headers: {
@@ -105,7 +105,7 @@ export const saveCity = (data) => {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-                method: data.id ? 'PUT' : 'POST',
+                method: data.id && data.id > 0 ? 'PUT' : 'POST',
             })
                 .then((r) => r.json())
                 .then((responseData) => {
@@ -118,36 +118,16 @@ export const saveCity = (data) => {
         });
     };
 };
-export const fetchCityCount = () => {
-    return (dispatch, getState) => {
-        const token = getState().auth.jwt;
 
-        return dispatch({
-            type: ADMIN_FETCH_CITY_COUNT,
-            payload: fetch(`${SERVICE_URL}/cities/count`, {
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                method: 'GET',
-            })
-                .then((r) => r.text())
-                .then((responseData) => {
-                    return responseData;
-                }),
-        });
-    };
-};
-export const fetchCities = ({ page = 1, pageSize = 10 }) => {
+export const fetchCoupons = (ownerId, { page = 1, pageSize = 10 }) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
         const start = (page - 1) * pageSize;
 
         return dispatch({
-            type: ADMIN_FETCH_CITIES,
+            type: ADMIN_FETCH_COUPONS,
             payload: fetch(
-                `${SERVICE_URL}/cities?_start=${start}&_limit=${pageSize}`,
+                `${SERVICE_URL}/coupons?_start=${start}&_limit=${pageSize}&filters[$and][0][ownerId][$eq]=${ownerId}`,
                 {
                     headers: {
                         Accept: 'application/json',
@@ -168,13 +148,13 @@ export const fetchCities = ({ page = 1, pageSize = 10 }) => {
         });
     };
 };
-export const deleteCity = (id) => {
+export const deleteCoupon = (id) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
 
         return dispatch({
-            type: ADMIN_DELETE_CITY,
-            payload: fetch(`${SERVICE_URL}/cities/${id}`, {
+            type: ADMIN_DELETE_COUPON,
+            payload: fetch(`${SERVICE_URL}/coupons/${id}`, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -392,7 +372,7 @@ export const searchUsers = (value) => {
 };
 
 ///properties/search-by-keyword
-export const searchProperties = (keywords, searchType, cityShorName) => {
+export const searchProperties = (keywords, searchType, COUPONShorName) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
         let url = `${SERVICE_URL}/properties/search-by-keyword`;
@@ -400,7 +380,7 @@ export const searchProperties = (keywords, searchType, cityShorName) => {
         const data = {
             keywords: keywords,
             searchType: searchType,
-            cityShorName: cityShorName
+            COUPONShorName: COUPONShorName
         }
         return dispatch({
             type: ADMIN_SEARCH_PROPERTIES,

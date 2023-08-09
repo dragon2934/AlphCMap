@@ -12,9 +12,9 @@ const Logout = lazy(() => import("./pages/Logout"));
 // const UserEdit = React.lazy(() => import('../admin/views/users/UserEdit'));
 // const Users = React.lazy(() => import('../admin/views/users/Users'));
 
-// const City = React.lazy(() => import('../admin/views/cities/City'));
-// const CityEdit = React.lazy(() => import('../admin/views/cities/CityEdit'));
-// const Cities = React.lazy(() => import('../admin/views/cities/Cities'));
+const Coupon = React.lazy(() => import('../admin/views/coupon/Coupon'));
+const CouponEdit = React.lazy(() => import('../admin/views/coupon/CouponEdit'));
+const Coupons = React.lazy(() => import('../admin/views/coupon/Coupons'));
 
 
 // const Properties = React.lazy(() => import('../admin/views/properties/Properties'));
@@ -111,6 +111,11 @@ const Site = () => {
         path={`/admin/email-campaigns/new`}
         exact
       />
+
+      <Route exact path="/admin/coupons" component={Coupons} />
+      <Route exact path="/admin/coupons/new" component={CouponEdit} />
+      <Route exact path="/admin/coupons/:id" component={Coupon} />
+      <Route exact path="/admin/edit/coupon/:id" component={CouponEdit} />
 
       <Route exact path="/admin/users" component={Users} />
       <Route exact path="/admin/users/new" component={UserEdit} />
