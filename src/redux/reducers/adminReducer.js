@@ -21,6 +21,7 @@ const initialState = {
     sidebarShow: 'responsive',
     companyProfile: {},
     workingHour: [],
+    uploadedFiles: []
 };
 
 function adminReducer(state = initialState, action) {

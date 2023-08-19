@@ -62,6 +62,12 @@ const TheSidebar = () => {
             to: '/admin/coupons',
             icon: 'cil-user',
         },
+        {
+            _tag: 'CSidebarNavItem',
+            name: 'Flyer',
+            to: '/admin/flyers',
+            icon: 'cil-user',
+        },
     ];
     const show = useSelector((state) => state.admin.sidebarShow);
     return (

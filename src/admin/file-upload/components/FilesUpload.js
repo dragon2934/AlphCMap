@@ -3,15 +3,16 @@ import UploadService from "../services/FileUploadService";
 import { listFiles, updateProperty, updateLatLng } from '../../../redux/actionCreators/adminActionCreators';
 import { useDispatch, useSelector } from 'react-redux';
 
-const UploadFiles = () => {
+const UploadFiles = ({ extension }) => {
   const [selectedFiles, setSelectedFiles] = useState(undefined);
   const [progressInfos, setProgressInfos] = useState({ val: [] });
+  const uploadedFiles = useSelector((state) => state.admin.uploadedFiles);
   const [message, setMessage] = useState([]);
   const [fileInfos, setFileInfos] = useState([]);
   const progressInfosRef = useRef(null)
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.jwt);
-  // console.log('token =' + token );
+  console.log('extension =' + extension);
 
 
   useEffect(() => {
@@ -46,39 +47,22 @@ const UploadFiles = () => {
         //Do update database for property
         //resp.url
         // console.log('upload completed...' + JSON.stringify(resp));
-        dispatch(updateProperty(file.name, resp.data[0].url)).then((response) => {
-          console.log(' update property..' + JSON.stringify(response));
-          //upload next
-          const files = Array.from(selectedFiles);
-          idx = idx + 1;
-          if (idx < files.length) {
-            sleep(500);
-            uploadFile(idx, files[idx]);
-          } else {
-            //upload completed
-            // setMessage([]);
-            setMessage((prevMessage) => ([
-              ...prevMessage,
-              "Uploaded Completed,now update Lat/Lng for the property, please wait.... ",
-            ]));
-            dispatch(updateLatLng()).then(resp => {
-              setMessage((prevMessage) => ([
-                ...prevMessage,
-                "update Lat/Lng successful ",
-              ]));
-            }).catch(error => {
-              setMessage((prevMessage) => ([
-                ...prevMessage,
-                "update Lat/Lng error: " + JSON.stringify(error),
-              ]));
-            })
-
-
-          }
-
-        }).catch(error => {
-          console.log('update property error..' + JSON.stringify(error));
-        });
+        const imageData = {
+          id: resp.data[0].id,
+          url: resp.data[0].url
+        }
+        uploadedFiles.push(imageData);
+        const files = Array.from(selectedFiles);
+        idx = idx + 1;
+        if (idx < files.length) {
+          sleep(500);
+          uploadFile(idx, files[idx]);
+        } else {
+          setMessage((prevMessage) => ([
+            ...prevMessage,
+            "Uploaded Completed!",
+          ]));
+        }
 
       })
       .catch((error) => {
@@ -95,7 +79,8 @@ const UploadFiles = () => {
   const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
   }
-  const uploadSelectedFiles = () => {
+  const uploadSelectedFiles = (event) => {
+    event.preventDefault();
     const files = Array.from(selectedFiles);
     console.log('files...' + JSON.stringify(files));
 
@@ -146,7 +131,7 @@ const UploadFiles = () => {
       <div className="row my-3">
         <div className="col-8">
           <label className="btn btn-default p-0">
-            <input type="file" multiple onChange={selectFiles} />
+            <input type="file" accept={extension} multiple onChange={selectFiles} />
           </label>
         </div>
 
@@ -171,17 +156,6 @@ const UploadFiles = () => {
         </div>
       )}
 
-      <div className="card">
-        <div className="card-header">List of Files</div>
-        <ul className="list-group list-group-flush">
-          {fileInfos &&
-            fileInfos.map((file, index) => (
-              <li className="list-group-item" key={index}>
-                <a href={file.url}>{file.name}</a>
-              </li>
-            ))}
-        </ul>
-      </div>
     </div>
   );
 };

@@ -72,7 +72,7 @@ const Properties = () => {
                                             <CCardHeader>
                                                 Properties
                                                 <small className="text-muted"> Properties</small>
-                                                {/* <div className="card-header-actions">
+                                                <div className="card-header-actions">
                                                     <CButton
                                                         tag={Link}
                                                         to={'/admin/file-upload'}
@@ -81,15 +81,15 @@ const Properties = () => {
                                                         color="primary">
                                                         File Upload
                                                     </CButton> &nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <CButton
+                                                    {/* <CButton
                                                         tag={Link}
                                                         to={'/admin/properties/new'}
                                                         className="btn-ghost-primary h-auto"
                                                         size={'sm'}
                                                         color="primary">
                                                         New Property
-                                                    </CButton>
-                                                </div> */}
+                                                    </CButton> */}
+                                                </div>
                                             </CCardHeader>
                                             <CCardBody>
                                                 <CDataTable
