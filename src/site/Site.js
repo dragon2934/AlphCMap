@@ -23,7 +23,7 @@ const Coupons = React.lazy(() => import('../admin/views/coupon/Coupons'));
 //     import('../admin/views/properties/PropertyEdit'),
 // );
 
-// const PropertyFileUpload = React.lazy(()=>import('../admin/views/properties/file-upload'));
+const PropertyFileUpload = React.lazy(() => import('../admin/views/properties/file-upload'));
 
 import AboutUs from './pages/newHome/AboutUs';
 import ContactUs from './pages/newHome/ContactUs';
@@ -76,6 +76,11 @@ const CreateEmailCampaign = React.lazy(() => import('../admin/views/emailCampaig
 const EmailCampaigns = React.lazy(() => import('../admin/views/emailCampaigns/EmailCampaigns'));
 const ViewCampaign = React.lazy(() => import('../admin/views/emailCampaigns/ViewCampaign'));
 
+
+const Flyer = React.lazy(() => import('../admin/views/flyer/Flyer'));
+const FlyerEdit = React.lazy(() => import('../admin/views/flyer/FlyerEdit'));
+const Flyers = React.lazy(() => import('../admin/views/flyer/Flyers'));
+
 const Site = () => {
   return (
     <Switch>
@@ -111,6 +116,13 @@ const Site = () => {
         path={`/admin/email-campaigns/new`}
         exact
       />
+
+
+      <Route exact path="/admin/file-upload" component={PropertyFileUpload} />
+      <Route exact path="/admin/flyers" component={Flyers} />
+      <Route exact path="/admin/flyers/new" component={FlyerEdit} />
+      <Route exact path="/admin/flyers/:id" component={Flyer} />
+      <Route exact path="/admin/edit/flyer/:id" component={FlyerEdit} />
 
       <Route exact path="/admin/coupons" component={Coupons} />
       <Route exact path="/admin/coupons/new" component={CouponEdit} />

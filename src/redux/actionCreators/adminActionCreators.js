@@ -1668,3 +1668,140 @@ export const createCampaigns = (data) => {
         });
     };
 };
+
+export const fetchFlyers = (ownerId, { page = 1, pageSize = 10 }) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        const start = (page - 1) * pageSize;
+
+        return dispatch({
+            type: ADMIN_FETCH_ACTION,
+            payload: fetch(
+                `${SERVICE_URL}/flyers?_start=${start}&_limit=${pageSize}&filters[$and][0][ownerId][$eq]=${ownerId}&publicationState=preview`,
+                {
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    method: 'GET',
+                },
+            )
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const fetchFlyer = (id) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_FETCH_ACTION,
+            payload: fetch(`${SERVICE_URL}/flyers/${id}?populate=*`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'GET',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const saveFlyers = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        const url = `${SERVICE_URL}/flyers/save`;
+
+        console.log('save flyer=' + JSON.stringify(data));
+        return dispatch({
+            type: ADMIN_SAVE_ACTION,
+            payload: fetch(url, {
+                body: JSON.stringify(data),
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+export const deleteFlyer = (id) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_DELETE_COUPON,
+            payload: fetch(`${SERVICE_URL}/flyers/${id}`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'DELETE',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+export const batchImportCompany = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        const url = `${SERVICE_URL}/residents/batch-import`;
+        return dispatch({
+            type: ADMIN_SAVE_ACTION,
+            payload: fetch(url, {
+                body: JSON.stringify(data),
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
