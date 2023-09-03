@@ -163,7 +163,7 @@ export const showPropertiesOnMap = (map, data, renderTooltip, bAddImage) => {
     showPointLayer(
         bAddImage,
         map,
-        MapMarkerUrls.businessCategory.groceries,
+        MapMarkerUrls.businessCategory.cannibus,
         'cannibus-layer',
         cannibusProperty,
         (i) => [i.location.longitude, i.location.latitude],
