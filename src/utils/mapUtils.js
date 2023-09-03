@@ -150,12 +150,42 @@ export const showPropertiesOnMapEx = (map, data, renderTooltip, bAddImage) => {
     map.on('click', showPropertyTooltip.bind(undefined, map, renderTooltip));
 };
 export const showPropertiesOnMap = (map, data, renderTooltip, bAddImage) => {
-    const businessProperty = data.filter((i) => i.usuage === 2 || i.color === 'red');
+    const businessProperty = data.filter((i) => (i.usuage === 2 || i.color === 'red') && !i.category);
 
-    const confirmedConsumer = data.filter((i) => [0, 1, 3].includes(i.usuage) && i.color === 'default');
-    const pendingConsumer = data.filter((i) => [0, 1, 3].includes(i.usuage) && i.color === 'grey');
+    const confirmedConsumer = data.filter((i) => [0, 1, 3].includes(i.usuage) && i.color === 'default' && !i.category);
+    const pendingConsumer = data.filter((i) => [0, 1, 3].includes(i.usuage) && i.color === 'grey' && !i.category);
 
+    const restaurantProperty = data.filter((i) => i.category && i.category === 'restaurant');
+    const groceriesProperty = data.filter((i) => i.category && i.category === 'groceries');
 
+    const cannibusProperty = data.filter((i) => i.category && i.category === 'cannibus');
+
+    showPointLayer(
+        bAddImage,
+        map,
+        MapMarkerUrls.businessCategory.groceries,
+        'cannibus-layer',
+        cannibusProperty,
+        (i) => [i.location.longitude, i.location.latitude],
+    );
+
+    showPointLayer(
+        bAddImage,
+        map,
+        MapMarkerUrls.businessCategory.groceries,
+        'groceries-layer',
+        groceriesProperty,
+        (i) => [i.location.longitude, i.location.latitude],
+    );
+
+    showPointLayer(
+        bAddImage,
+        map,
+        MapMarkerUrls.businessCategory.restaurant,
+        'restaurant-layer',
+        restaurantProperty,
+        (i) => [i.location.longitude, i.location.latitude],
+    );
     showPointLayer(
         bAddImage,
         map,
@@ -219,6 +249,9 @@ const showResidentTooltip = (map, renderTooltip, e) => {
             'safe-residents',
             'away-residents',
             'other-residents',
+            'restaurant-layer',
+            'groceries-layer',
+            'cannibus-layer'
         ],
     });
 
@@ -327,6 +360,10 @@ export const clearResidentsFromMap = (map) => {
     clearLayer(map, 'safe-residents');
     clearLayer(map, 'away-residents');
     clearLayer(map, 'other-residents');
+    clearLayer(map, 'restaurant-layer');
+    clearLayer(map, 'groceries-layer');
+    clearLayer(map, 'cannibus-layer')
+
 };
 
 export const showDistancesOnMap = (map, residents) => {

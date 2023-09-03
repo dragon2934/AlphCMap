@@ -15,7 +15,7 @@ import {
     clearResidentsFromMap,
     showDistancesOnMap,
     showPropertiesOnMap,
-    showResidentsOnMap,
+    // showResidentsOnMap,
 } from '../../../utils/mapUtils';
 import PropertiesTooltip from '../../components/PropertiesTooltip';
 import ResidentTooltip from '../../components/ResidentTooltip';

@@ -22,6 +22,11 @@ export const MapMarkerUrls = {
         safe: '/map-markers/green_user_pin.png',
         away: '/map-markers/yellow_user_pin.png',
     },
+    businessCategory: {
+        restaurant: '/map-markers/restaurant.png',
+        groceries: '/map-markers/grocery.png',
+        cannibus: '/map-markers/cannibus.png',
+    },
     extra: {
         edit_mode: '/map-markers/edit_mode.jpeg',
         connect_mode: '/map-markers/connect_mode.jpeg'
