@@ -28,21 +28,41 @@ const PreferenceForm = ({ callback }) => {
         initialValues: {
             coupons: false,
             flyer: false,
+            promoting_event: false
         },
         isInitialValid: false,
         onSubmit: async (values, { setSubmitting }) => {
             setSubmitting(true);
             console.log('...submit..', values);
+            const preference1 = userPreference.find(item => item.attributes.preference === 'coupons');
+            const couponsData = preference1 ?
+                {
+                    id: preference1.id,
+                    data: {
+                        users_id: user.id,
+                        preference: 'coupons',
+                        selected: values.coupons
+                    }
+                } :
+                {
+                    data: {
+                        users_id: user.id,
+                        preference: 'coupons',
+                        selected: values.coupons
+                    }
+                }
+            const couponResult = await dispatch(saveUserPreference(couponsData));
 
-            const couponsData = {
+            const preference2 = userPreference.find(item => item.attributes.preference === 'flyer')
+
+            const flyersData = preference2 ? {
+                id: preference2.id,
                 data: {
                     users_id: user.id,
-                    preference: 'coupons',
-                    selected: values.coupons
+                    preference: 'flyer',
+                    selected: values.flyer
                 }
-            }
-            const couponResult = await dispatch(saveUserPreference(couponsData));
-            const flyersData = {
+            } : {
                 data: {
                     users_id: user.id,
                     preference: 'flyer',
@@ -50,6 +70,26 @@ const PreferenceForm = ({ callback }) => {
                 }
             }
             const flyerResult = await dispatch(saveUserPreference(flyersData));
+
+            const preference3 = userPreference.find(item => item.attributes.preference === 'promoting_event')
+
+            const promotingEventData = preference3 ? {
+                id: preference3.id,
+                data: {
+                    users_id: user.id,
+                    preference: 'promoting_event',
+                    selected: values.promoting_event
+                }
+            } : {
+                data: {
+                    users_id: user.id,
+                    preference: 'promoting_event',
+                    selected: values.promoting_event
+                }
+            }
+            const promotingEventResult = await dispatch(saveUserPreference(promotingEventData));
+
+
             setSubmitting(false);
             utilsData.showPreference = false;
             dispatch(showPreferenceForm());
@@ -68,7 +108,7 @@ const PreferenceForm = ({ callback }) => {
     } = formik;
 
     const user = useSelector((state) => state.auth.me);
-    console.log('...user..' + JSON.stringify(user));
+    // console.log('...user..' + JSON.stringify(user));
     useEffect(() => {
         // setLoading(true);
         dispatch(fetchUserPreference(user.id)).then(resp => {
@@ -80,6 +120,9 @@ const PreferenceForm = ({ callback }) => {
                 }
                 if (item.attributes.preference === 'flyer') {
                     setFieldValue('flyer', item.attributes.selected)
+                }
+                if (item.attributes.preference === 'promoting_event') {
+                    setFieldValue('promoting_event', item.attributes.selected)
                 }
             })
 
@@ -123,6 +166,27 @@ const PreferenceForm = ({ callback }) => {
                                         }
                                     />
                                     Coupons
+                                </Label>
+                            </FormGroup>
+                            <FormGroup check>
+                                <Label check>
+                                    <Input
+                                        type="checkbox"
+                                        name="promoting_event"
+                                        onChange={(e) => {
+                                            setFieldValue(
+                                                'promoting_event',
+                                                e.currentTarget.checked,
+                                            );
+                                        }}
+                                        checked={values.promoting_event}
+                                        onBlur={handleBlur}
+                                        invalid={
+                                            touched.promoting_event &&
+                                            errors.promoting_event
+                                        }
+                                    />
+                                    Promoting Event
                                 </Label>
                             </FormGroup>
                             <FormGroup check>
