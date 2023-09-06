@@ -1805,3 +1805,59 @@ export const batchImportCompany = (data) => {
         });
     };
 };
+
+export const saveUserPreference = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        const url = data.id && data.id > 0
+            ? `${SERVICE_URL}/user-preferences/${data.id}`
+            : `${SERVICE_URL}/user-preferences`;
+
+        return dispatch({
+            type: ADMIN_SAVE_ACTION,
+            payload: fetch(url, {
+                body: JSON.stringify(data),
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: data.id && data.id > 0 ? 'PUT' : 'POST',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const fetchUserPreference = (userId) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_FETCH_ACTION,
+            payload: fetch(`${SERVICE_URL}/user-preferences?filters[$and][0][users_id][$eq]=${userId}`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'GET',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};

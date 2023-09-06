@@ -5,7 +5,8 @@ import {
     ADMIN_SEND_PROMOTE_EMAIL,
     CANCEL_DISPLAY_BUSINESS,
     CANCEL_DISPLAY_HIGHRISE,
-    CANCEL_DISPLAY_NODELIVERY
+    CANCEL_DISPLAY_NODELIVERY,
+    SHOW_PREFERENCE_FORM
 } from '../actionTypes';
 
 const initialState = {
@@ -22,6 +23,7 @@ const initialState = {
     totalConnected: 0,
     showHighRiseInfo: false,
     showNoDelivery: false,
+    showPreference: false,
     properties: []
 };
 
@@ -50,6 +52,7 @@ function utilsDataReducer(state = initialState, action) {
                 ...state,
                 ...action.payload,
             };
+        case `${SHOW_PREFERENCE_FORM}`:
         case `${CANCEL_DISPLAY_BUSINESS}`:
         case 'CANCEL_CHANGE_PROPERTY_COLOR':
         case `${CANCEL_DISPLAY_HIGHRISE}`:
