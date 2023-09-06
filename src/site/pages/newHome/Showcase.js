@@ -54,6 +54,7 @@ import { parseInt } from 'lodash-es';
 import EventBus from '../../../utils/eventBus';
 import ShowHighRiseInfo from './ShowHighRiseInfo';
 import ShowNoDelivery from './ShowNoDelivery';
+import PreferenceForm from './PreferenceForm';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_GL_ACCESS_TOKEN;
 
@@ -1427,6 +1428,7 @@ class Showcase extends Component {
             {utilsData.connectToMerchantId > 0 && <PropertyForm />}
             {utilsData.showHighRiseInfo && <ShowHighRiseInfo />}
             {utilsData.showNoDelivery && <ShowNoDelivery />}
+            {utilsData.showPreference && <PreferenceForm />}
 
         </>
 

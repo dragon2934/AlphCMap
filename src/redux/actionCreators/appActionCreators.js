@@ -23,7 +23,8 @@ import {
     CANCEL_DISPLAY_BUSINESS,
     CANCEL_DISPLAY_HIGHRISE,
     SEND_VERIFICATION_CODE,
-    CANCEL_DISPLAY_NODELIVERY
+    CANCEL_DISPLAY_NODELIVERY,
+    SHOW_PREFERENCE_FORM
 } from '../actionTypes';
 
 
@@ -93,6 +94,14 @@ export const cancelChangePropertyColor = () => {
     };
 };
 
+export const showPreferenceForm = (isShow) => {
+    return {
+        type: SHOW_PREFERENCE_FORM,
+        payload: {
+            isShow
+        }
+    };
+};
 export const cancelShowBusinessInfo = () => {
     return {
         type: CANCEL_DISPLAY_BUSINESS,

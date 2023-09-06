@@ -22,7 +22,7 @@ import { getLoginType, setLoginType, clearLoginType, checkUseLevel } from '../..
 import { loadConnectedTotal, sendPasswordBeforeDeleteAccount } from '../../../redux/actionCreators/adminActionCreators';
 // import { useMitt } from 'react-mitt'
 import EventBus from '../../../utils/eventBus';
-
+import { showPreferenceForm } from "../../../redux/actionCreators/appActionCreators";
 const Header = () => {
     const user = useSelector((state) => state.auth.me);
     const history = useHistory();
@@ -169,6 +169,7 @@ const Header = () => {
         { menuText: 'Change Email', menuID: 2 },
         { menuText: 'Change Mobile', menuID: 3 },
         { menuText: 'Change Password', menuID: 6 },
+        { menuText: 'Preference', menuID: 7 },
         { menuText: 'Delete Account', menuID: 4 },
         { menuText: 'logout', menuID: 5 },
 
@@ -269,6 +270,11 @@ const Header = () => {
                                                             break;
                                                         case 6:
                                                             history.push('/change-password');
+                                                            break;
+                                                        case 7:
+                                                            // history.push('/change-password');
+                                                            utilsData.showPreference = true;
+                                                            dispatch(showPreferenceForm());
                                                             break;
                                                     }
                                                     // localStorage.setItem('city_short_name',city.short_name);
