@@ -164,12 +164,20 @@ const Header = () => {
         });
     }, [dispatch, history]);
     const adminGroup = [process.env.REACT_APP_ROLE_ADMIN_NAME, process.env.REACT_APP_ROLE_PM_NAME];
-    const menuLinks = [
+    const menuLinks = parseInt(loginType) === 1 ? [
         { menuText: 'Change Address', menuID: 1 },
         { menuText: 'Change Email', menuID: 2 },
         { menuText: 'Change Mobile', menuID: 3 },
         { menuText: 'Change Password', menuID: 6 },
         { menuText: 'Preference', menuID: 7 },
+        { menuText: 'Delete Account', menuID: 4 },
+        { menuText: 'logout', menuID: 5 },
+
+    ] : [
+        { menuText: 'Change Address', menuID: 1 },
+        { menuText: 'Change Email', menuID: 2 },
+        { menuText: 'Change Mobile', menuID: 3 },
+        { menuText: 'Change Password', menuID: 6 },
         { menuText: 'Delete Account', menuID: 4 },
         { menuText: 'logout', menuID: 5 },
 

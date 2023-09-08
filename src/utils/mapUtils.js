@@ -31,6 +31,9 @@ const showPropertyTooltip = (map, renderTooltip, e) => {
             'safe-properties',
             'pending-properties',
             'has_injured-properties',
+            'restaurant-layer',
+            'groceries-layer',
+            'cannibus-layer',
         ],
     });
 
@@ -239,6 +242,9 @@ export const clearPropertiesFromMap = (map) => {
     clearLayer(map, 'pending-properties');
     clearLayer(map, 'safe-properties');
     clearLayer(map, 'other-properties');
+    clearLayer(map, 'restaurant-layer');
+    clearLayer(map, 'groceries-layer');
+    clearLayer(map, 'cannibus-layer');
 };
 
 const showResidentTooltip = (map, renderTooltip, e) => {
