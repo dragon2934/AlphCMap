@@ -26,65 +26,65 @@ const PreferenceForm = ({ callback }) => {
     const [userPreference, setUserPreference] = useState([]);
     const formik = useFormik({
         initialValues: {
-            coupons: false,
-            flyer: false,
-            promoting_event: false
+            restaurant: false,
+            groceries: false,
+            cannibus: false
         },
         isInitialValid: false,
         onSubmit: async (values, { setSubmitting }) => {
             setSubmitting(true);
             console.log('...submit..', values);
-            const preference1 = userPreference.find(item => item.attributes.preference === 'coupons');
-            const couponsData = preference1 ?
+            const preference1 = userPreference.find(item => item.attributes.preference === 'restaurant');
+            const restaurantData = preference1 ?
                 {
                     id: preference1.id,
                     data: {
                         users_id: user.id,
-                        preference: 'coupons',
-                        selected: values.coupons
+                        preference: 'restaurant',
+                        selected: values.restaurant
                     }
                 } :
                 {
                     data: {
                         users_id: user.id,
-                        preference: 'coupons',
-                        selected: values.coupons
+                        preference: 'restaurant',
+                        selected: values.restaurant
                     }
                 }
-            const couponResult = await dispatch(saveUserPreference(couponsData));
+            const couponResult = await dispatch(saveUserPreference(restaurantData));
 
-            const preference2 = userPreference.find(item => item.attributes.preference === 'flyer')
+            const preference2 = userPreference.find(item => item.attributes.preference === 'groceries')
 
-            const flyersData = preference2 ? {
+            const groceriessData = preference2 ? {
                 id: preference2.id,
                 data: {
                     users_id: user.id,
-                    preference: 'flyer',
-                    selected: values.flyer
+                    preference: 'groceries',
+                    selected: values.groceries
                 }
             } : {
                 data: {
                     users_id: user.id,
-                    preference: 'flyer',
-                    selected: values.flyer
+                    preference: 'groceries',
+                    selected: values.groceries
                 }
             }
-            const flyerResult = await dispatch(saveUserPreference(flyersData));
+            const groceriesResult = await dispatch(saveUserPreference(groceriessData));
 
-            const preference3 = userPreference.find(item => item.attributes.preference === 'promoting_event')
+            const preference3 = userPreference.find(item => item.attributes.preference === 'cannibus')
 
             const promotingEventData = preference3 ? {
                 id: preference3.id,
                 data: {
                     users_id: user.id,
-                    preference: 'promoting_event',
-                    selected: values.promoting_event
+                    preference: 'cannibus',
+                    selected: values.cannibus
                 }
             } : {
                 data: {
                     users_id: user.id,
-                    preference: 'promoting_event',
-                    selected: values.promoting_event
+                    preference: 'cannibus',
+                    selected: values.cannibus
                 }
             }
             const promotingEventResult = await dispatch(saveUserPreference(promotingEventData));
@@ -115,14 +115,14 @@ const PreferenceForm = ({ callback }) => {
             console.log('...user preference..', resp);
             const data = resp.value.data;
             data.map(item => {
-                if (item.attributes.preference === 'coupons') {
-                    setFieldValue('coupons', item.attributes.selected)
+                if (item.attributes.preference === 'restaurant') {
+                    setFieldValue('restaurant', item.attributes.selected)
                 }
-                if (item.attributes.preference === 'flyer') {
-                    setFieldValue('flyer', item.attributes.selected)
+                if (item.attributes.preference === 'groceries') {
+                    setFieldValue('groceries', item.attributes.selected)
                 }
-                if (item.attributes.preference === 'promoting_event') {
-                    setFieldValue('promoting_event', item.attributes.selected)
+                if (item.attributes.preference === 'cannibus') {
+                    setFieldValue('cannibus', item.attributes.selected)
                 }
             })
 
@@ -146,68 +146,68 @@ const PreferenceForm = ({ callback }) => {
 
                     <Col style={{ textAlign: "left" }}>
                         <FormGroup tag="fieldset">
-                            I agree to receive the following newsletter. You can withdraw your consent at any time
+                            I agree to receive coupon, flyer, and promoting events from the following companies. You can withdraw your consent at any time
                             <FormGroup check>
                                 <Label check>
                                     <Input
                                         type="checkbox"
-                                        name="coupons"
+                                        name="restaurant"
                                         onChange={(e) => {
                                             setFieldValue(
-                                                'coupons',
+                                                'restaurant',
                                                 e.currentTarget.checked,
                                             );
                                         }}
-                                        checked={values.coupons}
+                                        checked={values.restaurant}
                                         onBlur={handleBlur}
                                         invalid={
-                                            touched.coupons &&
-                                            errors.coupons
+                                            touched.restaurant &&
+                                            errors.restaurant
                                         }
                                     />
-                                    Coupons
+                                    Restaurant
                                 </Label>
                             </FormGroup>
                             <FormGroup check>
                                 <Label check>
                                     <Input
                                         type="checkbox"
-                                        name="promoting_event"
+                                        name="cannibus"
                                         onChange={(e) => {
                                             setFieldValue(
-                                                'promoting_event',
+                                                'cannibus',
                                                 e.currentTarget.checked,
                                             );
                                         }}
-                                        checked={values.promoting_event}
+                                        checked={values.cannibus}
                                         onBlur={handleBlur}
                                         invalid={
-                                            touched.promoting_event &&
-                                            errors.promoting_event
+                                            touched.cannibus &&
+                                            errors.cannibus
                                         }
                                     />
-                                    Promoting Event
+                                    Cannibus
                                 </Label>
                             </FormGroup>
                             <FormGroup check>
                                 <Label check>
                                     <Input
                                         type="checkbox"
-                                        name="flyer"
+                                        name="groceries"
                                         onChange={(e) => {
                                             setFieldValue(
-                                                'flyer',
+                                                'groceries',
                                                 e.currentTarget.checked,
                                             );
                                         }}
-                                        checked={values.flyer}
+                                        checked={values.groceries}
                                         onBlur={handleBlur}
                                         invalid={
-                                            touched.flyer &&
-                                            errors.flyer
+                                            touched.groceries &&
+                                            errors.groceries
                                         }
                                     />
-                                    Flyer
+                                    Groceries
                                 </Label>
                             </FormGroup>
 
