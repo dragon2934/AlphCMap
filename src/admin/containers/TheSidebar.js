@@ -68,6 +68,12 @@ const TheSidebar = () => {
             to: '/admin/flyers',
             icon: 'cil-user',
         },
+        {
+            _tag: 'CSidebarNavItem',
+            name: 'Promting Events',
+            to: '/admin/events',
+            icon: 'cil-user',
+        },
     ];
     const show = useSelector((state) => state.admin.sidebarShow);
     return (

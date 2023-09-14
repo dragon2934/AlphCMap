@@ -1861,3 +1861,116 @@ export const fetchUserPreference = (userId) => {
         });
     };
 };
+
+export const fetchEvent = (id) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_FETCH_ACTION,
+            payload: fetch(`${SERVICE_URL}/events/${id}`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'GET',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const saveEvent = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        const url = data.id && data.id > 0
+            ? `${SERVICE_URL}/events/${data.id}`
+            : `${SERVICE_URL}/events`;
+
+        console.log('save events=' + JSON.stringify(data));
+        return dispatch({
+            type: ADMIN_SAVE_ACTION,
+            payload: fetch(url, {
+                body: JSON.stringify(data),
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: data.id && data.id > 0 ? 'PUT' : 'POST',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+
+export const fetchEvents = (ownerId, { page = 1, pageSize = 10 }) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        const start = (page - 1) * pageSize;
+
+        return dispatch({
+            type: ADMIN_FETCH_ACTION,
+            payload: fetch(
+                `${SERVICE_URL}/events?_start=${start}&_limit=${pageSize}&filters[$and][0][ownerId][$eq]=${ownerId}`,
+                {
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    method: 'GET',
+                },
+            )
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+export const deleteEvent = (id) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+
+        return dispatch({
+            type: ADMIN_DELETE_ACTION,
+            payload: fetch(`${SERVICE_URL}/events/${id}`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'DELETE',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};

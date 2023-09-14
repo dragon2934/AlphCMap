@@ -16,6 +16,9 @@ const Coupon = React.lazy(() => import('../admin/views/coupon/Coupon'));
 const CouponEdit = React.lazy(() => import('../admin/views/coupon/CouponEdit'));
 const Coupons = React.lazy(() => import('../admin/views/coupon/Coupons'));
 
+const Event = React.lazy(() => import('../admin/views/events/Event'));
+const EventEdit = React.lazy(() => import('../admin/views/events/EventEdit'));
+const Events = React.lazy(() => import('../admin/views/events/Events'));
 
 // const Properties = React.lazy(() => import('../admin/views/properties/Properties'));
 // const Property = React.lazy(() => import('../admin/views/properties/Property'));
@@ -128,6 +131,11 @@ const Site = () => {
       <Route exact path="/admin/coupons/new" component={CouponEdit} />
       <Route exact path="/admin/coupons/:id" component={Coupon} />
       <Route exact path="/admin/edit/coupon/:id" component={CouponEdit} />
+
+      <Route exact path="/admin/events" component={Events} />
+      <Route exact path="/admin/events/new" component={EventEdit} />
+      <Route exact path="/admin/events/:id" component={Event} />
+      <Route exact path="/admin/edit/event/:id" component={EventEdit} />
 
       <Route exact path="/admin/users" component={Users} />
       <Route exact path="/admin/users/new" component={UserEdit} />
