@@ -83,7 +83,10 @@ const BusinessProfile = () => {
             companyName: user.companyName,
             phone: '',
             website: '',
-            email: user.email
+            email: user.email,
+            androidUrl: '',
+            iOSUrl: ''
+
         },
         isInitialValid: false,
         validationSchema: bindingSchema,
@@ -161,6 +164,8 @@ const BusinessProfile = () => {
                     phone: profile.phone,
                     website: profile.website,
                     email: profile.email,
+                    androidUrl: profile.android_url,
+                    iOSUrl: profile.ios_url,
                     openHour0: getWorkingHourValue(hours, 0, 1),
                     closeHour0: getWorkingHourValue(hours, 0, 2),
                     close0: getWorkingHourValue(hours, 0, 3) === true ? true : false,
@@ -269,6 +274,40 @@ const BusinessProfile = () => {
                                                     invalid={touched.email && errors.email}
                                                 />
                                                 <FormFeedback>{errors.email}</FormFeedback>
+                                            </FormGroup>
+                                        </Col>
+
+                                    </Row>
+                                    <Row>
+                                        <Col md={12}>
+                                            <FormGroup>
+                                                <Label>Android App Download URL:</Label>
+                                                <Input
+                                                    type="text"
+                                                    name="androidUrl"
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                    value={values.androidUrl}
+                                                    invalid={touched.androidUrl && errors.androidUrl}
+                                                />
+                                                <FormFeedback>{errors.androidUrl}</FormFeedback>
+                                            </FormGroup>
+                                        </Col>
+
+                                    </Row>
+                                    <Row>
+                                        <Col md={12}>
+                                            <FormGroup>
+                                                <Label>iOS App Download URL:</Label>
+                                                <Input
+                                                    type="text"
+                                                    name="iOSUrl"
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                    value={values.iOSUrl}
+                                                    invalid={touched.iOSUrl && errors.iOSUrl}
+                                                />
+                                                <FormFeedback>{errors.iOSUrl}</FormFeedback>
                                             </FormGroup>
                                         </Col>
 
