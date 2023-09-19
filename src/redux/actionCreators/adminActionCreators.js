@@ -127,7 +127,7 @@ export const fetchCoupons = (ownerId, { page = 1, pageSize = 10 }) => {
         return dispatch({
             type: ADMIN_FETCH_COUPONS,
             payload: fetch(
-                `${SERVICE_URL}/coupons?_start=${start}&_limit=${pageSize}&filters[$and][0][ownerId][$eq]=${ownerId}`,
+                `${SERVICE_URL}/coupons?pagination[page]=${start}&pagination[pageSize]=${pageSize}&filters[$and][0][ownerId][$eq]=${ownerId}`,
                 {
                     headers: {
                         Accept: 'application/json',
@@ -184,7 +184,7 @@ export const fetchUsers = ({ page = 1, pageSize = 10 }) => {
         return dispatch({
             type: ADMIN_FETCH_USERS,
             payload: fetch(
-                `${SERVICE_URL}/users?_start=${start}&_limit=${pageSize}`,
+                `${SERVICE_URL}/users?pagination[page]=${start}&pagination[pageSize]=${pageSize}`,
                 {
                     headers: {
                         Accept: 'application/json',
@@ -349,7 +349,7 @@ export const searchUsers = (value) => {
         return dispatch({
             type: ADMIN_SEARCH_USERS,
             payload: fetch(
-                `${SERVICE_URL}/users?_limit=10&mobileNumber_contains=${value}`,
+                `${SERVICE_URL}/users?pagination[pageSize]=10&mobileNumber_contains=${value}`,
                 {
                     headers: {
                         Accept: 'application/json',
@@ -422,7 +422,7 @@ export const fetchProperties = ({ page = 1, pageSize = 10, roleName = 'Admin' })
         }
         const mobile = user.mobileNumber;
         const start = (page - 1) * pageSize;
-        let url = `${SERVICE_URL}/properties?_start=${start}&_limit=${pageSize}&filters[$and][0][ownerMobileNumber][$eq]=${mobile}`;
+        let url = `${SERVICE_URL}/properties?pagination[page]=${start}&pagination[pageSize]=${pageSize}&filters[$and][0][ownerMobileNumber][$eq]=${mobile}`;
         if (roleName == 'PropertyManager') {
             url = url + '&hidden=false'
         }
@@ -798,7 +798,7 @@ export const listFiles = () => {
 
         return dispatch({
             type: ADMIN_LIST_FILES,
-            payload: fetch(`${SERVICE_URL}/upload/files?_limit=10&_start=0&_sort=updatedAt:DESC`, {
+            payload: fetch(`${SERVICE_URL}/upload/files?pagination[pageSize]=10&pagination[page]=0&sort=updatedAt:DESC`, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -1502,7 +1502,7 @@ export const fetchTemplates = (ownerId, { page = 1, pageSize = 10 }) => {
         const token = getState().auth.jwt;
         return dispatch({
             type: ADMIN_FETCH_ACTION,
-            payload: fetch(`${SERVICE_URL}/templates?_start=${start}&_limit=${pageSize}&filters[$and][0][owner_id][$eq]=${ownerId}`, {
+            payload: fetch(`${SERVICE_URL}/templates?pagination[page]=${start}&pagination[pageSize]=${pageSize}&filters[$and][0][owner_id][$eq]=${ownerId}`, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -1677,7 +1677,7 @@ export const fetchFlyers = (ownerId, { page = 1, pageSize = 10 }) => {
         return dispatch({
             type: ADMIN_FETCH_ACTION,
             payload: fetch(
-                `${SERVICE_URL}/flyers?_start=${start}&_limit=${pageSize}&filters[$and][0][ownerId][$eq]=${ownerId}&publicationState=preview`,
+                `${SERVICE_URL}/flyers?sort=id:DESC&pagination[page]=${start}&pagination[pageSize]=${pageSize}&filters[$and][0][ownerId][$eq]=${ownerId}&publicationState=preview&populate=*`,
                 {
                     headers: {
                         Accept: 'application/json',
@@ -1928,7 +1928,7 @@ export const fetchEvents = (ownerId, { page = 1, pageSize = 10 }) => {
         return dispatch({
             type: ADMIN_FETCH_ACTION,
             payload: fetch(
-                `${SERVICE_URL}/events?_start=${start}&_limit=${pageSize}&filters[$and][0][ownerId][$eq]=${ownerId}`,
+                `${SERVICE_URL}/events?pagination[page]=${start}&pagination[pageSize]=${pageSize}&filters[$and][0][ownerId][$eq]=${ownerId}`,
                 {
                     headers: {
                         Accept: 'application/json',

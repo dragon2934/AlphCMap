@@ -2543,3 +2543,17 @@ p.figure-caption {
   margin-top: -10px;
   line-height: 16px;
 }
+
+.pdfViewer {
+  color: white;
+}
+
+button.pdfViewer {
+  background-color: #666666;
+  color: white;
+}
+
+.app-container {
+  margin-top: 20px;
+  height: 50px;
+}

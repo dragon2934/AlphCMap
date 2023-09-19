@@ -24,6 +24,7 @@ const initialState = {
     showHighRiseInfo: false,
     showNoDelivery: false,
     showPreference: false,
+    showFlyerUpload: false,
     properties: []
 };
 

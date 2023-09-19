@@ -149,6 +149,11 @@ const BusinessInfo = ({ }) => {
     const editBusinessProfile = () => {
         history.push('/business-profile?id=' + property.id);
     }
+    const onUploadFlyer = () => {
+        utilsData.showFlyerUpload = true;
+        utilsData.showBusinessInfo = false;
+        dispatch(cancelShowBusinessInfo());
+    }
     const disConnectToMerchant = () => {
         const jsonData = {
             merchant_property_id: property.id
@@ -333,6 +338,29 @@ const BusinessInfo = ({ }) => {
                                             </Col>
                                         </Row> : null}
                                         <Row>
+                                            <Col>
+                                                {companyProfile.android_url ? <a href={companyProfile.android_url} target='_blank' >
+                                                    <img
+                                                        className={'app-container'}
+                                                        src={'/assets/img/google-play-badge.png'}
+                                                        alt={'Android App Download'}
+                                                    />
+                                                </a> : null}
+                                            </Col>
+                                            <Col>
+                                                {companyProfile.ios_url ? <a href={companyProfile.ios_url} target='_blank' >
+                                                    <img
+                                                        className={'app-container'}
+                                                        src={'/assets/img/appstore-badge.png'}
+                                                        alt={'iOS App Download'}
+                                                    />
+                                                </a> : null}
+                                            </Col>
+                                        </Row>
+
+
+
+                                        <Row>
                                             <Col> <hr /></Col>
 
                                         </Row>
@@ -468,15 +496,31 @@ const BusinessInfo = ({ }) => {
                     </Row>
 
 
-                    <Row>
+                    <Row style={{ width: "100%", marginTop: "20px" }}>
                         {
-                            parseInt(loginType) === 2 && user !== undefined && user.property !== undefined && property.id === user.property.id ? <Col><Button
+                            parseInt(loginType) === 2 && user !== undefined && user.property !== undefined && property.id === user.property.id ?
+                                <>
+                                    <Col>
+                                        <Button
 
-                                color={'success'}
-                                block
-                                onClick={() => editBusinessProfile()}>
-                                Edit
-                            </Button></Col> :
+                                            color={'success'}
+                                            block
+                                            onClick={() => onUploadFlyer()}>
+                                            Upload Flyer
+                                        </Button>
+                                    </Col>
+                                    <Col>
+                                        <Button
+
+                                            color={'success'}
+                                            block
+                                            onClick={() => editBusinessProfile()}>
+                                            Edit
+                                        </Button>
+
+                                    </Col>
+                                </>
+                                :
                                 companyProfile ? <Col>
 
                                     {property.connected === "1" ?
