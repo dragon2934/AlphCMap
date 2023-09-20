@@ -37,7 +37,7 @@ const BusinessPortal = ({ match }) => {
     const utilsData = useSelector((state) => state.utilsData);
     const history = useHistory();
     const shareUrl = "https://klosertoyou.com/business-portal/" + propertyId;
-    const serverUrl = SERVICE_URL.replace('/api', '');
+    const serverUrl = process.env.REACT_APP_SOCKET_SERVER;// SERVICE_URL.replace('/api', '');
     const dispatch = useDispatch();
     // const property = utilsData.selectedProperty;
     // console.log('..property.. ' + JSON.stringify(property));
