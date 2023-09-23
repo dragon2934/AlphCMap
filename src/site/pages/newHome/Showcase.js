@@ -56,6 +56,7 @@ import ShowHighRiseInfo from './ShowHighRiseInfo';
 import ShowNoDelivery from './ShowNoDelivery';
 import PreferenceForm from './PreferenceForm';
 import UploadFlyerForm from './UploadFlyerForm';
+import ImportCustomeForm from './ImportCustomeForm';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_GL_ACCESS_TOKEN;
 
@@ -1431,6 +1432,7 @@ class Showcase extends Component {
             {utilsData.showNoDelivery && <ShowNoDelivery />}
             {utilsData.showPreference && <PreferenceForm />}
             {utilsData.showFlyerUpload && <UploadFlyerForm />}
+            {utilsData.showImportCustomer && <ImportCustomeForm />}
 
         </>
 

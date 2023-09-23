@@ -162,7 +162,7 @@ const BusinessPortal = ({ match }) => {
             </Link>
 
             <Row style={{ width: "100%" }}>
-                <Col style={{ textAlign: "left", width: "100%" }}>
+                <Col xl='6' style={{ textAlign: "left", width: "100%" }}>
                     <Row >
                         <Col>
                             <QRCode
@@ -363,12 +363,12 @@ const BusinessPortal = ({ match }) => {
 
                     </Row>
                 </Col>
-                <Col>
+                <Col xl='6'>
 
                     {flyer && flyer.length > 0 ?
                         <>
                             <Row>
-                                <Col> Flyers: {flyer[0].attributes.description} Published At: {flyer[0].attributes.updatedAt.split('T')[0]}</Col>
+                                <Col> Flyers: {flyer[0].attributes.description} <br />Published At: {flyer[0].attributes.updatedAt.split('T')[0]}</Col>
                                 <Col> <a href={serverUrl + flyer[0].attributes.flyer_files.data[0].attributes.fileUrl} target='_blank'> View At Full Size </a></Col>
                             </Row>
                             <Row>

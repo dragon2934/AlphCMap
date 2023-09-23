@@ -174,6 +174,7 @@ const Header = () => {
         { menuText: 'logout', menuID: 5 },
 
     ] : [
+        { menuText: 'Import Customers', menuID: 8 },
         { menuText: 'Change Address', menuID: 1 },
         { menuText: 'Change Email', menuID: 2 },
         { menuText: 'Change Mobile', menuID: 3 },
@@ -282,6 +283,11 @@ const Header = () => {
                                                         case 7:
                                                             // history.push('/change-password');
                                                             utilsData.showPreference = true;
+                                                            dispatch(showPreferenceForm());
+                                                            break;
+                                                        case 8:
+                                                            // history.push('/change-password');
+                                                            utilsData.showImportCustomer = true;
                                                             dispatch(showPreferenceForm());
                                                             break;
                                                     }

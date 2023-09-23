@@ -1673,16 +1673,19 @@ export const fetchFlyers = (ownerId, { page = 1, pageSize = 10 }) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
         const start = (page - 1) * pageSize;
-
+        console.log('..fetch flyer..', token);
         return dispatch({
             type: ADMIN_FETCH_ACTION,
             payload: fetch(
                 `${SERVICE_URL}/flyers?sort=id:DESC&pagination[page]=${start}&pagination[pageSize]=${pageSize}&filters[$and][0][ownerId][$eq]=${ownerId}&publicationState=preview&populate=*`,
                 {
-                    headers: {
+                    headers: token ? {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}`,
+                    } : {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
                     },
                     method: 'GET',
                 },
@@ -1702,14 +1705,18 @@ export const fetchFlyers = (ownerId, { page = 1, pageSize = 10 }) => {
 export const fetchFlyer = (id) => {
     return (dispatch, getState) => {
         const token = getState().auth.jwt;
+        console.log('..fetch flyer..', token);
 
         return dispatch({
             type: ADMIN_FETCH_ACTION,
             payload: fetch(`${SERVICE_URL}/flyers/${id}?populate=*`, {
-                headers: {
+                headers: token ? {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
+                } : {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
                 },
                 method: 'GET',
             })
@@ -1962,6 +1969,32 @@ export const deleteEvent = (id) => {
                     Authorization: `Bearer ${token}`,
                 },
                 method: 'DELETE',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};
+export const importCustomer = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        const url = `${SERVICE_URL}/residents/import-customer`;
+        return dispatch({
+            type: ADMIN_SAVE_ACTION,
+            payload: fetch(url, {
+                body: JSON.stringify(data),
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
             })
                 .then((r) => r.json())
                 .then((responseData) => {

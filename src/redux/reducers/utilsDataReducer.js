@@ -25,6 +25,7 @@ const initialState = {
     showNoDelivery: false,
     showPreference: false,
     showFlyerUpload: false,
+    showImportCustomer: false,
     properties: []
 };
 

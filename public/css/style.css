@@ -2557,3 +2557,12 @@ button.pdfViewer {
   margin-top: 20px;
   height: 50px;
 }
+
+.react-pdf__Page,
+.react-pdf__Page__textContent,
+.react-pdf__Page__annotations,
+.react-pdf__Page canvas {
+  width: 100% !important;
+  height: auto !important;
+  background-color: transparent !important;
+}

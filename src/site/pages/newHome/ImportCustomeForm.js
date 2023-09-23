@@ -26,18 +26,14 @@ import {
     CSpinner,
 } from '@coreui/react';
 import { Link } from 'react-router-dom';
-import { changePropertyColor, cancelChangePropertyColor } from '../../../redux/actionCreators/appActionCreators';
+import { cancelChangePropertyColor } from '../../../redux/actionCreators/appActionCreators';
 import { useHistory } from 'react-router';
 import FilesUpload from '../../../admin/file-upload/components/FilesUpload';
-import { saveFlyers } from '../../../redux/actionCreators/adminActionCreators';
+import { importCustomer } from '../../../redux/actionCreators/adminActionCreators';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-const validationSchema = Yup.object().shape({
-    description: Yup.string().required('full name is required'),
-});
 
-
-const UploadFlyerForm = ({ callback }) => {
+const ImportCustomeForm = ({ callback }) => {
 
     const utilsData = useSelector((state) => state.utilsData);
     console.log('...utilsData..' + JSON.stringify(utilsData));
@@ -48,31 +44,27 @@ const UploadFlyerForm = ({ callback }) => {
 
     const uploadedFiles = useSelector((state) => state.admin.uploadedFiles);
     // console.log('..uploadedFiles...from flyer edit..', uploadedFiles);
-    const property = utilsData.selectedProperty;
-    const shareUrl = "https://klosertoyou.com/business-portal/" + property.id;
+    // const property = utilsData.selectedProperty;
+    // const shareUrl = "https://klosertoyou.com/business-portal/" + property.id;
     const formik = useFormik({
         initialValues: {
-            id: 0,
-            description: '',
             uploadedFiles: []
         },
-        validationSchema,
         onSubmit: (values, { setSubmitting }) => {
             setSubmitting(true);
-            console.log('..uploadedFiles..', uploadedFiles);
+            console.log('..uploadedFiles..', values);
             const data = {
-                ownerId: user.id,
-                description: values.description,
-                uploadedFiles: uploadedFiles
+                fileName: uploadedFiles[0].url
             }
-            dispatch(saveFlyers(data))
+            console.log('..data..', data);
+            dispatch(importCustomer(data))
                 .then(() => {
+                    setSubmitting(false);
                     console.log('...flyer upload DONE..');
-                    utilsData.showFlyerUpload = false;
-                    dispatch(cancelChangePropertyColor());
-                    setTimeout(
-                        window.location.replace(shareUrl),
-                        500);
+                    // utilsData.showImportCustomer = false;
+                    // dispatch(cancelChangePropertyColor());
+                    // history.push('/');
+
                 })
                 .catch(() => setSubmitting(false));
 
@@ -114,18 +106,10 @@ const UploadFlyerForm = ({ callback }) => {
                             <CCol xs="12">
                                 <CFormGroup>
                                     <CLabel htmlFor="description">
-                                        Flyer Description
+                                        Note: Please verify your Excel file is the same as
+                                        <a href='https://rest.klosertoyou.com/uploads/CUSTOMERLIST_7a2348c38f.xlsx'>this template</a>
                                     </CLabel>
-                                    <CInput
-                                        id="description"
-                                        name="description"
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        value={values.description}
-                                        invalid={
-                                            touched.description && errors.description
-                                        }
-                                    />
+
                                     <CInvalidFeedback>
                                         {errors.description}
                                     </CInvalidFeedback>
@@ -134,12 +118,9 @@ const UploadFlyerForm = ({ callback }) => {
 
                             <CCol xs="12">
                                 <hr />
-                                Upload Flyers:
-                                <FilesUpload extension={"application/pdf"} />
+                                Upload Excel File:
+                                <FilesUpload extension={".xlsx"} />
                             </CCol>
-
-
-
 
                         </Row>
                         <Row>
@@ -163,7 +144,7 @@ const UploadFlyerForm = ({ callback }) => {
                                     block
                                     onClick={() => {
 
-                                        utilsData.showFlyerUpload = false;
+                                        utilsData.showImportCustomer = false;
                                         dispatch(cancelChangePropertyColor());
                                     }}>
                                     Cancel
@@ -178,4 +159,4 @@ const UploadFlyerForm = ({ callback }) => {
         </Col>
     );
 };
-export default UploadFlyerForm;
+export default ImportCustomeForm;
