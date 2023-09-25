@@ -61,9 +61,9 @@ const ImportCustomeForm = ({ callback }) => {
                 .then(() => {
                     setSubmitting(false);
                     console.log('...flyer upload DONE..');
-                    // utilsData.showImportCustomer = false;
-                    // dispatch(cancelChangePropertyColor());
-                    // history.push('/');
+                    utilsData.showImportCustomer = false;
+                    dispatch(cancelChangePropertyColor());
+                    history.push('/');
 
                 })
                 .catch(() => setSubmitting(false));
