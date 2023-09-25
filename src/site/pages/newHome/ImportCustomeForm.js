@@ -32,7 +32,7 @@ import FilesUpload from '../../../admin/file-upload/components/FilesUpload';
 import { importCustomer } from '../../../redux/actionCreators/adminActionCreators';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-
+import { toastr } from 'react-redux-toastr';
 const ImportCustomeForm = ({ callback }) => {
 
     const utilsData = useSelector((state) => state.utilsData);
@@ -63,7 +63,9 @@ const ImportCustomeForm = ({ callback }) => {
                     console.log('...flyer upload DONE..');
                     utilsData.showImportCustomer = false;
                     dispatch(cancelChangePropertyColor());
-                    history.push('/');
+                    toastr.success('Success', 'Import Customer Sucess!');
+                    setTimeout(window.location.reload(), 500);
+                    // history.push('/');
 
                 })
                 .catch(() => setSubmitting(false));
@@ -106,8 +108,8 @@ const ImportCustomeForm = ({ callback }) => {
                             <CCol xs="12">
                                 <CFormGroup>
                                     <CLabel htmlFor="description">
-                                        Note: Please verify your Excel file is the same as
-                                        <a href='https://rest.klosertoyou.com/uploads/CUSTOMERLIST_7a2348c38f.xlsx'>this template</a>
+                                        Note: Please verify your Excel file is the same as &nbsp;
+                                        <a href='https://rest.klosertoyou.com/uploads/CUSTOMERLIST_e4faa6ac71.xlsx'>this template</a>
                                     </CLabel>
 
                                     <CInvalidFeedback>
