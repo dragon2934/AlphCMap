@@ -63,8 +63,8 @@ const ImportCustomeForm = ({ callback }) => {
                     console.log('...flyer upload DONE..');
                     utilsData.showImportCustomer = false;
                     dispatch(cancelChangePropertyColor());
-                    toastr.success('Success', 'Import Customer Sucess!');
-                    setTimeout(window.location.reload(), 500);
+                    toastr.success('Success', 'Import Customer Sucess! Page will be reload after 2 seconds');
+                    setTimeout(window.location.reload(), 2000);
                     // history.push('/');
 
                 })
