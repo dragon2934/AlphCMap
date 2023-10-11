@@ -10,7 +10,7 @@ import {
     Label,
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { getBusinessProfile, saveMerchantConnection, disConnectionMerchant, loadConnectedTotal, getHighRiseBusinessInfo } from '../../../redux/actionCreators/adminActionCreators';
+import { getBusinessProfile, saveMerchantConnection, disConnectionMerchant, loadConnectedTotal, getHighRiseBusinessInfo, fetchFlyers } from '../../../redux/actionCreators/adminActionCreators';
 import { changePropertyColor, cancelShowBusinessInfo } from '../../../redux/actionCreators/appActionCreators';
 import { useHistory } from 'react-router';
 import { setPropertyRegistrationForm } from '../../../redux/actionCreators/registrationActionCreators';
@@ -71,6 +71,19 @@ import {
 } from "react-share";
 import QRCode from "react-qr-code";
 const PAGE_SIZE = 10;
+import { pdfjs, Document, Page } from 'react-pdf';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
+
+// import type { PDFDocumentProxy } from 'pdfjs-dist';
+console.log('..pdf js..' + pdfjs.version);
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+
+const options = {
+    cMapUrl: '/cmaps/',
+    standardFontDataUrl: '/standard_fonts/',
+};
+
 const BusinessInfo = ({ }) => {
 
     const utilsData = useSelector((state) => state.utilsData);
@@ -79,7 +92,7 @@ const BusinessInfo = ({ }) => {
     const property = utilsData.selectedProperty;
     // console.log('. show business info.property.. ' + JSON.stringify(property));
     const history = useHistory();
-
+    const serverUrl = process.env.REACT_APP_SOCKET_SERVER;
     const loginType = getLoginType();
     const [bindingInfo, setBindingInfo] = useState([])
     const user = useSelector((state) => state.auth.me);
@@ -104,6 +117,19 @@ const BusinessInfo = ({ }) => {
         }
         return '';
     };
+    const [flyer, setFlyer] = useState(null);
+
+    const [numPages, setNumPages] = useState(0);
+    const [pageNumber, setPageNumber] = useState(1);
+
+    const onDocumentLoadSuccess = ({ numPages }) => {
+        console.log('..set page ...' + numPages);
+        setNumPages(numPages);
+    }
+    const onDocumentLoadError = (error) => {
+        console.log('...load PDF error..', error)
+    }
+
     const [workingHour, setWorkingHour] = useState([]);
     useEffect(() => {
         setLoading(true);
@@ -128,6 +154,12 @@ const BusinessInfo = ({ }) => {
             console.log('..property ..info..' + JSON.stringify(resp.value));
             setCompanyProfile(resp.value.companyProfile);
             setWorkingHour(resp.value.workingHour);
+            const ownerId = resp.value.property.users[0].id;
+            // console.log('...ownerId...', ownerId);
+            dispatch(fetchFlyers(ownerId, { page: 1, pageSize: 1 })).then(resp => {
+                console.log('fetch ...flyers..', resp);
+                setFlyer(resp.value.data);
+            })
             setLoading(false);
         }
 
@@ -231,6 +263,13 @@ const BusinessInfo = ({ }) => {
         //     selectedProperties: data,
         // });
     }
+    const goToPrevPage = () =>
+        setPageNumber(pageNumber - 1 <= 1 ? 1 : pageNumber - 1);
+
+    const goToNextPage = () =>
+        setPageNumber(
+            pageNumber + 1 >= numPages ? numPages : pageNumber + 1,
+        );
     return (
 
         bindingInfo.length > 1 ?
@@ -365,124 +404,187 @@ const BusinessInfo = ({ }) => {
 
                                         </Row>
                                         <Row>
-                                            <Col md={3}>
-                                                <Label style={{ textAlign: "right" }} for="lblPropertyName">Monday:</Label>
-                                            </Col>
-                                            {getWorkingHourValue(workingHour, 0, 3) === true ?
-                                                <>       <Col md={9}>
-                                                    <Label for="lblPropertyName">We're Closed </Label>
-                                                </Col>
-                                                </> :
-                                                <>
-                                                    <Col md={9}>
-                                                        <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 0, 1)} - {getWorkingHourValue(workingHour, 0, 2)} </Label>
+                                            <Col>
+                                                <Row>
+                                                    <Col md={3}>
+                                                        <Label style={{ textAlign: "right" }} for="lblPropertyName">Monday:</Label>
                                                     </Col>
-                                                </>
-                                            }
+                                                    {getWorkingHourValue(workingHour, 0, 3) === true ?
+                                                        <>       <Col md={9}>
+                                                            <Label for="lblPropertyName">We're Closed </Label>
+                                                        </Col>
+                                                        </> :
+                                                        <>
+                                                            <Col md={9}>
+                                                                <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 0, 1)} - {getWorkingHourValue(workingHour, 0, 2)} </Label>
+                                                            </Col>
+                                                        </>
+                                                    }
+
+                                                </Row>
+                                                <Row>
+                                                    <Col md={3}>
+                                                        <Label style={{ textAlign: "right" }} for="lblPropertyName">Tuesday:</Label>
+                                                    </Col>
+                                                    {getWorkingHourValue(workingHour, 1, 3) === true ?
+                                                        <>       <Col md={9}>
+                                                            <Label for="lblPropertyName">We're Closed </Label>
+                                                        </Col>
+                                                        </> :
+                                                        <>
+                                                            <Col md={9}>
+                                                                <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 1, 1)} - {getWorkingHourValue(workingHour, 1, 2)} </Label>
+                                                            </Col>
+                                                        </>
+                                                    }
+
+                                                </Row>
+                                                <Row>
+                                                    <Col md={3}>
+                                                        <Label style={{ textAlign: "right" }} for="lblPropertyName">Wednesday:</Label>
+                                                    </Col>
+                                                    {getWorkingHourValue(workingHour, 2, 3) === true ?
+                                                        <>       <Col md={9}>
+                                                            <Label for="lblPropertyName">We're Closed </Label>
+                                                        </Col>
+                                                        </> :
+                                                        <>
+                                                            <Col md={9}>
+                                                                <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 2, 1)} - {getWorkingHourValue(workingHour, 2, 2)} </Label>
+                                                            </Col>
+                                                        </>
+                                                    }
+
+                                                </Row>
+                                                <Row>
+                                                    <Col md={3}>
+                                                        <Label style={{ textAlign: "right" }} for="lblPropertyName">Thursday:</Label>
+                                                    </Col>
+                                                    {getWorkingHourValue(workingHour, 3, 3) === true ?
+                                                        <>       <Col md={9}>
+                                                            <Label for="lblPropertyName">We're Closed </Label>
+                                                        </Col>
+                                                        </> :
+                                                        <>
+                                                            <Col md={9}>
+                                                                <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 3, 1)} - {getWorkingHourValue(workingHour, 3, 2)} </Label>
+                                                            </Col>
+                                                        </>
+                                                    }
+
+                                                </Row>
+                                                <Row>
+                                                    <Col md={3}>
+                                                        <Label style={{ textAlign: "right" }} for="lblPropertyName">Friday:</Label>
+                                                    </Col>
+                                                    {getWorkingHourValue(workingHour, 4, 3) === true ?
+                                                        <>       <Col md={9}>
+                                                            <Label for="lblPropertyName">We're Closed </Label>
+                                                        </Col>
+                                                        </> :
+                                                        <>
+                                                            <Col md={9}>
+                                                                <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 4, 1)} - {getWorkingHourValue(workingHour, 4, 2)} </Label>
+                                                            </Col>
+                                                        </>
+                                                    }
+
+                                                </Row>
+                                                <Row>
+                                                    <Col md={3}>
+                                                        <Label style={{ textAlign: "right" }} for="lblPropertyName">Saturday:</Label>
+                                                    </Col>
+                                                    {getWorkingHourValue(workingHour, 5, 3) === true ?
+                                                        <>       <Col md={9}>
+                                                            <Label for="lblPropertyName">We're Closed </Label>
+                                                        </Col>
+                                                        </> :
+                                                        <>
+                                                            <Col md={9}>
+                                                                <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 5, 1)} - {getWorkingHourValue(workingHour, 5, 2)} </Label>
+                                                            </Col>
+                                                        </>
+                                                    }
+
+                                                </Row>
+                                                <Row>
+                                                    <Col md={3}>
+                                                        <Label style={{ textAlign: "right" }} for="lblPropertyName">Sunday:</Label>
+                                                    </Col>
+                                                    {getWorkingHourValue(workingHour, 6, 3) == true ?
+                                                        <>       <Col md={9}>
+                                                            <Label for="lblPropertyName">We're Closed </Label>
+                                                        </Col>
+                                                        </> :
+                                                        <>
+                                                            <Col md={9}>
+                                                                <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 6, 1)} - {getWorkingHourValue(workingHour, 6, 2)} </Label>
+                                                            </Col>
+                                                        </>
+                                                    }
+
+                                                </Row>
+                                            </Col>
+                                            <Col>
+                                                {flyer && flyer.length > 0 ?
+                                                    <>
+                                                        <Row>
+                                                            <Col> {flyer[0].attributes.description} </Col>
+                                                            <Col> <a href={serverUrl + flyer[0].attributes.flyer_files.data[0].attributes.fileUrl} target='_blank'
+                                                                style={{ color: "#ff0000", fontWeight: "bold" }}
+                                                            > Download Flyer </a></Col>
+                                                        </Row>
+                                                        <Row>
+                                                            <Col>
+
+                                                                <div>
+                                                                    <Document file={serverUrl + flyer[0].attributes.flyer_files.data[0].attributes.fileUrl}
+
+                                                                        onLoadSuccess={onDocumentLoadSuccess}
+                                                                        onLoadError={onDocumentLoadError}
+                                                                    >
+                                                                        <Page pageNumber={pageNumber} />
+                                                                    </Document>
+
+                                                                </div>
+                                                            </Col>
+                                                        </Row>
+                                                        <Row>
+                                                            <Col style={{ marginTop: '20px', textAlign: 'center', width: '50%' }}>
+                                                                <Row ><Col>
+                                                                    <button className='pdfViewer' onClick={goToPrevPage}> {'<'} </button>
+                                                                </Col>
+                                                                    <Col>
+                                                                        <p className='pdfViewer'>
+                                                                            Page {pageNumber} of {numPages}
+                                                                        </p>
+                                                                    </Col>
+                                                                    <Col>
+                                                                        <button className='pdfViewer' onClick={goToNextPage}> {'>'} </button>
+                                                                    </Col>
+                                                                </Row>
+                                                            </Col>
+                                                        </Row>
+                                                    </> : ''
+                                                }
+                                                {parseInt(loginType) === 2 && user !== undefined && user.property !== undefined && property.id === user.property.id ?
+
+                                                    <Col>
+                                                        <Button
+
+                                                            color={'success'}
+                                                            block
+                                                            onClick={() => onUploadFlyer()}>
+                                                            Upload Flyer
+                                                        </Button>
+                                                    </Col>
+                                                    : null
+                                                }
+                                            </Col>
+
 
                                         </Row>
-                                        <Row>
-                                            <Col md={3}>
-                                                <Label style={{ textAlign: "right" }} for="lblPropertyName">Tuesday:</Label>
-                                            </Col>
-                                            {getWorkingHourValue(workingHour, 1, 3) === true ?
-                                                <>       <Col md={9}>
-                                                    <Label for="lblPropertyName">We're Closed </Label>
-                                                </Col>
-                                                </> :
-                                                <>
-                                                    <Col md={9}>
-                                                        <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 1, 1)} - {getWorkingHourValue(workingHour, 1, 2)} </Label>
-                                                    </Col>
-                                                </>
-                                            }
 
-                                        </Row>
-                                        <Row>
-                                            <Col md={3}>
-                                                <Label style={{ textAlign: "right" }} for="lblPropertyName">Wednesday:</Label>
-                                            </Col>
-                                            {getWorkingHourValue(workingHour, 2, 3) === true ?
-                                                <>       <Col md={9}>
-                                                    <Label for="lblPropertyName">We're Closed </Label>
-                                                </Col>
-                                                </> :
-                                                <>
-                                                    <Col md={9}>
-                                                        <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 2, 1)} - {getWorkingHourValue(workingHour, 2, 2)} </Label>
-                                                    </Col>
-                                                </>
-                                            }
-
-                                        </Row>
-                                        <Row>
-                                            <Col md={3}>
-                                                <Label style={{ textAlign: "right" }} for="lblPropertyName">Thursday:</Label>
-                                            </Col>
-                                            {getWorkingHourValue(workingHour, 3, 3) === true ?
-                                                <>       <Col md={9}>
-                                                    <Label for="lblPropertyName">We're Closed </Label>
-                                                </Col>
-                                                </> :
-                                                <>
-                                                    <Col md={9}>
-                                                        <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 3, 1)} - {getWorkingHourValue(workingHour, 3, 2)} </Label>
-                                                    </Col>
-                                                </>
-                                            }
-
-                                        </Row>
-                                        <Row>
-                                            <Col md={3}>
-                                                <Label style={{ textAlign: "right" }} for="lblPropertyName">Friday:</Label>
-                                            </Col>
-                                            {getWorkingHourValue(workingHour, 4, 3) === true ?
-                                                <>       <Col md={9}>
-                                                    <Label for="lblPropertyName">We're Closed </Label>
-                                                </Col>
-                                                </> :
-                                                <>
-                                                    <Col md={9}>
-                                                        <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 4, 1)} - {getWorkingHourValue(workingHour, 4, 2)} </Label>
-                                                    </Col>
-                                                </>
-                                            }
-
-                                        </Row>
-                                        <Row>
-                                            <Col md={3}>
-                                                <Label style={{ textAlign: "right" }} for="lblPropertyName">Saturday:</Label>
-                                            </Col>
-                                            {getWorkingHourValue(workingHour, 5, 3) === true ?
-                                                <>       <Col md={9}>
-                                                    <Label for="lblPropertyName">We're Closed </Label>
-                                                </Col>
-                                                </> :
-                                                <>
-                                                    <Col md={9}>
-                                                        <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 5, 1)} - {getWorkingHourValue(workingHour, 5, 2)} </Label>
-                                                    </Col>
-                                                </>
-                                            }
-
-                                        </Row>
-                                        <Row>
-                                            <Col md={3}>
-                                                <Label style={{ textAlign: "right" }} for="lblPropertyName">Sunday:</Label>
-                                            </Col>
-                                            {getWorkingHourValue(workingHour, 6, 3) == true ?
-                                                <>       <Col md={9}>
-                                                    <Label for="lblPropertyName">We're Closed </Label>
-                                                </Col>
-                                                </> :
-                                                <>
-                                                    <Col md={9}>
-                                                        <Label for="lblPropertyName"> {getWorkingHourValue(workingHour, 6, 1)} - {getWorkingHourValue(workingHour, 6, 2)} </Label>
-                                                    </Col>
-                                                </>
-                                            }
-
-                                        </Row>
                                     </>
                                     : <>
                                         <Row>
@@ -500,15 +602,7 @@ const BusinessInfo = ({ }) => {
                         {
                             parseInt(loginType) === 2 && user !== undefined && user.property !== undefined && property.id === user.property.id ?
                                 <>
-                                    <Col>
-                                        <Button
 
-                                            color={'success'}
-                                            block
-                                            onClick={() => onUploadFlyer()}>
-                                            Upload Flyer
-                                        </Button>
-                                    </Col>
                                     <Col>
                                         <Button
 

@@ -59,6 +59,7 @@ import Connect from "./pages/newHome/Connect";
 import ResetPassword from "./pages/newHome/ResetPassword";
 import VerifyResetPassword from './pages/newHome/VerifyResetPassword';
 import ResetPassword3 from './pages/newHome/ResetPassword3';
+import ConfirmConnect from "./pages/newHome/ConfirmConnect";
 // import Admin from "../admin/Admin";
 
 const Users = React.lazy(() => import('../admin/views/users/Users'));
@@ -184,6 +185,7 @@ const Site = () => {
       <Route exact path="/our-video" component={OurVideo} />
       <Route exact path="/privacy-policy" component={PrivacyPolicy} />
       <Route exact path="/terms-of-use" component={TermsOfUse} />
+      <Route exact path="/confirm-connect" component={ConfirmConnect} />
 
       {/* <Route render={()=>{
                 isAdmin() ? <Component component={Site} path="/" />: <Redirect to="/login" />

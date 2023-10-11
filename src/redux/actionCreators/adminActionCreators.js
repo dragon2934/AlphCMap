@@ -2007,3 +2007,29 @@ export const importCustomer = (data) => {
         });
     };
 };
+export const confirmImportConnect = (data) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.jwt;
+        const url = `${SERVICE_URL}/residents/confirm-import-connect`;
+        return dispatch({
+            type: ADMIN_SAVE_ACTION,
+            payload: fetch(url, {
+                body: JSON.stringify(data),
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'POST',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+};

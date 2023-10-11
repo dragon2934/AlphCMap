@@ -109,7 +109,7 @@ const ImportCustomeForm = ({ callback }) => {
                                 <CFormGroup>
                                     <CLabel htmlFor="description">
                                         Note: Please verify your Excel file is the same as &nbsp;
-                                        <a href='https://rest.klosertoyou.com/uploads/CUSTOMERLIST_e4faa6ac71.xlsx'>this template</a>
+                                        <a style={{ color: "#000000", fontWeight: "bold" }} href='https://rest.klosertoyou.com/uploads/CUSTOMERLIST_d4c000b91e.xlsx'>this template</a>
                                     </CLabel>
 
                                     <CInvalidFeedback>
