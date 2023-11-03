@@ -53,6 +53,11 @@ const ImportCustomeForm = ({ callback }) => {
         onSubmit: (values, { setSubmitting }) => {
             setSubmitting(true);
             console.log('..uploadedFiles..', values);
+            if (uploadedFiles.length < 1) {
+                toastr.error('Error', 'Please Upload a Excel file!');
+                setSubmitting(false);
+                return;
+            }
             const data = {
                 fileName: uploadedFiles[0].url
             }

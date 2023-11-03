@@ -8,6 +8,7 @@ import {
     FormGroup,
     Input,
     Label,
+    Toast,
 } from 'reactstrap';
 import {
     CButton,
@@ -32,8 +33,9 @@ import FilesUpload from '../../../admin/file-upload/components/FilesUpload';
 import { saveFlyers } from '../../../redux/actionCreators/adminActionCreators';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { toastr } from 'react-redux-toastr';
 const validationSchema = Yup.object().shape({
-    description: Yup.string().required('full name is required'),
+    description: Yup.string().required('full name is required')
 });
 
 
@@ -47,7 +49,7 @@ const UploadFlyerForm = ({ callback }) => {
     const user = useSelector((state) => state.auth.me);
 
     const uploadedFiles = useSelector((state) => state.admin.uploadedFiles);
-    // console.log('..uploadedFiles...from flyer edit..', uploadedFiles);
+    console.log('..uploadedFiles...from flyer edit..', uploadedFiles);
     const property = utilsData.selectedProperty;
     const shareUrl = "https://klosertoyou.com/business-portal/" + property.id;
     const formik = useFormik({
@@ -60,6 +62,11 @@ const UploadFlyerForm = ({ callback }) => {
         onSubmit: (values, { setSubmitting }) => {
             setSubmitting(true);
             console.log('..uploadedFiles..', uploadedFiles);
+            if (uploadedFiles.length < 1) {
+                toastr.error('Error', 'Please Upload a PDF file!');
+                setSubmitting(false);
+                return;
+            }
             const data = {
                 ownerId: user.id,
                 description: values.description,
