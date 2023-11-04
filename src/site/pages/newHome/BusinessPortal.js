@@ -81,14 +81,14 @@ const BusinessPortal = ({ match }) => {
             setCompanyProfile(resp.value.companyProfile);
             setWorkingHour(resp.value.workingHour);
             setProperty(resp.value.property);
-            if (resp.value.property && resp.value.property.users && resp.value.property.users.length > 0) {
-                const ownerId = resp.value.property.users[0].id;
-                // console.log('...ownerId...', ownerId);
-                dispatch(fetchFlyers(ownerId, { page: 1, pageSize: 1 })).then(resp => {
-                    console.log('fetch ...flyers..', resp);
-                    setFlyer(resp.value.data);
-                });
-            }
+
+            const ownerId = resp.value.companyProfile.users_id.id;
+            console.log('...ownerId...', ownerId);
+            dispatch(fetchFlyers(ownerId, { page: 1, pageSize: 1 })).then(resp => {
+                console.log('fetch ...flyers..', resp);
+                setFlyer(resp.value.data);
+            });
+
             setLoading(false);
 
         }
