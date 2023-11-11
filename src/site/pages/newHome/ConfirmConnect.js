@@ -27,9 +27,10 @@ const ConfirmConnect = ({ match }) => {
     const history = useHistory();
     const queryPage = history.location.search;
     const data = queryPage.split('&');
+    console.log('..data..', data);
     // const mobileNumber = data[0].split('=')[1];
     const p1 = data[1].split('=')[1];
-    const p2 = data[1].split('=')[1];
+    const p2 = data[2].split('=')[1];
     // console.log('..queryPage..' + queryPage);
     const propertyId = data[0].split('=')[1];
     const utilsData = useSelector((state) => state.utilsData);

@@ -154,7 +154,7 @@ const BusinessInfo = ({ }) => {
             console.log('..property ..info..' + JSON.stringify(resp.value));
             setCompanyProfile(resp.value.companyProfile);
             setWorkingHour(resp.value.workingHour);
-            const ownerId = resp.value.property.users[0].id;
+            const ownerId = resp.value.companyProfile.users_id.id;
             // console.log('...ownerId...', ownerId);
             dispatch(fetchFlyers(ownerId, { page: 1, pageSize: 1 })).then(resp => {
                 console.log('fetch ...flyers..', resp);

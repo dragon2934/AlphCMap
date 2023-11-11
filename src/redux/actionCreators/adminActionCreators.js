@@ -2009,8 +2009,8 @@ export const importCustomer = (data) => {
 };
 export const confirmImportConnect = (data) => {
     return (dispatch, getState) => {
-        const token = getState().auth.jwt;
-        const url = `${SERVICE_URL}/residents/confirm-import-connect`;
+        // const token = getState().auth.jwt;
+        const url = `${SERVICE_URL}/public/confirm-import-connect`;
         return dispatch({
             type: ADMIN_SAVE_ACTION,
             payload: fetch(url, {
@@ -2018,7 +2018,6 @@ export const confirmImportConnect = (data) => {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
                 },
                 method: 'POST',
             })

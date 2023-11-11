@@ -24,6 +24,7 @@ const PropertyFileUpload = () => {
     }
     dispatch(batchImportCompany(data)).then(resp => {
       console.log('...batch import ..', resp);
+      toastr.error('Success', 'Data import Completed');
     }).catch(error => {
       console.log('..import error');
       toastr.error('Error', 'Data import failed');

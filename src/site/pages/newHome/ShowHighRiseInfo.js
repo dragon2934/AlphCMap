@@ -32,7 +32,8 @@ const ShowHighRiseInfo = () => {
     useEffect(() => {
         setLoading(true);
         let email = property.email;
-        email = email.replace(property.unit_no + '-', '')
+        console.log('..property..', property);
+        email = email.replace(property.unit_no.trim().replace(/[ ]/g, '-') + '-', '')
         console.log('..email is..' + email)
 
         dispatch(getHighRiseInfo(email)).then(resp => {
