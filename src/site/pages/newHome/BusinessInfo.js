@@ -330,13 +330,7 @@ const BusinessInfo = ({ }) => {
             </> :
             <>
                 <Col md={6} sm={12} xs={12} className="overlay-form-container">
-                    <QRCode
-                        size={256}
-                        className={'logo-container'}
-                        style={{ marginTop: "20px", height: "100px", maxWidth: "100%", width: "100%" }}
-                        value={shareUrl}
-                        viewBox={`0 0 256 256`}
-                    />
+
 
                     <Row style={{ width: "100%" }}>
 
@@ -344,60 +338,70 @@ const BusinessInfo = ({ }) => {
                             {
                                 companyProfile ?
                                     <>
-
                                         <Row>
-                                            <Col><h3>{companyProfile.companyName}</h3></Col> </Row>
-                                        <Row>   <Col><i className="fa-solid fa-address"></i> {(property.unit_no ? property.unit_no + ' - ' : '') + property.street_number + ' ' + property.route + ' ' + property.locality + ',' + property.city + ',' + property.postal_code} </Col> </Row>
-                                        <Row>   <Col><i className="fa-solid fa-phone"></i> {companyProfile.phone} </Col> </Row>
-                                        <Row>   <Col><i className="fa-solid fa-globe"></i> <a href={companyProfile.website.startsWith('http') ? companyProfile.website : 'https://' + companyProfile.website} className='business_link'>Company Website</a>  </Col> </Row>
-                                        {totalConnected ? <Row>   <Col>Connected: {totalConnected} </Col> </Row> : null}
-                                        <Row>   <Col><i className="fa-solid fa-globe"></i> <a className='business_link' href={shareUrl} target="_blank"> {shareUrl}</a>
-                                            {
-                                                user !== undefined && user.property !== undefined && property.id === user.property.id ?
-                                                    <>
+                                            <Col md={8}>
+                                                <Row>
+                                                    <Col><h3>{companyProfile.companyName}</h3></Col> </Row>
+                                                <Row>   <Col><i className="fa-solid fa-address"></i> {(property.unit_no ? property.unit_no + ' - ' : '') + property.street_number + ' ' + property.route + ' ' + property.locality + ',' + property.city + ',' + property.postal_code} </Col> </Row>
+                                                <Row>   <Col><i className="fa-solid fa-phone"></i> {companyProfile.phone} </Col> </Row>
+                                                <Row>   <Col><i className="fa-solid fa-globe"></i> <a href={companyProfile.website.startsWith('http') ? companyProfile.website : 'https://' + companyProfile.website} className='business_link'>Company Website</a>  </Col> </Row>
+                                                {totalConnected ? <Row>   <Col>Connected: {totalConnected} </Col> </Row> : null}
+                                                <Row>   <Col><i className="fa-solid fa-globe"></i> <a className='business_link' href={shareUrl} target="_blank"> {shareUrl}</a>
+                                                    {
+                                                        user !== undefined && user.property !== undefined && property.id === user.property.id ?
+                                                            <>
 
-                                                        &nbsp;&nbsp;&nbsp; share: &nbsp;
+                                                                &nbsp;&nbsp;&nbsp; share: &nbsp;
 
-                                                        <EmailShareButton
-                                                            url={shareUrl}
-                                                            subject={title}
-                                                            body="body"
+                                                                <EmailShareButton
+                                                                    url={shareUrl}
+                                                                    subject={title}
+                                                                    body="body"
 
-                                                        >
-                                                            <EmailIcon size={32} round />
-                                                        </EmailShareButton>
+                                                                >
+                                                                    <EmailIcon size={32} round />
+                                                                </EmailShareButton>
 
 
-                                                    </> : null
-                                            }
-                                        </Col> </Row>
-                                        {property.email && property.email !== null && property.email !== 'null' ? <Row>
-                                            <Col><i className="fa-solid fa-envelope"></i> {property.email + '@' + companyProfile.companyName + '.com'}
-                                                {property.connected !== "1" || (user !== undefined && user.property !== undefined && property.id === user.property.id) ? null : <Button size={'sm'} onClick={(e) => cbSendEmail(e, property)} >Send Email</Button>}
+                                                            </> : null
+                                                    }
+                                                </Col> </Row>
+                                                {property.email && property.email !== null && property.email !== 'null' ? <Row>
+                                                    <Col><i className="fa-solid fa-envelope"></i> {property.email + '@' + companyProfile.companyName + '.com'}
+                                                        {property.connected !== "1" || (user !== undefined && user.property !== undefined && property.id === user.property.id) ? null : <Button size={'sm'} onClick={(e) => cbSendEmail(e, property)} >Send Email</Button>}
+                                                    </Col>
+                                                </Row> : null}
+                                                <Row>
+                                                    <Col>
+                                                        {companyProfile.android_url ? <a href={companyProfile.android_url} target='_blank' >
+                                                            <img
+                                                                className={'app-container'}
+                                                                src={'/assets/img/google-play-badge.png'}
+                                                                alt={'Android App Download'}
+                                                            />
+                                                        </a> : null}
+                                                    </Col>
+                                                    <Col>
+                                                        {companyProfile.ios_url ? <a href={companyProfile.ios_url} target='_blank' >
+                                                            <img
+                                                                className={'app-container'}
+                                                                src={'/assets/img/appstore-badge.png'}
+                                                                alt={'iOS App Download'}
+                                                            />
+                                                        </a> : null}
+                                                    </Col>
+                                                </Row>
                                             </Col>
-                                        </Row> : null}
-                                        <Row>
-                                            <Col>
-                                                {companyProfile.android_url ? <a href={companyProfile.android_url} target='_blank' >
-                                                    <img
-                                                        className={'app-container'}
-                                                        src={'/assets/img/google-play-badge.png'}
-                                                        alt={'Android App Download'}
-                                                    />
-                                                </a> : null}
-                                            </Col>
-                                            <Col>
-                                                {companyProfile.ios_url ? <a href={companyProfile.ios_url} target='_blank' >
-                                                    <img
-                                                        className={'app-container'}
-                                                        src={'/assets/img/appstore-badge.png'}
-                                                        alt={'iOS App Download'}
-                                                    />
-                                                </a> : null}
+                                            <Col md={4}>
+                                                <QRCode
+                                                    size={256}
+                                                    className={'logo-container'}
+                                                    style={{ marginTop: "20px", height: "150px", maxWidth: "100%", width: "100%" }}
+                                                    value={shareUrl}
+                                                    viewBox={`0 0 256 256`}
+                                                />
                                             </Col>
                                         </Row>
-
-
 
                                         <Row>
                                             <Col> <hr /></Col>
