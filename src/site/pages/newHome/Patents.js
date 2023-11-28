@@ -49,15 +49,15 @@ const Patents = () => {
 
                         AlphC’s products and services may be covered by U.S. Patent
                         Nos.{' '}
-                        <a target='_blank' href="http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO1&Sect2=HITOFF&d=PALL&p=1&u=%2Fnetahtml%2FPTO%2Fsrchnum.htm&r=1&f=G&l=50&s1=9860203.PN.&OS=PN/9860203&RS=PN/9860203">
+                        <a target='_blank' href="https://ppubs.uspto.gov/pubwebapp/static/pages/ppubsbasic.html">
                             9,860,203
                         </a>,{' '}
 
-                        <a target='_blank' href="http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO1&Sect2=HITOFF&d=PALL&p=1&u=%2Fnetahtml%2FPTO%2Fsrchnum.htm&r=1&f=G&l=50&s1=10,356,028.PN.&OS=PN/10,356,028&RS=PN/10,356,028">
+                        <a target='_blank' href="https://ppubs.uspto.gov/pubwebapp/static/pages/ppubsbasic.html">
                             10,356,028
                         </a>
                         ,{' '}
-                        <a target='_blank' href="http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO1&Sect2=HITOFF&d=PALL&p=1&u=%2Fnetahtml%2FPTO%2Fsrchnum.htm&r=1&f=G&l=50&s1=10659414.PN.&OS=PN/10659414&RS=PN/10659414">
+                        <a target='_blank' href="https://ppubs.uspto.gov/pubwebapp/static/pages/ppubsbasic.html">
                             10,659,414
                         </a>,{' '}
                         <a target='_blank' href="https://ppubs.uspto.gov/pubwebapp/static/pages/ppubsbasic.html"> 11,444,904</a>{' '}
