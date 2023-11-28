@@ -51,15 +51,17 @@ const Patents = () => {
                         Nos.{' '}
                         <a target='_blank' href="http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO1&Sect2=HITOFF&d=PALL&p=1&u=%2Fnetahtml%2FPTO%2Fsrchnum.htm&r=1&f=G&l=50&s1=9860203.PN.&OS=PN/9860203&RS=PN/9860203">
                             9,860,203
-                        </a>
-                        ,
+                        </a>,{' '}
+
                         <a target='_blank' href="http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO1&Sect2=HITOFF&d=PALL&p=1&u=%2Fnetahtml%2FPTO%2Fsrchnum.htm&r=1&f=G&l=50&s1=10,356,028.PN.&OS=PN/10,356,028&RS=PN/10,356,028">
                             10,356,028
                         </a>
-                        ,
+                        ,{' '}
                         <a target='_blank' href="http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO1&Sect2=HITOFF&d=PALL&p=1&u=%2Fnetahtml%2FPTO%2Fsrchnum.htm&r=1&f=G&l=50&s1=10659414.PN.&OS=PN/10659414&RS=PN/10659414">
                             10,659,414
-                        </a> and <a target='_blank' href="https://ppubs.uspto.gov/pubwebapp/static/pages/ppubsbasic.html"> 11,444,904</a> {' '}
+                        </a>,{' '}
+                        <a target='_blank' href="https://ppubs.uspto.gov/pubwebapp/static/pages/ppubsbasic.html"> 11,444,904</a>{' '}
+                        and <a target='_blank' href="https://ppubs.uspto.gov/pubwebapp/static/pages/ppubsbasic.html"> 11,831,595</a>
                         , European Union (EU) Patent <a target='_blank' href="https://worldwide.espacenet.com/patent/search/family/060411925/publication/EP3466003A1?q=pn%3DEP3466003">EP 3466003</a>,
                         Australian Patent <a target='_blank' href="http://pericles.ipaustralia.gov.au/ols/auspat/applicationDetails.do?applicationNo=2017269953">2017269953</a>,{' '}
                         as well as other patents that are pending. <br /><br /> For additional
