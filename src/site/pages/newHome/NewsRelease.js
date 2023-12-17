@@ -14,6 +14,63 @@ const NewsRelease = () => {
                     </Row>
 
 
+                    December 17, 2023
+                    <p>
+                        <a
+                            className="text-muted"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            href="https://www.linkedin.com/pulse/klosertoyou-marketing-infinite-possibilities-part-55-shafin-valla-cbs1c/">
+                            KloserToYou - Marketing with Infinite Possibilities
+                        </a>
+                    </p>
+
+                    December 16, 2023
+                    <p>
+                        <a
+                            className="text-muted"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            href="https://www.linkedin.com/pulse/klosertoyou-benefits-connected-customers-part-45-shafin-valla-ag1hc/">
+                            KloserToYou - Benefits for Connected Customers
+                        </a>
+                    </p>
+
+                    December 15, 2023
+                    <p>
+                        <a
+                            className="text-muted"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            href="https://www.linkedin.com/pulse/klosertoyou-3-steps-connecting-customers-part-35-shafin-valla-gfolc/">
+                            KloserToYou - 3 Steps Connecting with Customers
+                        </a>
+                    </p>
+
+                    December 14, 2023
+                    <p>
+                        <a
+                            className="text-muted"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            href="https://www.linkedin.com/pulse/klosertoyou-business-benefits-connecting-customers-part-valla-zo57f/">
+                            KloserToYou - Business Benefits and Connecting Customers
+                        </a>
+                    </p>
+
+                    December 13, 2023
+                    <p>
+                        <a
+                            className="text-muted"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            href="https://www.linkedin.com/pulse/future-direct-marketing-customer-addresses-part-15-shafin-valla-cjecf/">
+                            Future of Direct Marketing to Customer Addresses KloserToYou
+                        </a>
+                    </p>
+
+
+
                     November 28, 2023
                     <p>
                         <a
