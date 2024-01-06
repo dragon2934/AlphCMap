@@ -166,17 +166,6 @@ const BusinessPortal = ({ match }) => {
             <Row style={{ width: "100%" }}>
                 <Col xl='6' style={{ textAlign: "left", width: "100%" }}>
                     <Row >
-                        <Col>
-                            <QRCode
-                                size={256}
-                                className={'logo-container'}
-                                style={{ marginTop: "20px", height: "100px", maxWidth: "100%", width: "100%" }}
-                                value={shareUrl}
-                                viewBox={`0 0 256 256`}
-                            />
-                        </Col>
-                    </Row>
-                    <Row >
 
                         <Col style={{ textAlign: "left" }}>
                             {
@@ -339,6 +328,17 @@ const BusinessPortal = ({ match }) => {
                                 )
                             }
 
+                        </Col>
+                        <Col md='4'>
+                            <div className='qrCodeBg'>
+                                <QRCode
+                                    size={256}
+                                    className={'logo-container'}
+                                    style={{ marginTop: "20px", height: "150px", maxWidth: "100%", width: "100%" }}
+                                    value={shareUrl}
+                                    viewBox={`0 0 256 256`}
+                                />
+                            </div>
                         </Col>
                     </Row>
 

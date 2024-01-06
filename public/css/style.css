@@ -2566,3 +2566,10 @@ button.pdfViewer {
   height: auto !important;
   background-color: transparent !important;
 }
+
+.qrCodeBg {
+  background-image: url('/assets/img/connect_with_us.png');
+  /* background-attachment: fixed; */
+  width: 180px;
+  height: 200px;
+}

@@ -392,14 +392,15 @@ const BusinessInfo = ({ }) => {
                                                     </Col>
                                                 </Row>
                                             </Col>
-                                            <Col md={4}>
-                                                <QRCode
-                                                    size={256}
-                                                    className={'logo-container'}
-                                                    style={{ marginTop: "20px", height: "150px", maxWidth: "100%", width: "100%" }}
-                                                    value={shareUrl}
-                                                    viewBox={`0 0 256 256`}
-                                                />
+                                            <Col md={4} >
+                                                <div className='qrCodeBg'>
+                                                    <QRCode
+                                                        size={256}
+                                                        className={'logo-container'}
+                                                        style={{ marginTop: "20px", height: "150px", maxWidth: "100%", width: "100%" }}
+                                                        value={shareUrl}
+                                                        viewBox={`0 0 256 256`}
+                                                    /></div>
                                             </Col>
                                         </Row>
 
