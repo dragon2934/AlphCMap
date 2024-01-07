@@ -2570,6 +2570,6 @@ button.pdfViewer {
 .qrCodeBg {
   background-image: url('/assets/img/connect_with_us.png');
   /* background-attachment: fixed; */
-  width: 180px;
+  width: 160px;
   height: 200px;
 }
