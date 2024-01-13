@@ -13,6 +13,16 @@ const NewsRelease = () => {
                         <Col>News Release</Col>
                     </Row>
 
+                    January 7, 2024
+                    <p>
+                        <a
+                            className="text-muted"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            href="https://www.linkedin.com/pulse/connecting-product-suppliers-mapped-customer-addresses-shafin-valla-41hhc/">
+                            Connecting Product Suppliers to Mapped Customer Addresses on KloserToYou
+                        </a>
+                    </p>
 
                     December 17, 2023
                     <p>

@@ -14,12 +14,12 @@ import { getBusinessProfile, saveMerchantConnection, disConnectionMerchant, fetc
 import { changePropertyColor, cancelShowBusinessInfo } from '../../../redux/actionCreators/appActionCreators';
 import { useHistory } from 'react-router';
 import { setPropertyRegistrationForm } from '../../../redux/actionCreators/registrationActionCreators';
-import QRCode from "react-qr-code";
+// import QRCode from "react-qr-code";
 import { SERVICE_URL } from '../../../constants';
 import { pdfjs, Document, Page } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
-
+import { getQRImageUrl } from '../../../redux/actionCreators/appActionCreators';
 // import type { PDFDocumentProxy } from 'pdfjs-dist';
 console.log('..pdf js..' + pdfjs.version);
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -49,7 +49,7 @@ const BusinessPortal = ({ match }) => {
 
     const [numPages, setNumPages] = useState(0);
     const [pageNumber, setPageNumber] = useState(1);
-
+    const [qrImage, setQrImage] = useState(null);
     const onDocumentLoadSuccess = ({ numPages }) => {
         console.log('..set page ...' + numPages);
         setNumPages(numPages);
@@ -94,7 +94,11 @@ const BusinessPortal = ({ match }) => {
         }
 
         );
-
+        dispatch(getQRImageUrl(property.id)).then((resp) => {
+            setQrImage(resp.value.url);
+        }).catch(error => {
+            console.log('...load qr image error..', error);
+        })
         return () => { };
     }, [dispatch]);
 
@@ -330,7 +334,14 @@ const BusinessPortal = ({ match }) => {
 
                         </Col>
                         <Col md='4'>
-                            <div className='qrCodeBg'>
+                            {
+                                qrImage ?
+                                    <img
+                                        alt={companyProfile.companyName}
+                                        style={{ margin: "0 auto", width: "160px" }}
+                                        src={serverUrl + qrImage.replace('./public/', '/')} className="img-fluid d-block" /> : null
+                            }
+                            {/* <div className='qrCodeBg'>
                                 <QRCode
                                     size={256}
                                     className={'logo-container'}
@@ -338,7 +349,7 @@ const BusinessPortal = ({ match }) => {
                                     value={shareUrl}
                                     viewBox={`0 0 256 256`}
                                 />
-                            </div>
+                            </div> */}
                         </Col>
                     </Row>
 

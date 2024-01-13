@@ -69,12 +69,12 @@ import {
     WhatsappIcon,
     WorkplaceIcon
 } from "react-share";
-import QRCode from "react-qr-code";
+// import QRCode from "react-qr-code";
 const PAGE_SIZE = 10;
 import { pdfjs, Document, Page } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
-
+import { getQRImageUrl } from '../../../redux/actionCreators/appActionCreators';
 // import type { PDFDocumentProxy } from 'pdfjs-dist';
 console.log('..pdf js..' + pdfjs.version);
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -121,6 +121,7 @@ const BusinessInfo = ({ }) => {
 
     const [numPages, setNumPages] = useState(0);
     const [pageNumber, setPageNumber] = useState(1);
+    const [qrImage, setQrImage] = useState(null);
 
     const onDocumentLoadSuccess = ({ numPages }) => {
         console.log('..set page ...' + numPages);
@@ -150,6 +151,11 @@ const BusinessInfo = ({ }) => {
             });
         }
 
+        dispatch(getQRImageUrl(property.id)).then((resp) => {
+            setQrImage(resp.value.url);
+        }).catch(error => {
+            console.log('...load qr image error..', error);
+        })
         dispatch(getBusinessProfile({ id: property.id })).then((resp) => {
             console.log('..property ..info..' + JSON.stringify(resp.value));
             setCompanyProfile(resp.value.companyProfile);
@@ -393,14 +399,23 @@ const BusinessInfo = ({ }) => {
                                                 </Row>
                                             </Col>
                                             <Col md={4} >
-                                                <div className='qrCodeBg'>
+                                                {
+                                                    qrImage ?
+                                                        <img
+                                                            alt={companyProfile.companyName}
+                                                            style={{ margin: "0 auto", width: "160px" }}
+                                                            src={serverUrl + qrImage.replace('./public/', '/')} className="img-fluid d-block" /> : null
+                                                }
+                                                {/* <div className='qrCodeBg'>
                                                     <QRCode
                                                         size={256}
                                                         className={'logo-container'}
                                                         style={{ marginTop: "20px", height: "150px", maxWidth: "100%", width: "100%" }}
                                                         value={shareUrl}
                                                         viewBox={`0 0 256 256`}
-                                                    /></div>
+                                                    />
+                                                    
+                                                    </div> */}
                                             </Col>
                                         </Row>
 

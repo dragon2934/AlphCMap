@@ -653,3 +653,29 @@ export const saveBatchProperties = (data) => {
         });
     };
 }
+
+export const getQRImageUrl = (propertyId) => {
+    return (dispatch, getState) => {
+        return dispatch({
+            type: SAVE_SECONDORY_PROPERTY,
+            payload: fetch(`${SERVICE_URL}/public/qr-image`, {
+                body: JSON.stringify({
+                    propertyId: propertyId
+                }),
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: 'POST',
+            })
+                .then((r) => r.json())
+                .then((responseData) => {
+                    if (responseData.statusCode >= 300) {
+                        return Promise.reject(responseData);
+                    } else {
+                        return responseData;
+                    }
+                }),
+        });
+    };
+}
