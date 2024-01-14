@@ -94,7 +94,7 @@ const BusinessPortal = ({ match }) => {
         }
 
         );
-        dispatch(getQRImageUrl(property.id)).then((resp) => {
+        dispatch(getQRImageUrl(propertyId)).then((resp) => {
             setQrImage(resp.value.url);
         }).catch(error => {
             console.log('...load qr image error..', error);
