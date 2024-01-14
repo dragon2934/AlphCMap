@@ -209,139 +209,140 @@ const BusinessPortal = ({ match }) => {
 
                                         </Row>
                                         <Row>
-                                            <Col md={3}>
-                                                Monday:
-                                            </Col>
-                                            {getWorkingHourValue(workingHour, 0, 3) === true ?
-                                                <>       <Col md={6}>
-                                                    We're Closed
-                                                </Col>
-                                                </> :
-                                                <>
-                                                    <Col md={6}>
-                                                        {getWorkingHourValue(workingHour, 0, 1)} - {getWorkingHourValue(workingHour, 0, 2)}
+                                            <Col md='6'>
+
+
+                                                <Row>
+                                                    <Col md={3}>
+                                                        Monday:
                                                     </Col>
-                                                </>
-                                            }
+                                                    {getWorkingHourValue(workingHour, 0, 3) === true ?
+                                                        <>       <Col md={6}>
+                                                            We're Closed
+                                                        </Col>
+                                                        </> :
+                                                        <>
+                                                            <Col md={6}>
+                                                                {getWorkingHourValue(workingHour, 0, 1)} - {getWorkingHourValue(workingHour, 0, 2)}
+                                                            </Col>
+                                                        </>
+                                                    }
 
-                                        </Row>
-                                        <Row>
-                                            <Col md={3}>
-                                                Tuesday:
-                                            </Col>
-                                            {getWorkingHourValue(workingHour, 1, 3) === true ?
-                                                <>       <Col md={6}>
-                                                    We're Closed
-                                                </Col>
-                                                </> :
-                                                <>
-                                                    <Col md={6}>
-                                                        {getWorkingHourValue(workingHour, 1, 1)} - {getWorkingHourValue(workingHour, 1, 2)}
+                                                </Row>
+                                                <Row>
+                                                    <Col md={3}>
+                                                        Tuesday:
                                                     </Col>
-                                                </>
-                                            }
+                                                    {getWorkingHourValue(workingHour, 1, 3) === true ?
+                                                        <>       <Col md={6}>
+                                                            We're Closed
+                                                        </Col>
+                                                        </> :
+                                                        <>
+                                                            <Col md={6}>
+                                                                {getWorkingHourValue(workingHour, 1, 1)} - {getWorkingHourValue(workingHour, 1, 2)}
+                                                            </Col>
+                                                        </>
+                                                    }
 
-                                        </Row>
-                                        <Row>
-                                            <Col md={3}>
-                                                Wednesday:
-                                            </Col>
-                                            {getWorkingHourValue(workingHour, 2, 3) === true ?
-                                                <>       <Col md={6}>
-                                                    We're Closed
-                                                </Col>
-                                                </> :
-                                                <>
-                                                    <Col md={6}>
-                                                        {getWorkingHourValue(workingHour, 2, 1)} - {getWorkingHourValue(workingHour, 2, 2)}
+                                                </Row>
+                                                <Row>
+                                                    <Col md={3}>
+                                                        Wednesday:
                                                     </Col>
-                                                </>
-                                            }
+                                                    {getWorkingHourValue(workingHour, 2, 3) === true ?
+                                                        <>       <Col md={6}>
+                                                            We're Closed
+                                                        </Col>
+                                                        </> :
+                                                        <>
+                                                            <Col md={6}>
+                                                                {getWorkingHourValue(workingHour, 2, 1)} - {getWorkingHourValue(workingHour, 2, 2)}
+                                                            </Col>
+                                                        </>
+                                                    }
 
-                                        </Row>
-                                        <Row>
-                                            <Col md={3}>
-                                                Thursday:
-                                            </Col>
-                                            {getWorkingHourValue(workingHour, 3, 3) === true ?
-                                                <>       <Col md={6}>
-                                                    We're Closed
-                                                </Col>
-                                                </> :
-                                                <>
-                                                    <Col md={6}>
-                                                        {getWorkingHourValue(workingHour, 3, 1)} - {getWorkingHourValue(workingHour, 3, 2)}
+                                                </Row>
+                                                <Row>
+                                                    <Col md={3}>
+                                                        Thursday:
                                                     </Col>
-                                                </>
-                                            }
+                                                    {getWorkingHourValue(workingHour, 3, 3) === true ?
+                                                        <>       <Col md={6}>
+                                                            We're Closed
+                                                        </Col>
+                                                        </> :
+                                                        <>
+                                                            <Col md={6}>
+                                                                {getWorkingHourValue(workingHour, 3, 1)} - {getWorkingHourValue(workingHour, 3, 2)}
+                                                            </Col>
+                                                        </>
+                                                    }
 
-                                        </Row>
-                                        <Row>
-                                            <Col md={3}>
-                                                Friday:
-                                            </Col>
-                                            {getWorkingHourValue(workingHour, 4, 3) === true ?
-                                                <>       <Col md={6}>
-                                                    We're Closed
-                                                </Col>
-                                                </> :
-                                                <>
-                                                    <Col md={6}>
-                                                        {getWorkingHourValue(workingHour, 4, 1)} - {getWorkingHourValue(workingHour, 4, 2)}
+                                                </Row>
+                                                <Row>
+                                                    <Col md={3}>
+                                                        Friday:
                                                     </Col>
-                                                </>
-                                            }
+                                                    {getWorkingHourValue(workingHour, 4, 3) === true ?
+                                                        <>       <Col md={6}>
+                                                            We're Closed
+                                                        </Col>
+                                                        </> :
+                                                        <>
+                                                            <Col md={6}>
+                                                                {getWorkingHourValue(workingHour, 4, 1)} - {getWorkingHourValue(workingHour, 4, 2)}
+                                                            </Col>
+                                                        </>
+                                                    }
 
 
-                                        </Row>
-                                        <Row>
-                                            <Col md={3}>
-                                                Saturday:
-                                            </Col>
-                                            {getWorkingHourValue(workingHour, 5, 3) === true ?
-                                                <>       <Col md={6}>
-                                                    We're Closed
-                                                </Col>
-                                                </> :
-                                                <>
-                                                    <Col md={6}>
-                                                        {getWorkingHourValue(workingHour, 5, 1)} - {getWorkingHourValue(workingHour, 5, 2)}
+                                                </Row>
+                                                <Row>
+                                                    <Col md={3}>
+                                                        Saturday:
                                                     </Col>
-                                                </>
-                                            }
+                                                    {getWorkingHourValue(workingHour, 5, 3) === true ?
+                                                        <>       <Col md={6}>
+                                                            We're Closed
+                                                        </Col>
+                                                        </> :
+                                                        <>
+                                                            <Col md={6}>
+                                                                {getWorkingHourValue(workingHour, 5, 1)} - {getWorkingHourValue(workingHour, 5, 2)}
+                                                            </Col>
+                                                        </>
+                                                    }
 
-                                        </Row>
-                                        <Row>
-                                            <Col md={3}>
-                                                Sunday:
-                                            </Col>
-                                            {getWorkingHourValue(workingHour, 6, 3) == true ?
-                                                <>       <Col md={6}>
-                                                    We're Closed
-                                                </Col>
-                                                </> :
-                                                <>
-                                                    <Col md={6}>
-                                                        {getWorkingHourValue(workingHour, 6, 1)} - {getWorkingHourValue(workingHour, 6, 2)}
+                                                </Row>
+                                                <Row>
+                                                    <Col md={3}>
+                                                        Sunday:
                                                     </Col>
-                                                </>
-                                            }
+                                                    {getWorkingHourValue(workingHour, 6, 3) == true ?
+                                                        <>       <Col md={6}>
+                                                            We're Closed
+                                                        </Col>
+                                                        </> :
+                                                        <>
+                                                            <Col md={6}>
+                                                                {getWorkingHourValue(workingHour, 6, 1)} - {getWorkingHourValue(workingHour, 6, 2)}
+                                                            </Col>
+                                                        </>
+                                                    }
 
-                                        </Row>
-                                    </>
-                                )
-                            }
+                                                </Row>
 
-                        </Col>
-                        <Col md='4'>
-                            {
-                                qrImage ?
-                                    <img
-                                        alt={companyProfile.companyName}
-                                        style={{ margin: "0 auto", width: "160px" }}
-                                        src={serverUrl + qrImage.replace('./public/', '/')} className="img-fluid d-block" /> : null
-                            }
-                            {/* <div className='qrCodeBg'>
+                                            </Col>
+                                            <Col md='6' style={{ textAlign: "left" }}>
+                                                {
+                                                    qrImage ?
+                                                        <img
+                                                            alt={companyProfile.companyName}
+                                                            style={{ width: "160px" }}
+                                                            src={serverUrl + qrImage.replace('./public/', '/')} className="img-fluid d-block" /> : null
+                                                }
+                                                {/* <div className='qrCodeBg'>
                                 <QRCode
                                     size={256}
                                     className={'logo-container'}
@@ -350,7 +351,14 @@ const BusinessPortal = ({ match }) => {
                                     viewBox={`0 0 256 256`}
                                 />
                             </div> */}
+                                            </Col>
+                                        </Row>
+                                    </>
+                                )
+                            }
+
                         </Col>
+
                     </Row>
 
                     <Row xl={6}>
