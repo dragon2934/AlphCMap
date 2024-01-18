@@ -96,7 +96,34 @@ class Showcase extends Component {
             this.setState({
                 mapInitialized: true,
             });
+            EventBus.$on('onSendFlyerBtnClick', (data) => {
+                console.log('....onSendFlyerBtnClick...', data);
+                const { utilsData, } = this.props;
+                const { properties } = this.state;
+                //goto send flyer page
+                let selected = [];
+                properties.map(property => {
+                    let columnJson = {
+                        "Email": property.properties.email
+                    }
+                    selected.push(columnJson)
+                });
+                console.log(' end drawing 1=' + JSON.stringify(data) + ' 2=' + JSON.stringify(selected));
+
+                // const { properties } = this.state;
+                utilsData.drawFinished = true;
+
+                utilsData.selectedProperty = properties;
+                utilsData.fncCallback = this.cbBusinessInfoCallBack;
+                this.setState({
+                    // drawing: !drawing,
+                    selectedProperties: data,
+                    selectedPropertyEmail: selected,
+                    // feature: featureCollection.features[0]
+                });
+            })
         }
+
     }
 
     componentWillUnmount() {

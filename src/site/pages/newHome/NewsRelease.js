@@ -13,6 +13,17 @@ const NewsRelease = () => {
                         <Col>News Release</Col>
                     </Row>
 
+                    January 15, 2024
+                    <p>
+                        <a
+                            className="text-muted"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            href="https://www.linkedin.com/pulse/klosertoyou-digitized-qr-codes-based-business-name-location-valla-xqlac/">
+                            KloserToYou Digitized QR Codes - Based on Business Name and Location
+                        </a>
+                    </p>
+
                     January 7, 2024
                     <p>
                         <a

@@ -78,7 +78,7 @@ import { getQRImageUrl } from '../../../redux/actionCreators/appActionCreators';
 // import type { PDFDocumentProxy } from 'pdfjs-dist';
 console.log('..pdf js..' + pdfjs.version);
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
-
+import EventBus from '../../../utils/eventBus';
 const options = {
     cMapUrl: '/cmaps/',
     standardFontDataUrl: '/standard_fonts/',
@@ -269,6 +269,11 @@ const BusinessInfo = ({ }) => {
         //     selectedProperties: data,
         // });
     }
+    const cbSendFlyer = (e, property) => {
+        EventBus.$dispatch('onSendFlyerBtnClick', {});
+        utilsData.showBusinessInfo = false;
+        dispatch(cancelShowBusinessInfo());
+    }
     const goToPrevPage = () =>
         setPageNumber(pageNumber - 1 <= 1 ? 1 : pageNumber - 1);
 
@@ -351,7 +356,14 @@ const BusinessInfo = ({ }) => {
                                                 <Row>   <Col><i className="fa-solid fa-address"></i> {(property.unit_no ? property.unit_no + ' - ' : '') + property.street_number + ' ' + property.route + ' ' + property.locality + ',' + property.city + ',' + property.postal_code} </Col> </Row>
                                                 <Row>   <Col><i className="fa-solid fa-phone"></i> {companyProfile.phone} </Col> </Row>
                                                 <Row>   <Col><i className="fa-solid fa-globe"></i> <a href={companyProfile.website.startsWith('http') ? companyProfile.website : 'https://' + companyProfile.website} className='business_link'>Company Website</a>  </Col> </Row>
-                                                {totalConnected ? <Row>   <Col>Connected: {totalConnected} </Col> </Row> : null}
+                                                {totalConnected ? <Row>   <Col>Connected: {totalConnected} &nbsp;&nbsp;&nbsp;&nbsp;
+                                                    {
+                                                        user !== undefined && user.property !== undefined && property.id === user.property.id ?
+                                                            <>
+                                                                <Button size={'sm'} onClick={(e) => cbSendFlyer(e, property)} >Send Flyer</Button>
+                                                            </> : null
+                                                    }
+                                                </Col> </Row> : null}
                                                 <Row>   <Col><i className="fa-solid fa-globe"></i> <a className='business_link' href={shareUrl} target="_blank"> {shareUrl}</a>
                                                     {
                                                         user !== undefined && user.property !== undefined && property.id === user.property.id ?
