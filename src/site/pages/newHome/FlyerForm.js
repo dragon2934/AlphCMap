@@ -86,7 +86,7 @@ const FlyerForm = ({ callback }) => {
                 promotionContent: values.promotionContent
             }
             console.log('..post data..', postData);
-            // dispatch(sendPromotionContents(postData));
+            dispatch(sendPromotionContents(postData));
             const fncCallback = utilsData.fncCallback;
             if (fncCallback !== null) {
                 console.log('..should trigger call back');
