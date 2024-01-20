@@ -39,7 +39,7 @@ const bindingSchema = Yup.object().shape({
 const FlyerForm = ({ callback }) => {
 
     const utilsData = useSelector((state) => state.utilsData);
-    // console.log('...utilsData..' + JSON.stringify(utilsData));
+    console.log('...utilsData..' + JSON.stringify(utilsData));
     const dispatch = useDispatch();
     const history = useHistory();
     const [color, setColor] = useState('default');
@@ -85,7 +85,8 @@ const FlyerForm = ({ callback }) => {
                 promotionTitle: values.promotionTitle,
                 promotionContent: values.promotionContent
             }
-            dispatch(sendPromotionContents(postData));
+            console.log('..post data..', postData);
+            // dispatch(sendPromotionContents(postData));
             const fncCallback = utilsData.fncCallback;
             if (fncCallback !== null) {
                 console.log('..should trigger call back');

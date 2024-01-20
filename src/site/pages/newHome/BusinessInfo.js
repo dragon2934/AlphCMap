@@ -256,10 +256,29 @@ const BusinessInfo = ({ }) => {
     const cbSendEmail = (e, property) => {
         // const { utilsData } = this.props;
         utilsData.drawFinished = true;
+        if (!property.bindingEmail || property.bindingEmail.trim().length === 0) {
+            //if business profile has email 
+            if (companyProfile.email && companyProfile.email.length > 0) {
+                property.bindingEmail = companyProfile.email;
+            } else if (companyProfile.users_id && companyProfile.users_id.email && companyProfile.users_id.email.length > 0) {
+                property.bindingEmail = companyProfile.users_id.email;
+            }
+
+        }
+        if (!property.bindingPhone || property.bindingPhone.trim().length === 0) {
+            //if business profile has email 
+            if (companyProfile.phone && companyProfile.phone.length > 0) {
+                property.bindingPhone = companyProfile.phone;
+            } else if (companyProfile.users_id && companyProfile.users_id.username && companyProfile.users_id.username.length > 0) {
+                property.bindingPhone = companyProfile.users_id.username;
+            }
+
+        }
         const data = [];
         data.push({
             properties: property
         });
+        console.log('......will send email...', data);
         utilsData.selectedProperty = data;
         utilsData.showBusinessInfo = false;
         dispatch(cancelShowBusinessInfo());
